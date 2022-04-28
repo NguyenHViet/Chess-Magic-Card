@@ -121,6 +121,7 @@ class Pawn(Chess):
         self.__direction = direction
 
     def get_moves(self, board, index):
+        direction = 0
         if self._direction == "downward":
             direction = 1
         else:
