@@ -17,12 +17,15 @@ class Cell:
 
     def get_y(self):
         """
-            Lấy giá trị tọa độ X của ô cờ
+        Lấy giá trị tọa độ X của ô cờ
         """
         return self.y
 
+    def get_pos(self):
+        return (self.__x, self.__y)
+
     def draw(self, WIN):
         """
-            Vẽ địa hình của ô cờ
+        Vẽ địa hình của ô cờ
         """
-        WIN.blit(self.image)
+        WIN.blit(self.image, (self.__x, self.__y))

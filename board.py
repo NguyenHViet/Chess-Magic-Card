@@ -1,10 +1,13 @@
 import pygame
-import random
 import chess
 import init
+import cell
 
 class Board:
-    def __init__(self, pTeam, evironment, typeCell, lImg):
+    def __init__(self, x, y, width, pTeam, evironment, typeCell, lImg):
+        self.__x = x
+        self.__y = y
+        self.__width = width
         oTeam = ''
         if pTeam == 'b':
             oTeam == 'w'
@@ -38,9 +41,70 @@ class Board:
                              (7, 6): Knight(pTeam, lImg[pTeam]['kn']), (7, 7): Rook(pTeam, lImg[pTeam]['r'])}
         self.__Cells = [lImg[evironment]]
         self.__CellLayer = []
+        self.__readableMap = [[]*8]*8
+        for i in range(8):
+            for j in range(8):
+                try:
+                    self.__readableMap[i][j] = self.__OjectLayer[(i, j)].convert_to_readable()
+                except:
+                    self.__readableMap[i][j] = ' '
 
-    def draw(self):
-        for n in self.__CellLayer:
-            n.draw()
-        for c in self.__OjectLayer:
-            c.draw()
+    def draw(self, win):
+        for row in range(8):
+            for col in range(8):
+                self.__CellLayer[row][col].draw(win)
+                self.__OjectLayer[row][col].draw(win, self.__CellLayer[row][col].get_pos())
+
+    def find_Cell(self, pos):
+        interval = self.__width / 8
+        y, x = pos
+        row = (y - self.__y) // interval
+        col = (x - self.__x) // interval
+        return (int(row), int(col))
+
+    def check_Team(self, index, teamCheck):
+        try:
+            if self.__OjectLayer(index).get_team() == teamCheck:
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    def select_Chess(self, pos, turn):
+        playingTeam = 'b'
+        if moves % 2 == 0:
+            playingTeam = 'w'
+        index = self.find_Cell(pos)
+        if self.check_Team(index, playingTeam):
+            self.__OjectLayer(index).get_moves(self.__OjectLayer, self.__readableMap, index)
+
+    def deseclect(self):
+        for row in range(8):
+            for col in range(8):
+                if self.__readableMap[row][col] == 'x':
+                    self.__readableMap[row][col] = ' '
+                    try:
+                        self.__OjectLayer[(row, col)].set_killable(False)
+                    except:
+                        pass
+
+    def convert_to_readable(self):
+        new_map = [[] * 8] * 8
+        for i in range(8):
+            for j in range(8):
+                try:
+                    self.__readableMap[i][j] = self.__OjectLayer[(i, j)].convert_to_readable()
+                except:
+                    self.__readableMap[i][j] = ' '
+        return new_map
+
+    def select_Move(self, pos, new_pos, phase):
+        index0 = self.find_Cell(pos)
+        index1 = self.find_Cell(new_pos)
+        if self.__readableMap[index1[0]][index1[1]] == 'x':
+            self.__OjectLayer[index0[0]][index0[1]].delete_effect('First Move')
+            self.__OjectLayer[index1[0]][index1[1]] = self.__OjectLayer[index0[0]][index0[1]]
+            self.__OjectLayer[index0[0]][index0[1]] = None
+        self.__readableMap = self.convert_to_readable()
+        self.deseclect()

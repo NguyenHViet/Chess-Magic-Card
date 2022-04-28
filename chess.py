@@ -4,17 +4,19 @@ class Chess:
     """
     Lớp "Quân Cờ"
     """
-    def __init__(self, team, typechess, img, score = 0, effects = []):
+    def __init__(self, team, typechess, direction, img, score = 0, effects = []):
         """
         Hàm khởi tạo quân cờ.
         :param team: Tên đội (str)
         :param typechess: Kiểu quân cờ (str)
-        :param score: Điểm của quân cờ (int)
+        :param direction: Hướng di chuyển (str)
         :param img: Hình ảnh quân cờ (pygame.image)
+        :param score: Điểm của quân cờ (int)
         :param effects: Danh sách hiệu ứng (list of str)
         """
         self._team = team
         self._type = typechess
+        self._direction = direction
         self._image = img
         self._score = score
         self._effects = []
@@ -25,7 +27,7 @@ class Chess:
         Lấy danh sách hiệu ứng của quân cờ.
         :return: Danh sách hiệu ứng của quân cờ (List of str)
         """
-        return self.effects
+        return self._effects
 
     def get_team(self):
         """
@@ -41,13 +43,19 @@ class Chess:
         """
         return self._score
 
+    def get_dir(self):
+        return self._direction
+
+    def get_killable(self):
+        return self._killable
+
     def is_effective(self, effect = ""):
         """
         Trả về True nếu quân cờ có giá trị hiệu ứng đầu vào, ngược lại trả về False.
         :param effect: Hiệu ứng cần kiểm tra (str)
         :return: Giá trị boolen
         """
-        if effect in self.effects:
+        if effect in self._effects:
             return True
         else:
             return False
@@ -57,12 +65,13 @@ class Chess:
         Chuyển quân cờ thành dạng có thể đọc được
         :return: Chuỗi ký tự self.team + self.type
         """
-        return str(self.team + self.type)
+        return str(self._team + self._type)
 
-    def get_moves(self, board, index):
+    def get_moves(self, oBoard, rBoard, index):
         """
         Xuất ra các cách di chuyển của quân cờ
-        :param board: Ma trận 2D các Node trên bàn cờ (2D list)
+        :param oBoard: Ma trận 2D các Object trên bàn cờ (2D list)
+        :param rBoard: Ma trận 2D dạng str các object trên bàn cờ (2D list)
         :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
         """
         pass
@@ -73,14 +82,16 @@ class Chess:
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
-        win.blit(self.image, pos)
+        win.blit(self._image, pos)
 
-    def set_killable(self):
+    def set_killable(self, able):
         """
         Gán killable là True nếu quân cờ không có hiệu ứng "Imortal"
         """
-        if not self.is_effective("Imortal"):
-            self.killable = True
+        if not self.is_effective("Imortal") and able:
+            self._killable = True
+        else:
+            self._killable = False
 
     def set_score(self, new_score):
         """
@@ -95,6 +106,10 @@ class Chess:
         :param effect: Hiệu ứng mới
         """
         self._effects += [effect]
+
+    def delete_effect(self, effect):
+        if effect in self._effects:
+            self._effects.remove(effect)
 
 def on_board(index):
     """
@@ -116,20 +131,32 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn", img, 10, effects)
-        self.__fisrtMove = True
-        self.__direction = direction
+        super().__init__(team, "pawn",direction, img, 10, effects + ['First Move'])
 
-    def get_moves(self, board, index):
-        direction = 0
-        if self._direction == "downward":
+    def get_moves(self, oBoard, rBoard, index):
+        direction = -1
+        if self._direction == 'Downward':
             direction = 1
-        else:
-            direction = -1
-        pass
+
+        if self.is_effective('First Move'):
+            if rBoard[index[0] + 2*direction][index[1]] == ' ' and rBoard[index[0] + direction][index[1]] == ' ':
+                rBoard[index[0] - 2*direction][index[1]] = 'x'
+        top3 = [[index[0] - 1, index[1] + i] for i in range(-1, 2)]
+
+        for positions in top3:
+            if on_board(positions):
+                if top3.index(positions) % 2 == 0:
+                    try:
+                        if oBoard[positions[0]][positions[1]].get_team() != self.get_team():
+                            oBoard[positions[0]][positions[1]].set_killable(True)
+                    except:
+                        pass
+                else:
+                    if rBoard[positions[0]][positions[1]] == ' ':
+                        rBoard[positions[0]][positions[1]] = 'x'
 
 class King(Chess):
-    def __init__(self, team, img, effects = []):
+    def __init__(self, team, direction, img, effects = []):
         """
         Khởi tạo quân "Vua"
         :param team: Tên đội (str)
@@ -138,11 +165,20 @@ class King(Chess):
         """
         super().__init__(team, "king", direction, img, 1000, effects)
 
-    def get_moves(self, board, index):
-        pass
+    def get_moves(self, oBoard, rBoard, index):
+        for y in range(3):
+            for x in range(3):
+                if on_board((index[0] - 1 + y, index[1] - 1 + x)):
+                    if rBoard[index[0] - 1 + y][index[1] - 1 + x] == ' ':
+                        rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
+                    else:
+                        if oBoard[index[0] - 1 + y][index[1] - 1 + x].get_team() != self.get_team():
+                            oBoard[index[0] - 1 + y][index[1] - 1 + x].set_killable(True)
+                            if oBoard[index[0] - 1 + y][index[1] - 1 + x].get_killable():
+                                rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
 
 class Rook(Chess):
-    def __init__(self, team, img, effects = []):
+    def __init__(self, team, direction, img, effects = []):
         """
         Khởi tạo quân "Xa"
         :param team: Tên đội (str)
@@ -151,11 +187,25 @@ class Rook(Chess):
         """
         super().__init__(team, "rook", direction, img, 50, effects)
 
-    def get_moves(self, board, index):
-        pass
+    def get_moves(self, oBoard, rBoard, index):
+        cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
+                 [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
+                 [[index[0], index[1] + i] for i in range(1, 8 - index[1])],
+                 [[index[0], index[1] - i] for i in range(1, index[1] + 1)]]
+
+        for dir in cross:
+            for pos in dir:
+                if on_board(pos):
+                    if rBoard[pos[0]][pos[1]] == ' ':
+                        rBoard[pos[0]][pos[1]] = 'x '
+                    else:
+                        if oBoard[pos[0]][pos[1]].get_team() != self.get_team():
+                            oBoard[pos[0]][pos[1]].set_killable(True)
+                        elif not self.is_effective('Unstoppable'):
+                            break
 
 class Bishop(Chess):
-    def __init__(self, team, img, effects = []):
+    def __init__(self, team, direction, img, effects = []):
         """
         Khởi tạo quân "Tượng"
         :param team: Tên đội (str)
@@ -164,11 +214,25 @@ class Bishop(Chess):
         """
         super().__init__(team, "bishop", direction, img, 30, effects)
 
-    def get_moves(self, board, index):
-        pass
+    def get_moves(self, oBoard, rBoard, index):
+        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
+                     [[index[0] + i, index[1] - i] for i in range(1, 8)],
+                     [[index[0] - i, index[1] + i] for i in range(1, 8)],
+                     [[index[0] - i, index[1] - i] for i in range(1, 8)]]
+
+        for dir in diagonals:
+            for pos in dir:
+                if on_board(pos):
+                    if board[pos[0]][pos[1]] == ' ':
+                        board[pos[0]][pos[1]] = 'x'
+                    else:
+                        if board[pos[0]][pos[1]].get_team() != self.team:
+                            oBoard[pos[0]][pos[1]].set_killable(True)
+                        elif not self.is_effective('Unstoppable'):
+                            break
 
 class Knight(Chess):
-    def __init__(self, team, img, effects = []):
+    def __init__(self, team, direction, img, effects = []):
         """
         Khởi tạo quân "Mã"
         :param team: Tên đội (str)
@@ -177,11 +241,19 @@ class Knight(Chess):
         """
         super().__init__(team, "knight", direction, img, 30, effects)
 
-    def get_moves(self, board, index):
-        pass
+    def get_moves(self, oBoard, rBoard, index):
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                if i ** 2 + j ** 2 == 5:
+                    if on_board((index[0] + i, index[1] + j)):
+                        if rBoard[index[0] + i][index[1] + j] == ' ':
+                            rBoard[index[0] + i][index[1] + j] = 'x'
+                        else:
+                            if oBoard[index[0] + i][index[1] + j].get_team() != self.get_team():
+                                oBoard[index[0] + i][index[1] + j].set_killable(True)
 
 class Queen(Chess):
-    def __init__(self, team, img, effects = []):
+    def __init__(self, team, direction, img, effects = []):
         """
         Khởi tạo quân "Hậu"
         :param team: Tên đội (str)
@@ -190,5 +262,35 @@ class Queen(Chess):
         """
         super().__init__(team, "queen", direction, img, 90, effects)
 
-    def get_moves(self, board, index):
-        pass
+    def get_moves(self, oBoard, rBoard, index):
+        cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
+                 [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
+                 [[index[0], index[1] + i] for i in range(1, 8 - index[1])],
+                 [[index[0], index[1] - i] for i in range(1, index[1] + 1)]]
+
+        for dir in cross:
+            for pos in dir:
+                if on_board(pos):
+                    if rBoard[pos[0]][pos[1]] == ' ':
+                        rBoard[pos[0]][pos[1]] = 'x '
+                    else:
+                        if oBoard[pos[0]][pos[1]].get_team() != self.get_team():
+                            oBoard[pos[0]][pos[1]].set_killable(True)
+                        elif not self.is_effective('Unstoppable'):
+                            break
+
+        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
+                     [[index[0] + i, index[1] - i] for i in range(1, 8)],
+                     [[index[0] - i, index[1] + i] for i in range(1, 8)],
+                     [[index[0] - i, index[1] - i] for i in range(1, 8)]]
+
+        for dir in diagonals:
+            for pos in dir:
+                if on_board(pos):
+                    if board[pos[0]][pos[1]] == ' ':
+                        board[pos[0]][pos[1]] = 'x'
+                    else:
+                        if board[pos[0]][pos[1]].get_team() != self.team:
+                            oBoard[pos[0]][pos[1]].set_killable(True)
+                        elif not self.is_effective('Unstoppable'):
+                            break
