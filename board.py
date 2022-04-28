@@ -1,10 +1,12 @@
+import random
+
 import pygame
 import chess
 import init
 import cell
 
 class Board:
-    def __init__(self, x, y, width, pTeam, evironment, typeCell, lImg):
+    def __init__(self, x, y, width, pTeam, evironment, lImg):
         self.__x = x
         self.__y = y
         self.__width = width
@@ -39,8 +41,12 @@ class Board:
                              (7, 2): Bishop(pTeam, lImg[pTeam]['b']), (7, 3): Queen(pTeam, lImg[pTeam]['q']),
                              (7, 4): King(pTeam, lImg[pTeam]['k']), (7, 5): Bishop(pTeam, lImg[pTeam]['b']),
                              (7, 6): Knight(pTeam, lImg[pTeam]['kn']), (7, 7): Rook(pTeam, lImg[pTeam]['r'])}
-        self.__Cells = [lImg[evironment]]
-        self.__CellLayer = []
+        self.__cellType = [lImg[evironment]]
+        interval = self.__width / 8
+        self.__CellLayer = [[]*8]*8
+        for i in range(8):
+            for j in range(8):
+                self.__CellLayer[i][j] = Cell(i * interval + self.__x, j * interval + self.__y, self.__cellType["normal"])
         self.__readableMap = [[]*8]*8
         for i in range(8):
             for j in range(8):
