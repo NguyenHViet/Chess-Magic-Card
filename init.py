@@ -63,6 +63,33 @@ starting_order = {(0, 0): pygame.image.load(br.image), (1, 0): pygame.image.load
                   (4, 7): pygame.image.load(wq.image), (5, 7): pygame.image.load(wb.image),
                   (6, 7): pygame.image.load(wkn.image), (7, 7): pygame.image.load(wr.image),}
 
+environment_data = {
+    'desert': {
+        'Normal':pygame.image.load('img\desert_normal.png'),
+        'Speacial':pygame.image.load('img\desert_speacial.png')
+    },
+    'frozen_river': {
+        'Normal':pygame.image.load('img\\frozen_river_normal.png'),
+        'Speacial':pygame.image.load('img\\frozen_river_speacial.png')
+    },
+    'swamp': {
+        'Normal':pygame.image.load('img\swamp_normal.png'),
+        'Speacial':pygame.image.load('img\swamp_speacial.png')
+    },
+    'foggy_forest': {
+        'Normal':pygame.image.load('img\\foggy_forest_normal.png'),
+        'Speacial':pygame.image.load('img\\foggy_forest_speacial.png')
+    },
+    'valley': {
+        'Normal':pygame.image.load('img\\valley_normal.png'),
+        'Speacial':pygame.image.load('img\\valley_speacial.png')
+    },
+    'wind_plateau': {
+        'Normal':pygame.image.load('img\wind_plateau_normal.png'),
+        'Speacial':pygame.image.load('img\wind_plateau_speacial.png')
+    }
+}
+
 def create_board(board):
     """
     Khởi tạo bàn cờ cùng các quân cờ tại vị trí ban đầu
