@@ -71,7 +71,7 @@ class Chess:
         """
         Vẽ hình ảnh quân cờ trên cửa sổ
         :param win: Cửa sổ được chọn (pygame.display)
-        :param pos: Vị trí hình ảnh được (tuple(x, y))
+        :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
         win.blit(self.image, pos)
 
@@ -105,6 +105,9 @@ def on_board(index):
         return True
 
 class Pawn(Chess):
+    """
+    Quân "Chốt"
+    """
     def __init__(self, team, direction, img, effects = []):
         """
         Khởi tạo quân "Chốt"
