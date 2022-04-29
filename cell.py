@@ -13,13 +13,13 @@ class Cell:
         """
         Lấy giá trị tọa độ X của ô cờ
         """
-        return self.x
+        return self.__x
 
     def get_y(self):
         """
         Lấy giá trị tọa độ X của ô cờ
         """
-        return self.y
+        return self.__y
 
     def get_pos(self):
         return (self.__x, self.__y)

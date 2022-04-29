@@ -116,7 +116,7 @@ def on_board(index):
     Kiểm tra xem thử vị trí đầu vào có nằm trên bàn cờ không
     :param index: Vị trí kiểm tra (tuple(x, y))
     """
-    if pos[0] > -1 and pos[1] > -1 and pos[0] < 8 and pos[1] < 8:
+    if index[0] > -1 and index[1] > -1 and index[0] < 8 and index[1] < 8:
         return True
 
 class Pawn(Chess):
@@ -131,24 +131,25 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn",direction, img, 10, effects + ['First Move'])
+        super().__init__(team, "pawn",direction, img, 10, ['First Move'])
 
     def get_moves(self, oBoard, rBoard, index):
         direction = -1
-        if self._direction == 'Downward':
+        if self._direction == 'downward':
             direction = 1
 
         if self.is_effective('First Move'):
             if rBoard[index[0] + 2*direction][index[1]] == ' ' and rBoard[index[0] + direction][index[1]] == ' ':
-                rBoard[index[0] - 2*direction][index[1]] = 'x'
-        top3 = [[index[0] - 1, index[1] + i] for i in range(-1, 2)]
+                rBoard[index[0] + 2*direction][index[1]] = 'x'
+        top3 = [[index[0] + direction, index[1] + i] for i in range(-1, 2)]
 
         for positions in top3:
             if on_board(positions):
                 if top3.index(positions) % 2 == 0:
                     try:
-                        if oBoard[positions[0]][positions[1]].get_team() != self.get_team():
-                            oBoard[positions[0]][positions[1]].set_killable(True)
+                        if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
+                            oBoard[(positions[1], positions[0])].set_killable(True)
+                            rBoard[positions[0]][positions[1]] = 'x'
                     except:
                         pass
                 else:
@@ -172,10 +173,12 @@ class King(Chess):
                     if rBoard[index[0] - 1 + y][index[1] - 1 + x] == ' ':
                         rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
                     else:
-                        if oBoard[index[0] - 1 + y][index[1] - 1 + x].get_team() != self.get_team():
-                            oBoard[index[0] - 1 + y][index[1] - 1 + x].set_killable(True)
-                            if oBoard[index[0] - 1 + y][index[1] - 1 + x].get_killable():
+                        try:
+                            if oBoard[(index[1] - 1 + y, index[0] - 1 + x)].get_team() != self.get_team():
+                                oBoard[(index[1] - 1 + y, index[0] - 1 + x)].set_killable(True)
                                 rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
+                        except:
+                            pass
 
 class Rook(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -197,12 +200,17 @@ class Rook(Chess):
             for pos in dir:
                 if on_board(pos):
                     if rBoard[pos[0]][pos[1]] == ' ':
-                        rBoard[pos[0]][pos[1]] = 'x '
+                        print(pos)
+                        rBoard[pos[0]][pos[1]] = 'x'
                     else:
-                        if oBoard[pos[0]][pos[1]].get_team() != self.get_team():
-                            oBoard[pos[0]][pos[1]].set_killable(True)
-                        elif not self.is_effective('Unstoppable'):
-                            break
+                        try:
+                            if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
+                                oBoard[(pos[1], pos[0])].set_killable(True)
+                                rBoard[pos[0]][pos[1]] = 'x'
+                            if not self.is_effective('Unstoppable'):
+                                break
+                        except:
+                            pass
 
 class Bishop(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -221,15 +229,21 @@ class Bishop(Chess):
                      [[index[0] - i, index[1] - i] for i in range(1, 8)]]
 
         for dir in diagonals:
+            print(dir)
             for pos in dir:
+                print(pos)
                 if on_board(pos):
-                    if board[pos[0]][pos[1]] == ' ':
-                        board[pos[0]][pos[1]] = 'x'
+                    if rBoard[pos[0]][pos[1]] == ' ':
+                        rBoard[pos[0]][pos[1]] = 'x'
                     else:
-                        if board[pos[0]][pos[1]].get_team() != self.team:
-                            oBoard[pos[0]][pos[1]].set_killable(True)
-                        elif not self.is_effective('Unstoppable'):
-                            break
+                        try:
+                            if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
+                                oBoard[(pos[1], pos[0])].set_killable(True)
+                                rBoard[pos[0]][pos[1]] = 'x'
+                            if not self.is_effective('Unstoppable'):
+                                break
+                        except:
+                            pass
 
 class Knight(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -249,8 +263,15 @@ class Knight(Chess):
                         if rBoard[index[0] + i][index[1] + j] == ' ':
                             rBoard[index[0] + i][index[1] + j] = 'x'
                         else:
-                            if oBoard[index[0] + i][index[1] + j].get_team() != self.get_team():
-                                oBoard[index[0] + i][index[1] + j].set_killable(True)
+                            try:
+                                if oBoard[(index[1] + i, index[0] + j)].get_team() != self.get_team():
+                                    oBoard[(index[1] + i, index[0] + j)].set_killable(True)
+                                    rBoard[index[0] + j][index[1] + i] = 'x'
+                            except:
+                                pass
+
+                            print("Đéo bug 6.4")
+        print("Đéo bug 7")
 
 class Queen(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -272,12 +293,21 @@ class Queen(Chess):
             for pos in dir:
                 if on_board(pos):
                     if rBoard[pos[0]][pos[1]] == ' ':
-                        rBoard[pos[0]][pos[1]] = 'x '
+                        rBoard[pos[0]][pos[1]] = 'x'
                     else:
-                        if oBoard[pos[0]][pos[1]].get_team() != self.get_team():
-                            oBoard[pos[0]][pos[1]].set_killable(True)
-                        elif not self.is_effective('Unstoppable'):
-                            break
+                        try:
+                            if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
+                                oBoard[(pos[1], pos[0])].set_killable(True)
+                                rBoard[pos[0]][pos[1]] = 'x'
+                            if not self.is_effective('Unstoppable'):
+                                break
+                        except:
+                            pass
+
+        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
+                     [[index[0] + i, index[1] - i] for i in range(1, 8)],
+                     [[index[0] - i, index[1] + i] for i in range(1, 8)],
+                     [[index[0] - i, index[1] - i] for i in range(1, 8)]]
 
         diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
                      [[index[0] + i, index[1] - i] for i in range(1, 8)],
@@ -287,10 +317,14 @@ class Queen(Chess):
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos):
-                    if board[pos[0]][pos[1]] == ' ':
-                        board[pos[0]][pos[1]] = 'x'
+                    if rBoard[pos[0]][pos[1]] == ' ':
+                        rBoard[pos[0]][pos[1]] = 'x'
                     else:
-                        if board[pos[0]][pos[1]].get_team() != self.team:
-                            oBoard[pos[0]][pos[1]].set_killable(True)
-                        elif not self.is_effective('Unstoppable'):
-                            break
+                        try:
+                            if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
+                                oBoard[(pos[1], pos[0])].set_killable(True)
+                                rBoard[pos[0]][pos[1]] = 'x'
+                            if not self.is_effective('Unstoppable'):
+                                break
+                        except:
+                            pass
