@@ -35,7 +35,14 @@ def main(WIN, WIDTH):
     turns = 0
     selected = False
     originPos = []
+    playingTeam = 'b'
+    player1Team = 'w'
+    player2Team = 'b'
     while True:
+        if turns % 2 == 0:
+            playingTeam = 'w'
+        else:
+            playingTeam = 'b'
         pygame.time.delay(50) ##stops cpu dying
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -45,12 +52,11 @@ def main(WIN, WIDTH):
             """This quits the program if the player closes the window"""
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print("Đang chọn:", selected)
                 pos = pygame.mouse.get_pos()
                 if selected == False:
                     try:
                         nboard.deseclect()
-                        selected = nboard.select_Chess(pos, turns)
+                        selected = nboard.select_Chess(pos, playingTeam)
                         originPos = pos
                     except:
                         originPos = []

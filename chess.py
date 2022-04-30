@@ -19,7 +19,7 @@ class Chess:
         self._direction = direction
         self._image = img
         self._score = score
-        self._effects = []
+        self._effects = ['!'] + effects
         self._killable = False
 
     def get_effects(self):
@@ -55,10 +55,7 @@ class Chess:
         :param effect: Hiệu ứng cần kiểm tra (str)
         :return: Giá trị boolen
         """
-        if effect in self._effects:
-            return True
-        else:
-            return False
+        return effect in self._effects
 
     def convert_to_readable(self):
         """
@@ -76,13 +73,13 @@ class Chess:
         """
         pass
 
-    def draw(self, win, pos):
+    def draw(self, win, pos, width = 60):
         """
         Vẽ hình ảnh quân cờ trên cửa sổ
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
-        win.blit(self._image, pos)
+        win.blit(pygame.transform.scale(self._image, (width, width)), pos)
 
     def set_killable(self, able):
         """
@@ -111,6 +108,11 @@ class Chess:
         if effect in self._effects:
             self._effects.remove(effect)
 
+    def reset_effect(self):
+        for effect in self._effects:
+            if '!' not in effect:
+                self._effects.remove(effect)
+
 def on_board(index):
     """
     Kiểm tra xem thử vị trí đầu vào có nằm trên bàn cờ không
@@ -134,6 +136,7 @@ class Pawn(Chess):
         super().__init__(team, "pawn",direction, img, 10, ['First Move'])
 
     def get_moves(self, oBoard, rBoard, index):
+        rBoard[index[0]][index[1]] += ':'
         direction = -1
         if self._direction == 'downward':
             direction = 1
@@ -167,6 +170,7 @@ class King(Chess):
         super().__init__(team, "king", direction, img, 1000, effects)
 
     def get_moves(self, oBoard, rBoard, index):
+        rBoard[index[0]][index[1]] += ':'
         for y in range(3):
             for x in range(3):
                 if on_board((index[0] - 1 + y, index[1] - 1 + x)):
@@ -191,6 +195,7 @@ class Rook(Chess):
         super().__init__(team, "rook", direction, img, 50, effects)
 
     def get_moves(self, oBoard, rBoard, index):
+        rBoard[index[0]][index[1]] += ':'
         cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
                  [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
                  [[index[0], index[1] + i] for i in range(1, 8 - index[1])],
@@ -223,6 +228,7 @@ class Bishop(Chess):
         super().__init__(team, "bishop", direction, img, 30, effects)
 
     def get_moves(self, oBoard, rBoard, index):
+        rBoard[index[0]][index[1]] += ':'
         diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
                      [[index[0] + i, index[1] - i] for i in range(1, 8)],
                      [[index[0] - i, index[1] + i] for i in range(1, 8)],
@@ -256,6 +262,7 @@ class Knight(Chess):
         super().__init__(team, "knight", direction, img, 30, effects)
 
     def get_moves(self, oBoard, rBoard, index):
+        rBoard[index[0]][index[1]] += ':'
         for i in range(-2, 3):
             for j in range(-2, 3):
                 if i ** 2 + j ** 2 == 5:
@@ -264,9 +271,9 @@ class Knight(Chess):
                             rBoard[index[0] + i][index[1] + j] = 'x'
                         else:
                             try:
-                                if oBoard[(index[1] + i, index[0] + j)].get_team() != self.get_team():
-                                    oBoard[(index[1] + i, index[0] + j)].set_killable(True)
-                                    rBoard[index[0] + j][index[1] + i] = 'x'
+                                if oBoard[(index[1] + j, index[0] + i)].get_team() != self.get_team():
+                                    oBoard[(index[1] + j, index[0] + i)].set_killable(True)
+                                    rBoard[index[0] + i][index[1] + j] = 'x'
                             except:
                                 pass
 
@@ -284,6 +291,7 @@ class Queen(Chess):
         super().__init__(team, "queen", direction, img, 90, effects)
 
     def get_moves(self, oBoard, rBoard, index):
+        rBoard[index[0]][index[1]] += ':'
         cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
                  [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
                  [[index[0], index[1] + i] for i in range(1, 8 - index[1])],

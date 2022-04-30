@@ -15,6 +15,7 @@ class Board:
             oTeam == 'w'
         else:
             oTeam == 'b'
+        # Tạo phần layer các thực thể trên bàn cờ
         self.__OjectLayer = {(0, 0): chess.Rook(oTeam, 'downward', lImg[oTeam]['r']), (1, 0): chess.Knight(oTeam, 'downward', lImg[oTeam]['kn']),
                              (2, 0): chess.Bishop(oTeam, 'downward', lImg[oTeam]['b']), (3, 0): chess.Queen(oTeam, 'downward', lImg[oTeam]['q']),
                              (4, 0): chess.King(oTeam, 'downward', lImg[oTeam]['k']), (5, 0): chess.Bishop(oTeam, 'downward', lImg[oTeam]['b']),
@@ -41,37 +42,45 @@ class Board:
                              (2, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']), (3, 7): chess.Queen(pTeam, 'upward', lImg[pTeam]['q']),
                              (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['k']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']),
                              (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
+        self.__GEI = lImg['classic']
         self.__cellType = lImg[evironment]
+        # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
         self.__CellLayer = []
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
                 self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__cellType["Normal"]))
+        # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
-        for i in range(8):
-            for j in range(8):
-                try:
-                    self.__readableMap[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
-                except:
-                    self.__readableMap[i][j] = ' '
+        self.__readableMap = self.convert_to_readable()
 
     def draw(self, win):
         interval = self.__width / 8
         for row in range(8):
             for col in range(8):
-                self.__CellLayer[row][col].draw(win)
+                self.__CellLayer[row][col].draw(win, interval)
                 if (row+col) % 2 == 0:
-                    pygame.draw.rect(win, (128, 128, 128, 0.5), (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y(), interval, interval))
+                    win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if self.__readableMap[col][row] == 'x':
-                    pygame.draw.rect(win, (255, 0, 0, 64), (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y(), interval, interval))
+                    win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
+                elif (self.__readableMap[col][row])[-1] == ':':
+                    win.blit(self.__GEI['Choice'],
+                             (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
-                    self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos())
+                    self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
 
     def printMap(self):
         for i in range(8):
             print(" ".join(["{:^8}" for j in range(8)]).format(*self.__readableMap[i]))
         return True
+
+    def count_on_rMap(self, object):
+        count = 0
+        for item in self.__readableMap:
+            if object in item:
+                count += 1
+        return count
 
     def find_Cell(self, pos):
         interval = self.__width / 8
@@ -89,10 +98,7 @@ class Board:
         except:
             return False
 
-    def select_Chess(self, pos, turn):
-        playingTeam = 'b'
-        if turn % 2 == 0:
-            playingTeam = 'w'
+    def select_Chess(self, pos, playingTeam = 'b'):
         index = self.find_Cell(pos)
         y, x = index
         if self.check_Team((x, y), playingTeam):
@@ -106,14 +112,14 @@ class Board:
             return False
 
     def deseclect(self):
-        for row in range(8):
-            for col in range(8):
-                if self.__readableMap[row][col] == 'x':
-                    self.__readableMap[row][col] = ' '
-                    try:
-                        self.__OjectLayer[(col, row)].set_killable(False)
-                    except:
-                        pass
+        self.__readableMap = [[' ' for i in range(8)] for i in range(8)]
+        for i in range(8):
+            for j in range(8):
+                try:
+                    self.__readableMap[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
+                    self.__OjectLayer[(j, i)].set_killable(False)
+                except:
+                    self.__readableMap[i][j] = ' '
 
     def convert_to_readable(self):
         new_map = self.__readableMap
@@ -131,7 +137,7 @@ class Board:
         try:
             if self.__readableMap[index1[0]][index1[1]] == 'x' or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
-                #self.__OjectLayer[(index0[1], index0[0])].delete_effect('First Move')
+                self.__OjectLayer[(index0[1], index0[0])].reset_effect()
                 self.__OjectLayer[(index1[1], index1[0])] = self.__OjectLayer[(index0[1], index0[0])]
                 self.__OjectLayer[(index0[1], index0[0])] = None
                 turn += 1
@@ -141,3 +147,12 @@ class Board:
         self.__readableMap = self.convert_to_readable()
         self.deseclect()
         return turn
+
+    def is_checkmate(self):
+        pass
+
+    def is_finished(self):
+        if self.count_on_rMap('king'):
+            return True
+        else:
+            return False

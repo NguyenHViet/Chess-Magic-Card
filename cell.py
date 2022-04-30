@@ -24,8 +24,8 @@ class Cell:
     def get_pos(self):
         return (self.__x, self.__y)
 
-    def draw(self, WIN):
+    def draw(self, WIN, width = 100):
         """
         Vẽ địa hình của ô cờ
         """
-        WIN.blit(self.image, (self.__x, self.__y))
+        WIN.blit(pygame.transform.scale(self.image, (width, width)), (self.__x, self.__y))

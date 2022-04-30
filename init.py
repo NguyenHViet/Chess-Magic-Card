@@ -12,7 +12,10 @@ listImage = {
         'q':pygame.image.load('img\\w_queen.png'), 'r':pygame.image.load('img\\w_rook.png')
     },
     'classic': {
-        'Normal':pygame.image.load('img\\classic_normal.png')
+        'Normal':pygame.image.load('img\\classic_normal.png'),
+        'Darken':pygame.image.load('img\\darkcell.png'),
+        'Move':pygame.image.load('img\\move.png'),
+        'Choice':pygame.image.load('img\\choice.png')
     }
 }
 
