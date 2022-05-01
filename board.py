@@ -98,6 +98,10 @@ class Board:
         except:
             return False
 
+    def select_Cell(self, pos, value):
+        index = self.find_Cell(pos)
+        return value in self.__readableMap[index[0]][index[1]]
+
     def select_Chess(self, pos, phase, playingTeam = 'b'):
         index = self.find_Cell(pos)
         y, x = index
@@ -106,7 +110,6 @@ class Board:
             self.__OjectLayer[(x, y)].active_effects(self.__OjectLayer, self.__readableMap, index, phase)
             self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
-            self.printMap()
             return True
         else:
             print("Không thể chọn")
@@ -162,13 +165,13 @@ class Board:
         Phase = phase
         updating = True
         if self.is_finished():
-            Phase = 4
-        elif phase == 0:
+            Phase = chess.PHASE['Finish']
+        elif phase == chess.PHASE['Start']:
             print("Bắt đầu lượt mới")
-            Phase = 1
-        elif phase == 3:
+            Phase = chess.PHASE['Picking']
+        elif phase == chess.PHASE['End']:
             print("Kết thúc lượt")
-            Phase = 0
+            Phase = chess.PHASE['Start']
         for i in range(8):
             for j in range(8):
                 try:
@@ -178,3 +181,6 @@ class Board:
             updating = False
         if not updating:
             return Phase
+
+    def getoBoard(self):
+        return self.__OjectLayer

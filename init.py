@@ -1,4 +1,6 @@
 import pygame
+import effect
+from card import Card
 
 listImage = {
     'b': {
@@ -21,3 +23,13 @@ listImage = {
 
 pygame.font.init()
 font = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
+
+EFFECT = {
+
+}
+
+DECK = [
+    Card('Tiến Công', 1, listImage['b']['p'], 'Tiến về phía trước hoặc chéo tới 1 ô', 'GoAhead', 2),
+    Card('Rút Lui', 1, listImage['b']['k'], 'Lùi về phía sau hoặc chéo lui 1 ô', 'GoBack', 2),
+    Card('Đảo Chiều', 1, listImage['b']['r'], 'Đi ngang sang trái hoặc phải 1 ô', 'GoHorizontal', 2)
+]

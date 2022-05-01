@@ -1,6 +1,11 @@
 import pygame
 import effect as ef
 
+PHASE = {
+    'Start': 0, 'Picking': 1, 'Move': 2, 'Cast': 3, 'End': 4, 'Finish': 5
+}
+
+
 class Chess:
     """
     Lớp "Quân Cờ"
@@ -129,11 +134,11 @@ class Chess:
                 pass
 
     def update(self, oBoard, rBoard, index, phase):
-        if phase == 3:
+        if phase == PHASE['End']:
             self._speed = self._startSpeed
         for effect in self._effects:
             try:
-                if phase == 3:
+                if phase == PHASE['End']:
                     effect.unactive_effect()
                 if effect.is_over():
                     self.delete_effect(effect)

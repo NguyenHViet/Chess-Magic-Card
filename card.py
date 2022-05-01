@@ -1,12 +1,13 @@
 import pygame
 import chess
+import effect as ef
 import cell
 
 class Card:
     def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = []):
         self.__name = name
         self.__startCost = cost
-        self.__cost = self._startCost
+        self.__cost = self.__startCost
         self.__img = img
         self.__effects = [ef.Effect('!')] + effects
         self.__describe = descibe
@@ -26,10 +27,14 @@ class Card:
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
-        self.__image = pygame.transform.scale(self.__image, (width, height))
-        win.blit(self.__image, pos)
-        win.blit(font.render(str(self.__cost), True, (0, 0, 0), (self.__img.get_width() * 0.8, self.__img.get_height() / 2)), pos)
-        win.blit(font.render(self.__describe, True, (0, 0, 0), (self.__img.get_width() * 0.8, self.__img.get_height() / 2)), (pos[0] + self.__img.get_width() * 0.1, pos[1] + self.__img.get_height() / 2))
+        self.__img = pygame.transform.scale(self.__img, (width, height))
+        win.blit(self.__img, pos)
+        win.blit(font.render(str(self.__cost), True, (0, 0, 0)), pos)
+        info = pygame.transform.scale(font.render(self.__describe, True, (0, 0, 0)), (width * 0.8, height / 2))
+        win.blit(info, (pos[0] + self.__img.get_width() * 0.1, pos[1] + self.__img.get_height() / 2))
+
+#, (self.__img.get_width() * 0.8, self.__img.get_height() / 2)
+#
 
     def get_cost(self):
         """
@@ -48,10 +53,10 @@ class Card:
     def get_selected_require(self):
         return self.__selected_require
 
-    def play_card(self, oBoard, rBoard, index):
-        def grant_effects(effects, oBoard, rBoard, lIndex):
+    def play_card(self, oBoard, rBoard, indexs):
+        def GrantEffects(effects, oBoard, rBoard, indexs):
             sChess.add_effect(effects)
-        locals()[self.__typeCard](self.__effects, oBoard, rBoard, lIndex)
+        locals()[self.__typeCard](self.__effects, oBoard, rBoard, indexs)
 
 class CardArea:
     def __init__(self, height, width, offsetHeight, offsetWidth, lImg):
@@ -65,7 +70,7 @@ class CardArea:
         for i in range(3):
             self.__cellLayers.append(cell.Cell(self.__y + 10, self.__x + interval * i, self.__GEI['Darken']))
 
-    def draw(self, win, font, pos, listCard = []):
+    def draw(self, win, font, pos, listCard = [], picking = -1):
         interval = self.__Height / 3
         for cell in self.__cellLayers:
             if cell.is_mouse_hovering(pos):
@@ -73,5 +78,11 @@ class CardArea:
             else:
                 cell.set_img(self.__GEI['Darken'])
             cell.draw(win, interval, self.__Width - 20)
-        for i in listCard:
-            i.draw(win, font, self.__cellLayers[i].get_pos())
+        for i in range(len(listCard)):
+            listCard[i].draw(win, font, self.__cellLayers[i].get_pos(), self.__Height / 3, self.__Width)
+
+    def pick_card(self, pos):
+        for i in range(3):
+            if self.__cellLayers[i].is_mouse_hovering(pos):
+                return i
+        return None
