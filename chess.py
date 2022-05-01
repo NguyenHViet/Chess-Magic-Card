@@ -108,7 +108,7 @@ class Chess:
         Tăng thêm hiệu ứng cho quân cờ
         :param effect: Hiệu ứng mới
         """
-        self._effects += [effect]
+        self._effects += effect
 
     def delete_effect(self, effect):
         if effect in self._effects:

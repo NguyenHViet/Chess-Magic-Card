@@ -2,9 +2,7 @@ import pygame
 import sys
 import time
 import init
-import chess
 import board
-import cell
 
 pygame.init()
 

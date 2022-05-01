@@ -27,7 +27,7 @@ class Effect:
         def IncreaseSpeed(oBoard, rBoard, index, phase, value):
             oBoard[(index[0], index[1])].change_speed(value)
 
-        if phase == self.__phase and not self.__actived:
+        if phase == self.__phase and not self.__actived and '!' not in self.__name:
             locals()[self.__name](oBoard, rBoard, index, phase, self.__value)
             self.__actived = True
 
