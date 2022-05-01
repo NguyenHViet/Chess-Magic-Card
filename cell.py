@@ -13,19 +13,19 @@ class Cell:
         """
         Lấy giá trị tọa độ X của ô cờ
         """
-        return self.x
+        return self.__x
 
     def get_y(self):
         """
         Lấy giá trị tọa độ X của ô cờ
         """
-        return self.y
+        return self.__y
 
     def get_pos(self):
         return (self.__x, self.__y)
 
-    def draw(self, WIN):
+    def draw(self, WIN, width = 100):
         """
         Vẽ địa hình của ô cờ
         """
-        WIN.blit(self.image, (self.__x, self.__y))
+        WIN.blit(pygame.transform.scale(self.image, (width, width)), (self.__x, self.__y))

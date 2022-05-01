@@ -2,11 +2,13 @@ import pygame
 import chess
 
 class Card:
-    def __init__(self, name, cost, img, effects = []):
+    def __init__(self, name, cost, img, descibe, effects = []):
         self._name = name
-        self._cost = cost
+        self._startCost = cost
+        self._cost = self._startCost
         self._img = img
-        self._effects = effects
+        self._effects = ['!'] + effects
+        self._describe = descibe
 
     def get_effects(self):
         """
@@ -15,13 +17,15 @@ class Card:
         """
         return self.effects
 
-    def draw(self, win, pos):
+    def draw(self, win, font, pos):
         """
         Vẽ hình ảnh lá bài trên cửa sổ
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
         win.blit(self.image, pos)
+        win.blit(font.render(str(self._cost), True, (0, 0, 0), (self._img.get_width() * 0.8, self._img.get_height() / 2)), pos)
+        win.blit(font.render(self._describe, True, (0, 0, 0), (self._img.get_width() * 0.8, self._img.get_height() / 2)), (pos[0] + self._img.get_width() * 0.1, pos[1] + self._img.get_height() / 2))
 
     def get_cost(self):
         """
