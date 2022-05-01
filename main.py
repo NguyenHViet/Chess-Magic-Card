@@ -3,6 +3,7 @@ import sys
 import time
 import init
 import board
+import card
 
 pygame.init()
 
@@ -31,12 +32,13 @@ Các giai đoạn trong lượt
 '''
 
 pygame.display.set_caption("Chess: Magic Card")
-WIN.fill("white")
 
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', 'classic', init.listImage)
+ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
 
-def update_display(win, nboard):
-
+def update_display(win, nboard, pos):
+    WIN.fill("white")
+    ncard.draw(win, init.font, pos)
     nboard.draw(win)
     pygame.display.update()
 
@@ -64,25 +66,26 @@ def main(WIN, WIDTH):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 print(" Phase:", phase)
                 pos = pygame.mouse.get_pos()
-                if selected == False and phase == 1:
-                    try:
-                        nboard.deseclect()
-                        selected = nboard.select_Chess(pos, phase, playingTeam)
-                        originPos = pos
-                    except:
-                        originPos = []
-                else:
-                    try:
-                        new_turns = nboard.select_Move(originPos, pos, turns)
-                        if new_turns > turns:
-                            turns = new_turns
-                            phase = 3
-                        selected = False
-                    except:
-                        pass
+                if phase == 1:
+                    if selected == False:
+                        try:
+                            nboard.deseclect()
+                            selected = nboard.select_Chess(pos, phase, playingTeam)
+                            originPos = pos
+                        except:
+                            originPos = []
+                    else:
+                        try:
+                            new_turns = nboard.select_Move(originPos, pos, turns)
+                            if new_turns > turns:
+                                turns = new_turns
+                                phase = 3
+                            selected = False
+                        except:
+                            pass
 
             phase = nboard.update(phase)
-            update_display(WIN, nboard)
+            update_display(WIN, nboard, pygame.mouse.get_pos())
 
 
 main(WIN, WIDTH)

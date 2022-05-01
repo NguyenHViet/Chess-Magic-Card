@@ -59,7 +59,7 @@ class Board:
         interval = self.__width / 8
         for row in range(8):
             for col in range(8):
-                self.__CellLayer[row][col].draw(win, interval)
+                self.__CellLayer[row][col].draw(win, interval, interval)
                 if (row+col) % 2 == 0:
                     win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if self.__readableMap[col][row] == 'x':

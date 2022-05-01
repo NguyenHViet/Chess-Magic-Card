@@ -18,3 +18,6 @@ listImage = {
         'Choice':pygame.image.load('img\\choice.png')
     }
 }
+
+pygame.font.init()
+font = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)

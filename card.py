@@ -1,8 +1,9 @@
 import pygame
 import chess
+import cell
 
 class Card:
-    def __init__(self, name, cost, img, descibe = '', skillCard = skillCard, selectedRequire = 0, effects = []):
+    def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = []):
         self.__name = name
         self.__startCost = cost
         self.__cost = self._startCost
@@ -19,12 +20,13 @@ class Card:
         """
         return self.effects
 
-    def draw(self, win, font, pos):
+    def draw(self, win, font, pos, height = 100, width = 100):
         """
         Vẽ hình ảnh lá bài trên cửa sổ
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
+        self.__image = pygame.transform.scale(self.__image, (width, height))
         win.blit(self.__image, pos)
         win.blit(font.render(str(self.__cost), True, (0, 0, 0), (self.__img.get_width() * 0.8, self.__img.get_height() / 2)), pos)
         win.blit(font.render(self.__describe, True, (0, 0, 0), (self.__img.get_width() * 0.8, self.__img.get_height() / 2)), (pos[0] + self.__img.get_width() * 0.1, pos[1] + self.__img.get_height() / 2))
@@ -50,3 +52,26 @@ class Card:
         def grant_effects(effects, oBoard, rBoard, lIndex):
             sChess.add_effect(effects)
         locals()[self.__typeCard](self.__effects, oBoard, rBoard, lIndex)
+
+class CardArea:
+    def __init__(self, height, width, offsetHeight, offsetWidth, lImg):
+        self.__x = offsetHeight
+        self.__y = offsetWidth + width
+        self.__Height = height
+        self.__Width = offsetWidth
+        self.__cellLayers = []
+        self.__GEI = lImg['GEI']
+        interval = (height + 10) / 3
+        for i in range(3):
+            self.__cellLayers.append(cell.Cell(self.__y + 10, self.__x + interval * i, self.__GEI['Darken']))
+
+    def draw(self, win, font, pos, listCard = []):
+        interval = self.__Height / 3
+        for cell in self.__cellLayers:
+            if cell.is_mouse_hovering(pos):
+                cell.set_img(self.__GEI['Choice'])
+            else:
+                cell.set_img(self.__GEI['Darken'])
+            cell.draw(win, interval, self.__Width - 20)
+        for i in listCard:
+            i.draw(win, font, self.__cellLayers[i].get_pos())

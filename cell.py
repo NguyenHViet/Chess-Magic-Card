@@ -7,7 +7,7 @@ class Cell:
     def __init__(self, x, y, image):
         self.__x = x
         self.__y = y
-        self.image = image
+        self.__image = image
 
     def get_x(self):
         """
@@ -24,8 +24,19 @@ class Cell:
     def get_pos(self):
         return (self.__x, self.__y)
 
-    def draw(self, WIN, width = 100):
+    def set_img(self, new_img):
+        self.__image = new_img
+    def draw(self, WIN, height = 100, width = 100):
         """
         Vẽ địa hình của ô cờ
         """
-        WIN.blit(pygame.transform.scale(self.image, (width, width)), (self.__x, self.__y))
+        self.__image = pygame.transform.scale(self.__image, (width, height))
+        WIN.blit(self.__image, (self.__x, self.__y))
+
+    def is_mouse_hovering(self, pos):
+        height = self.__image.get_height()
+        width = self.__image.get_width()
+        if pos[0] > self.__x and pos[0] < self.__x + width and pos[1] > self.__y and pos[1] < self.__y + height:
+            return True
+        else:
+            return False
