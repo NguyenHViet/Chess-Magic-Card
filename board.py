@@ -42,15 +42,15 @@ class Board:
                              (2, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']), (3, 7): chess.Queen(pTeam, 'upward', lImg[pTeam]['q']),
                              (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['k']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']),
                              (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
-        self.__GEI = lImg['classic']
-        self.__cellType = lImg[evironment]
+        self.__GEI = lImg['GEI']
+
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
         self.__CellLayer = []
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
-                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__cellType["Normal"]))
+                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI["Normal"]))
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
@@ -98,11 +98,12 @@ class Board:
         except:
             return False
 
-    def select_Chess(self, pos, playingTeam = 'b'):
+    def select_Chess(self, pos, phase, playingTeam = 'b'):
         index = self.find_Cell(pos)
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
+            self.__OjectLayer[(x, y)].active_effects(self.__OjectLayer, self.__readableMap, index, phase)
             self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
             self.printMap()
@@ -137,7 +138,7 @@ class Board:
         try:
             if self.__readableMap[index1[0]][index1[1]] == 'x' or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
-                self.__OjectLayer[(index0[1], index0[0])].reset_effect()
+                self.__OjectLayer[(index0[1], index0[0])].triggered_effects()
                 self.__OjectLayer[(index1[1], index1[0])] = self.__OjectLayer[(index0[1], index0[0])]
                 self.__OjectLayer[(index0[1], index0[0])] = None
                 turn += 1
@@ -152,7 +153,28 @@ class Board:
         pass
 
     def is_finished(self):
-        if self.count_on_rMap('king'):
+        if self.count_on_rMap('king') == 1:
             return True
         else:
             return False
+
+    def update(self, phase):
+        Phase = phase
+        updating = True
+        if self.is_finished():
+            Phase = 4
+        elif phase == 0:
+            print("Bắt đầu lượt mới")
+            Phase = 1
+        elif phase == 3:
+            print("Kết thúc lượt")
+            Phase = 0
+        for i in range(8):
+            for j in range(8):
+                try:
+                    self.__OjectLayer[(j, i)].update(self.__OjectLayer, self.__readableMap, (j, i), phase)
+                except:
+                    pass
+            updating = False
+        if not updating:
+            return Phase

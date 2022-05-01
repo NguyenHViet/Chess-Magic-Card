@@ -22,17 +22,29 @@ GREY = (128, 128, 128)
 YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
+
+'''
+Các giai đoạn trong lượt
+0: Đầu lượt đi
+1: Chơi cờ
+2: Chời bài
+3: Kết thúc lượt
+4: Kết thúc trận
+'''
+
 pygame.display.set_caption("Chess: Magic Card")
 WIN.fill("white")
 
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', 'classic', init.listImage)
 
 def update_display(win, nboard):
+
     nboard.draw(win)
     pygame.display.update()
 
 def main(WIN, WIDTH):
     turns = 0
+    phase = 0
     selected = False
     originPos = []
     playingTeam = 'b'
@@ -52,23 +64,26 @@ def main(WIN, WIDTH):
             """This quits the program if the player closes the window"""
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                print(" Phase:", phase)
                 pos = pygame.mouse.get_pos()
-                if selected == False:
+                if selected == False and phase == 1:
                     try:
                         nboard.deseclect()
-                        selected = nboard.select_Chess(pos, playingTeam)
+                        selected = nboard.select_Chess(pos, phase, playingTeam)
                         originPos = pos
                     except:
                         originPos = []
                 else:
                     try:
-                        turns = nboard.select_Move(originPos, pos, turns)
+                        new_turns = nboard.select_Move(originPos, pos, turns)
+                        if new_turns > turns:
+                            turns = new_turns
+                            phase = 3
                         selected = False
                     except:
-                        print("Hủy chọn")
-                        nboard.deseclect()
-                        selected = False
+                        pass
 
+            phase = nboard.update(phase)
             update_display(WIN, nboard)
 
 

@@ -7,7 +7,7 @@ class Card:
         self._startCost = cost
         self._cost = self._startCost
         self._img = img
-        self._effects = ['!'] + effects
+        self._effects = [ef.Effect('!')] + effects
         self._describe = descibe
 
     def get_effects(self):
@@ -40,3 +40,5 @@ class Card:
         :param new_cost: Tiêu hao mới (int)
         """
         self._cost = new_cost
+
+    def
