@@ -102,8 +102,7 @@ class Board:
         index = self.find_Cell(pos)
         return value in self.__readableMap[index[0]][index[1]]
 
-    def select_Chess(self, pos, phase, playingTeam = 'b', set_move = True):
-        index = self.find_Cell(pos)
+    def select_Chess(self, index, phase, playingTeam = 'b', set_move = True):
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
@@ -137,13 +136,12 @@ class Board:
                     new_map[i][j] = ' '
         return new_map
 
-    def select_Move(self, pos, new_pos, turn = 0):
-        index0 = self.find_Cell(pos)
-        index1 = self.find_Cell(new_pos)
+    def select_Move(self, index0, index1, turn = 0, triggeredEffect = True):
         try:
             if self.__readableMap[index1[0]][index1[1]] == 'x' or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
-                self.__OjectLayer[(index0[1], index0[0])].triggered_effects()
+                if triggeredEffect:
+                    self.__OjectLayer[(index0[1], index0[0])].triggered_effects()
                 self.__OjectLayer[(index1[1], index1[0])] = self.__OjectLayer[(index0[1], index0[0])]
                 self.__OjectLayer[(index0[1], index0[0])] = None
                 turn += 1

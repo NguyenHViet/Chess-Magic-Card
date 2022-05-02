@@ -42,7 +42,7 @@ class Player:
                 self.__cards.pop(self.__picking)
             return result
         except:
-            return False
+            return 'Fail'
 
     def get_cards(self):
         return self.__cards

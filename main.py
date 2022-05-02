@@ -77,6 +77,7 @@ def main(WIN, WIDTH):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
+                index = nboard.find_Cell(pos)
                 if mouse_on_board(pos) and phase == chess.PHASE['Picking']:
                     phase = chess.PHASE['Move']
                 elif mouse_on_cards(pos) and phase == chess.PHASE['Picking']:
@@ -95,14 +96,14 @@ def main(WIN, WIDTH):
                     if selected == False:
                         try:
                             nboard.deselect()
-                            selected = nboard.select_Chess(pos, phase, playingTeam)
-                            selectedPos = pos
+                            selected = nboard.select_Chess(index, phase, playingTeam)
+                            selectedPos = index
                         except:
                             selectedPos = []
                             phase = chess.PHASE['Picking']
                     else:
                         try:
-                            new_turns = nboard.select_Move(selectedPos, pos, turns)
+                            new_turns = nboard.select_Move(selectedPos, index, turns)
                             if new_turns > turns:
                                 turns = new_turns
                                 phase = chess.PHASE['End']
