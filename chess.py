@@ -1,10 +1,11 @@
 import pygame
+import effect as ef
 
 class Chess:
     """
     Lớp "Quân Cờ"
     """
-    def __init__(self, team, typechess, direction, img, score = 0, effects = []):
+    def __init__(self, team, typechess, direction, img, score = 0, effects = [], speed = 0):
         """
         Hàm khởi tạo quân cờ.
         :param team: Tên đội (str)
@@ -19,7 +20,9 @@ class Chess:
         self._direction = direction
         self._image = img
         self._score = score
-        self._effects = ['!'] + effects
+        self._effects = [ef.Effect('!')] + effects
+        self._startSpeed = speed
+        self._speed = self._startSpeed
         self._killable = False
 
     def get_effects(self):
@@ -97,21 +100,46 @@ class Chess:
         """
         self._score = new_score
 
+    def change_speed(self, cspeed):
+        self._speed += cspeed
+
     def add_effect(self, effect):
         """
         Tăng thêm hiệu ứng cho quân cờ
         :param effect: Hiệu ứng mới
         """
-        self._effects += [effect]
+        self._effects += effect
 
     def delete_effect(self, effect):
         if effect in self._effects:
             self._effects.remove(effect)
 
-    def reset_effect(self):
+    def active_effects(self, oBoard, rBoard, index, phase):
         for effect in self._effects:
-            if '!' not in effect:
-                self._effects.remove(effect)
+            try:
+                effect.active_effect(oBoard, rBoard, index, phase)
+            except:
+                pass
+
+    def triggered_effects(self):
+        for effect in self._effects:
+            try:
+                effect.triggered_effect()
+            except:
+                pass
+
+    def update(self, oBoard, rBoard, index, phase):
+        if phase == 3:
+            self._speed = self._startSpeed
+        for effect in self._effects:
+            try:
+                if phase == 3:
+                    effect.unactive_effect()
+                if effect.is_over():
+                    self.delete_effect(effect)
+                effect.active_effect(oBoard, rBoard, index, phase)
+            except:
+                pass
 
 def on_board(index):
     """
@@ -133,7 +161,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn",direction, img, 10, ['First Move'])
+        super().__init__(team, "pawn",direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 1)], 1)
 
     def get_moves(self, oBoard, rBoard, index):
         rBoard[index[0]][index[1]] += ':'
@@ -141,9 +169,11 @@ class Pawn(Chess):
         if self._direction == 'downward':
             direction = 1
 
-        if self.is_effective('First Move'):
-            if rBoard[index[0] + 2*direction][index[1]] == ' ' and rBoard[index[0] + direction][index[1]] == ' ':
-                rBoard[index[0] + 2*direction][index[1]] = 'x'
+        for i in range(1, self._speed + 1):
+            if rBoard[index[0] + i * direction][index[1]] == ' ':
+                rBoard[index[0] + i * direction][index[1]] = 'x'
+            else:
+                break
         top3 = [[index[0] + direction, index[1] + i] for i in range(-1, 2)]
 
         for positions in top3:
@@ -167,7 +197,7 @@ class King(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "king", direction, img, 1000, effects)
+        super().__init__(team, "king", direction, img, 1000, effects, 1)
 
     def get_moves(self, oBoard, rBoard, index):
         rBoard[index[0]][index[1]] += ':'
@@ -178,8 +208,8 @@ class King(Chess):
                         rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
                     else:
                         try:
-                            if oBoard[(index[1] - 1 + y, index[0] - 1 + x)].get_team() != self.get_team():
-                                oBoard[(index[1] - 1 + y, index[0] - 1 + x)].set_killable(True)
+                            if oBoard[(index[1] - 1 + x, index[0] - 1 + y)].get_team() != self.get_team():
+                                oBoard[(index[1] - 1 + x, index[0] - 1 + y)].set_killable(True)
                                 rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
                         except:
                             pass
@@ -192,7 +222,7 @@ class Rook(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "rook", direction, img, 50, effects)
+        super().__init__(team, "rook", direction, img, 50, effects, 8)
 
     def get_moves(self, oBoard, rBoard, index):
         rBoard[index[0]][index[1]] += ':'
@@ -225,7 +255,7 @@ class Bishop(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "bishop", direction, img, 30, effects)
+        super().__init__(team, "bishop", direction, img, 30, effects, 8)
 
     def get_moves(self, oBoard, rBoard, index):
         rBoard[index[0]][index[1]] += ':'
@@ -259,7 +289,7 @@ class Knight(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "knight", direction, img, 30, effects)
+        super().__init__(team, "knight", direction, img, 30, effects, 3)
 
     def get_moves(self, oBoard, rBoard, index):
         rBoard[index[0]][index[1]] += ':'
@@ -276,9 +306,6 @@ class Knight(Chess):
                                     rBoard[index[0] + i][index[1] + j] = 'x'
                             except:
                                 pass
-
-                            print("Đéo bug 6.4")
-        print("Đéo bug 7")
 
 class Queen(Chess):
     def __init__(self, team, direction, img, effects = []):
