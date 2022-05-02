@@ -37,6 +37,8 @@ class Enviroment:
         """
         return self._effect
 
+    def apply_env_effect(self):
+        pass
 
 class Desert(Enviroment):
     """
@@ -50,27 +52,6 @@ class Desert(Enviroment):
         :param effect: Hiệu ứng của môi trường (str)
         """
         super().__init__('desert', {'background': '','normal': 'img\desert_normal.png', 'speacial': 'img\desert_speacial.png'}, 'Unmoveable')
-
-    def get_name(self):
-        """
-        Hàm lấy tên môi trường (str)
-        :return: Tên môi trường (str)
-        """
-        super().get_name(self)
-
-    def get_env_img(self):
-        """
-        Hàm lấy danh sách hình ảnh môi trường
-        :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        """
-        super().get_env_img(self)
-
-    def get_effect(self):
-        """
-        Hàm lấy danh sách hiệu ứng
-        :return: Hiệu ứng của môi trường(str)
-        """
-        super().get_effect(self)
 
     def apply_env_effect(self, area):
 
@@ -129,26 +110,6 @@ class Frozen_river(Enviroment):
         """
         super().__init__('frozen_river', {'background': '', 'normal': 'img\\frozen_river_normal.png', 'speacial': 'img\\frozen_river_speacial.png'}, '')
 
-    def get_name(self):
-        """
-        Hàm lấy tên môi trường (str)
-        :return: Tên môi trường (str)
-        """
-        super().get_name(self)
-
-    def get_env_img(self):
-        """
-        Hàm lấy danh sách hình ảnh môi trường
-        :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        """
-        super().get_env_img(self)
-
-    def get_effect(self):
-        """
-        Hàm lấy danh sách hiệu ứng
-        :return: Hiệu ứng của môi trường(str)
-        """
-        super().get_effect(self)
 
 class Foggy_forest(Enviroment):
     """
@@ -163,27 +124,6 @@ class Foggy_forest(Enviroment):
         :param effect: Hiệu ứng của môi trường (str)
         """
         super().__init__('foggy_forest', {'background': '', 'normal': 'img\\foggy_forest_normal.png', 'speacial': 'img\\foggy_forest_speacial.png'}, 'Glamour')
-
-    def get_name(self):
-        """
-        Hàm lấy tên môi trường (str)
-        :return: Tên môi trường (str)
-        """
-        super().get_name(self)
-
-    def get_env_img(self):
-        """
-        Hàm lấy danh sách hình ảnh môi trường
-        :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        """
-        super().get_env_img(self)
-
-    def get_effect(self):
-        """
-        Hàm lấy danh sách hiệu ứng
-        :return: Hiệu ứng của môi trường(str)
-        """
-        super().get_effect(self)
 
     def apply_env_effect(self):
 
@@ -204,27 +144,6 @@ class Swamp(Enviroment):
         """
         super().__init__('swamp', {'background': '', 'normal': 'img\swamp_normal.png', 'speacial': 'img\swamp_speacial.png'}, '')
 
-    def get_name(self):
-        """
-        Hàm lấy tên môi trường (str)
-        :return: Tên môi trường (str)
-        """
-        super().get_name(self)
-
-    def get_env_img(self):
-        """
-        Hàm lấy danh sách hình ảnh môi trường
-        :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        """
-        super().get_env_img(self)
-
-    def get_effect(self):
-        """
-        Hàm lấy danh sách hiệu ứng
-        :return: Hiệu ứng của môi trường(str)
-        """
-        super().get_effect(self)
-
     def apply_env_effect(self):
 
         "Random vị trí 10 ô speacial"
@@ -244,24 +163,3 @@ class Grassland(Enviroment):
         :param effect: Hiệu ứng của môi trường (str)
         """
         super().__init__('grassland', {'background': '', 'normal': 'img\grassland.png', 'speacial': ''}, '')
-
-    def get_name(self):
-        """
-        Hàm lấy tên môi trường (str)
-        :return: Tên môi trường (str)
-        """
-        super().get_name(self)
-
-    def get_env_img(self):
-        """
-        Hàm lấy danh sách hình ảnh môi trường
-        :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        """
-        super().get_env_img(self)
-
-    def get_effect(self):
-        """
-        Hàm lấy danh sách hiệu ứng
-        :return: Hiệu ứng của môi trường(str)
-        """
-        super().get_effect(self)

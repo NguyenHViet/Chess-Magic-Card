@@ -1,4 +1,5 @@
 import pygame
+import chess
 
 class Effect:
     def __init__(self, name, value = 1, stack = 1, turns = 1, phase = 0, actived = False):
@@ -23,7 +24,12 @@ class Effect:
     def unactive_effect(self):
         self.__actived = False
 
-    def active_effect(self, nBoard, indexs, phase, **options):
+    def active_effect(self, nBoard, indexs, phase = 0, **options):
+        try:
+            Options = options['options']
+        except:
+            Options = []
+
         def IncreaseSpeed(nBoard, indexs, phase, value, options):
             try:
                 index = indexs[0]
@@ -43,24 +49,34 @@ class Effect:
 
                 moveRange = []
                 directions = options['directions']
-                for i in range(value + 1):
+                for i in range(1, value + 1):
                     if 'Ahead Left' in directions:
-                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i,
-                                          index[1] - oBoard[(index[1], index[0])].get_direction()*i])
+                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i, index[1] - i])
                     if 'Ahead' in directions:
-                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i,
-                                          index[1]])
+                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i, index[1]])
                     if 'Ahead Right' in directions:
-                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction() * i,
-                                          index[1] + oBoard[(index[1], index[0])].get_direction() * i])
+                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction() * i, index[1] + i])
+                    if 'Right' in directions:
+                        moveRange.append([index[0], index[1] + i])
+                    if 'Back Right' in directions:
+                        moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1] + i])
+                    if 'Back' in directions:
+                        moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1]])
+                    if 'Back Left' in directions:
+                        moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1] - i])
+                    if 'Left' in directions:
+                        moveRange.append([index[0], index[1] - i])
 
                 for positions in moveRange:
                     if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ':
                         rBoard[positions[0]][positions[1]] = 'x'
-                        oBoard[(positions[1], positions[0])].set_killable(options['killable'])
+                        try:
+                            oBoard[(positions[1], positions[0])].set_killable(options['killable'])
+                        except:
+                            pass
                 if len(indexs) == 2:
                     new_index = indexs[1]
-                    if nBoard.select_Move(index, new_index) == 1:
+                    if nBoard.select_Move(index, new_index, 0, False) == 1:
                         return 'Effected'
                     else:
                         return 'Fail'
@@ -69,10 +85,10 @@ class Effect:
             return 'Success'
 
         if phase == self.__phase and not self.__actived and '!' not in self.__name:
-            func = locals()[self.__name](nBoard, indexs, phase, self.__value, options)
-            if func != 'Fail':
+            func = locals()[self.__name](nBoard, indexs, phase, self.__value, Options)
+            if func == 'Effected':
                 self.__actived = True
-                return func
+            return func
         else:
             return 'Fail'
 

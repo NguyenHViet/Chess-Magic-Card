@@ -1,4 +1,5 @@
 import pygame
+import enviroment
 import effect as ef
 from card import Card
 
@@ -17,7 +18,16 @@ listImage = {
         'Normal':pygame.image.load('img\\classic_normal.png'),
         'Darken':pygame.image.load('img\\darkcell.png'),
         'Move':pygame.image.load('img\\move.png'),
-        'Choice':pygame.image.load('img\\choice.png')
+        'Choice':pygame.image.load('img\\choice.png'),
+        'Desert_Normal':pygame.image.load(enviroment.Desert.get_env_img()['normal']),
+        'Frozen_river_Normal':pygame.image.load(enviroment.Frozen_river.get_env_img()['normal']),
+        'Foggy_forest_Normal':pygame.image.load(enviroment.Foggy_forest.get_env_img()['normal']),
+        'Swamp_Normal':pygame.image.load(enviroment.Swamp.get_env_img()['normal']),
+        'Grassland':pygame.image.load(enviroment.Grassland.get_env_img()['normal']),
+        'Desert_Speacial':pygame.image.load(enviroment.Desert.get_env_img()['speacial']),
+        'Frozen_river_Speacial':pygame.image.load(enviroment.Frozen_river.get_env_img()['speacial']),
+        'Foggy_forest_Speacial':pygame.image.load(enviroment.Foggy_forest.get_env_img()['speacial']),
+        'Swamp_Speacial':pygame.image.load(enviroment.Swamp.get_env_img()['speacial']),
     }
 }
 
@@ -30,6 +40,6 @@ EFFECT = {
 
 DECK = [
     Card('Tiến Công', 2, listImage['b']['p'], 'Tiến về phía trước hoặc chéo tới 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
-    Card('Rút Lui', 2, listImage['b']['k'], 'Lùi về phía sau hoặc chéo lui 1 ô', 'Move', 2),
-    Card('Đảo Chiều', 1, listImage['b']['r'], 'Đi ngang sang trái hoặc phải 1 ô', 'Move', 2)
+    Card('Rút Lui', 2, listImage['b']['k'], 'Lùi về phía sau hoặc chéo lui 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
+    Card('Đảo Chiều', 1, listImage['b']['r'], 'Đi ngang sang trái hoặc phải 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False)
 ]

@@ -63,11 +63,13 @@ class Card:
                 return 'Fail'
 
         def ActiveEffects(effects, nBoard, indexs):
+            phase = 3
             for effect in effects:
                 try:
-                    effect.active_effect(nBoard, indexs, 3, self.__options)
+                    effect.active_effect(nBoard, indexs, 3, options = self.__options)
                 except:
                     pass
+            return 'Success'
 
         return locals()[self.__skillCard](self.__effects, nBoard, indexs)
 
