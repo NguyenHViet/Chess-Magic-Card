@@ -25,15 +25,22 @@ class Player:
         self.__cards = random.choices(copy.copy(deck), k = 3)
 
     def pick_card(self, index):
-        self.__picking = index
-        return self.__cards[index].get_selected_require()
+        if self.__cards[index].get_cost() <= self.__actions:
+            self.__picking = index
+            return self.__cards[index].get_selected_require()
+        else:
+            return -1
 
     def decelect(self):
         self.__picking = -1
 
     def play_card(self, nBoard, indexs):
         try:
-            return self.__cards[self.__picking].play_card(nBoard, indexs)
+            result = self.__cards[self.__picking].play_card(nBoard, indexs)
+            if result == 'Casted':
+                self.__actions -= self.__cards[self.__picking].get_cost()
+                self.__cards.pop(self.__picking)
+            return result
         except:
             return False
 

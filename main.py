@@ -119,15 +119,15 @@ def main(WIN, WIDTH):
                             index = ncard.pick_card(pos)
                             if index != None:
                                 required = Players[turns % 2].pick_card(index)
-                                selected = True
+                                if required != -1:
+                                    selected = True
                         except:
                             selectedPos = []
                             phase = chess.PHASE['Picking']
                     elif len(selectedPos) <= required and selected and mouse_on_board(pos):
                         nboard.deselect()
                         index = nboard.find_Cell(pos)
-                        if Players[turns%2].play_card(nboard, selectedPos + [index]):
-                            print(1)
+                        if Players[turns%2].play_card(nboard, selectedPos + [index]) != 'Fail':
                             selectedPos.append(index)
                     else:
                         Players[turns%2].decelect()

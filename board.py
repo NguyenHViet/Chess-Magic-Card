@@ -107,7 +107,7 @@ class Board:
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
-            self.__OjectLayer[(x, y)].active_effects(self.__OjectLayer, self.__readableMap, index, phase)
+            self.__OjectLayer[(x, y)].active_effects(self, index, phase)
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
                 self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
@@ -137,7 +137,7 @@ class Board:
                     new_map[i][j] = ' '
         return new_map
 
-    def select_Move(self, pos, new_pos, turn):
+    def select_Move(self, pos, new_pos, turn = 0):
         index0 = self.find_Cell(pos)
         index1 = self.find_Cell(new_pos)
         try:

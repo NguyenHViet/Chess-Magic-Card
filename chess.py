@@ -125,10 +125,10 @@ class Chess:
         if effect in self._effects:
             self._effects.remove(effect)
 
-    def active_effects(self, oBoard, rBoard, index, phase):
+    def active_effects(self, nBoard, index, phase):
         for effect in self._effects:
             try:
-                effect.active_effect(oBoard, rBoard, index, phase)
+                effect.active_effect(nBoard, [index], phase)
             except:
                 pass
 
@@ -172,7 +172,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn",direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 1)], 1)
+        super().__init__(team, "pawn",direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 2)], 1)
 
     def get_moves(self, oBoard, rBoard, index):
         direction = -1

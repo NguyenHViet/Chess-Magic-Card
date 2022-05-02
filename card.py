@@ -4,7 +4,7 @@ import effect as ef
 import cell
 
 class Card:
-    def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = []):
+    def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = [], **options):
         self.__name = name
         self.__startCost = cost
         self.__cost = self.__startCost
@@ -13,6 +13,7 @@ class Card:
         self.__describe = descibe
         self.__selected_require = selectedRequire
         self.__skillCard = skillCard
+        self.__options = options
 
     def get_effects(self):
         """
@@ -55,35 +56,19 @@ class Card:
 
     def play_card(self, nBoard, indexs):
         def GrantEffects(effects, nBoard, indexs):
-            sChess.add_effect(effects)
-            return True
-
-        def GoAhead(effects, nBoard, indexs):
-            oBoard = nBoard.getoBoard()
-            rBoard = nBoard.getrBoard()
             try:
-                index = indexs[0]
-                rBoard[index[0]][index[1]] += ':'
-                top3 = [[index[0] + oBoard[(index[1], index[0])].get_direction(), index[1] + i] for i in range(-1, 2)]
-                for positions in top3:
-                    if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ':
-                        rBoard[positions[0]][positions[1]] = 'x'
-                if len(indexs) == 2:
-                    new_index = indexs[1]
-                    print(new_index)
-                    if rBoard[new_index[0]][new_index[1]] == 'x':
-                        print('Từ ô', index, 'đến ô', new_index)
-                        oBoard[(new_index[1], new_index[0])] = oBoard[(index[1], index[0])]
-                        oBoard[(index[1], index[0])] = None
-                        return True
-                    else:
-                        return False
+                sChess.add_effect(effects)
+                return 'Success'
             except:
-                return False
+                return 'Fail'
 
-            return True
+        def ActiveEffects(effects, nBoard, indexs):
+            for effect in effects:
+                try:
+                    effect.active_effect(nBoard, indexs, 3, self.__options)
+                except:
+                    pass
 
-        print(self.__skillCard)
         return locals()[self.__skillCard](self.__effects, nBoard, indexs)
 
 class CardArea:

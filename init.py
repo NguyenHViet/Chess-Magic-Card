@@ -1,5 +1,5 @@
 import pygame
-import effect
+import effect as ef
 from card import Card
 
 listImage = {
@@ -29,7 +29,7 @@ EFFECT = {
 }
 
 DECK = [
-    Card('Tiến Công', 1, listImage['b']['p'], 'Tiến về phía trước hoặc chéo tới 1 ô', 'GoAhead', 2),
-    Card('Rút Lui', 1, listImage['b']['k'], 'Lùi về phía sau hoặc chéo lui 1 ô', 'GoBack', 2),
-    Card('Đảo Chiều', 1, listImage['b']['r'], 'Đi ngang sang trái hoặc phải 1 ô', 'GoHorizontal', 2)
+    Card('Tiến Công', 2, listImage['b']['p'], 'Tiến về phía trước hoặc chéo tới 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
+    Card('Rút Lui', 2, listImage['b']['k'], 'Lùi về phía sau hoặc chéo lui 1 ô', 'Move', 2),
+    Card('Đảo Chiều', 1, listImage['b']['r'], 'Đi ngang sang trái hoặc phải 1 ô', 'Move', 2)
 ]
