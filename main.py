@@ -38,7 +38,15 @@ Các giai đoạn trong lượt
 pygame.display.set_caption("Chess: Magic Card")
 
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', 'classic', init.listImage)
+def mouse_on_board(pos):
+    if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
+        return True
+    return False
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
+def mouse_on_cards(pos):
+    if pos[0] > offsetWidth + WIDTH and pos[0] < WinWidth and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
+        return True
+    return False
 Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
 
 def update_display(win, nboard, pos, turns):
@@ -69,15 +77,24 @@ def main(WIN, WIDTH):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT and phase == chess.PHASE['Picking']:
+                if mouse_on_board(pos) and phase == chess.PHASE['Picking']:
                     phase = chess.PHASE['Move']
-                elif pos[0] > offsetWidth + WIDTH and pos[0] < WinWidth and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT and phase == chess.PHASE['Picking']:
+                elif mouse_on_cards(pos) and phase == chess.PHASE['Picking']:
                     phase = chess.PHASE['Cast']
+
+                if event.button == 3:
+                    nboard.deselect()
+                    Players[turns%2].decelect()
+                    phase = chess.PHASE['Picking']
+                    selected = False
+                    selectedPos = []
+                elif event.button in [2, 4, 5]:
+                    break
 
                 if phase == chess.PHASE['Move']:
                     if selected == False:
                         try:
-                            nboard.deseclect()
+                            nboard.deselect()
                             selected = nboard.select_Chess(pos, phase, playingTeam)
                             selectedPos = pos
                         except:
@@ -89,10 +106,12 @@ def main(WIN, WIDTH):
                             if new_turns > turns:
                                 turns = new_turns
                                 phase = chess.PHASE['End']
+                            else:
+                                phase = chess.PHASE['Picking']
                             selected = False
                             selectedPos = []
                         except:
-                            pass
+                            phase = chess.PHASE['Picking']
                         #-----------------------------------------------------------------------------------------------
                 elif phase == chess.PHASE['Cast']:
                     if selected == False:
@@ -103,10 +122,13 @@ def main(WIN, WIDTH):
                                 selected = True
                         except:
                             selectedPos = []
-                    elif len(selectedPos) <= required and selected:
-                        nboard.deseclect()
-                        Players[turns%2].play_card(nboard.getoBoard(), nboard.convert_to_readable(), selectedPos)
-                        selectedPos.append(pos)
+                            phase = chess.PHASE['Picking']
+                    elif len(selectedPos) <= required and selected and mouse_on_board(pos):
+                        nboard.deselect()
+                        index = nboard.find_Cell(pos)
+                        if Players[turns%2].play_card(nboard, selectedPos + [index]):
+                            print(1)
+                            selectedPos.append(index)
                     else:
                         Players[turns%2].decelect()
                         selectedPos = []
@@ -114,8 +136,8 @@ def main(WIN, WIDTH):
                         selected = False
                     # Nếu đã đủ số lượng đối tượng
                     if len(selectedPos) == required:
-                        Players[turns%2].play_card(nboard.getoBoard(), nboard.convert_to_readable(), selectedPos)
-                        print(selectedPos)
+                        nboard.deselect()
+                        Players[turns % 2].decelect()
                         phase = chess.PHASE['Picking']
                         selected = False
                         selectedPos = []

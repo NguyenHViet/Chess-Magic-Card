@@ -53,10 +53,38 @@ class Card:
     def get_selected_require(self):
         return self.__selected_require
 
-    def play_card(self, oBoard, rBoard, indexs):
-        def GrantEffects(effects, oBoard, rBoard, indexs):
+    def play_card(self, nBoard, indexs):
+        def GrantEffects(effects, nBoard, indexs):
             sChess.add_effect(effects)
-        locals()[self.__typeCard](self.__effects, oBoard, rBoard, indexs)
+            return True
+
+        def GoAhead(effects, nBoard, indexs):
+            oBoard = nBoard.getoBoard()
+            rBoard = nBoard.getrBoard()
+            try:
+                index = indexs[0]
+                rBoard[index[0]][index[1]] += ':'
+                top3 = [[index[0] + oBoard[(index[1], index[0])].get_direction(), index[1] + i] for i in range(-1, 2)]
+                for positions in top3:
+                    if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ':
+                        rBoard[positions[0]][positions[1]] = 'x'
+                if len(indexs) == 2:
+                    new_index = indexs[1]
+                    print(new_index)
+                    if rBoard[new_index[0]][new_index[1]] == 'x':
+                        print('Từ ô', index, 'đến ô', new_index)
+                        oBoard[(new_index[1], new_index[0])] = oBoard[(index[1], index[0])]
+                        oBoard[(index[1], index[0])] = None
+                        return True
+                    else:
+                        return False
+            except:
+                return False
+
+            return True
+
+        print(self.__skillCard)
+        return locals()[self.__skillCard](self.__effects, nBoard, indexs)
 
 class CardArea:
     def __init__(self, height, width, offsetHeight, offsetWidth, lImg):

@@ -102,20 +102,22 @@ class Board:
         index = self.find_Cell(pos)
         return value in self.__readableMap[index[0]][index[1]]
 
-    def select_Chess(self, pos, phase, playingTeam = 'b'):
+    def select_Chess(self, pos, phase, playingTeam = 'b', set_move = True):
         index = self.find_Cell(pos)
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
             self.__OjectLayer[(x, y)].active_effects(self.__OjectLayer, self.__readableMap, index, phase)
-            self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
+            self.__readableMap[index[0]][index[1]] += ':'
+            if set_move:
+                self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
             return True
         else:
             print("Không thể chọn")
             return False
 
-    def deseclect(self):
+    def deselect(self):
         self.__readableMap = [[' ' for i in range(8)] for i in range(8)]
         for i in range(8):
             for j in range(8):
@@ -149,7 +151,7 @@ class Board:
         except:
             pass
         self.__readableMap = self.convert_to_readable()
-        self.deseclect()
+        self.deselect()
         return turn
 
     def is_checkmate(self):
@@ -184,3 +186,6 @@ class Board:
 
     def getoBoard(self):
         return self.__OjectLayer
+
+    def getrBoard(self):
+        return self.__readableMap

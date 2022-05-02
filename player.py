@@ -31,11 +31,11 @@ class Player:
     def decelect(self):
         self.__picking = -1
 
-    def play_card(self, oBoard, rBoard, indexs):
+    def play_card(self, nBoard, indexs):
         try:
-            self.__cards[self.__picking].play_card(oBoard, rBoard, indexs)
+            return self.__cards[self.__picking].play_card(nBoard, indexs)
         except:
-            pass
+            return False
 
     def get_cards(self):
         return self.__cards
@@ -47,7 +47,6 @@ class Player:
         if phase == chess.PHASE['Start']:
             self.__actions = 3
             self.draw_cards(deck)
-            print(self.__cards)
             self.__timeBonus = timeBonus
         elif phase == chess.PHASE['End']:
             if addableTime:
