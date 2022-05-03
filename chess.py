@@ -138,7 +138,7 @@ class Chess:
         Tăng thêm hiệu ứng cho quân cờ
         :param effect: Hiệu ứng mới (effect.Effect)
         """
-        self._effects += effect
+        self._effects += [effect]
 
     def delete_effect(self, effect):
         """
@@ -155,11 +155,13 @@ class Chess:
         :param index: Vị trí quân cờ (turple(int, int))
         :param phase: Giai đoạn của lượt đấu (int)
         """
+        result = []
         for effect in self._effects:
             try:
-                effect.active_effect(nBoard, [index], phase)
+                result.append(effect.active_effect(nBoard, [index], phase))
             except:
                 pass
+        return result
 
     def triggered_effects(self):
         """
@@ -178,8 +180,7 @@ class Chess:
         :param index: Vị trí quân cờ (tuple(int, int))
         :param phase: Giai đoạn lượt đấu (int)
         """
-        if phase == PHASE['End']:
-            self._speed = self._startSpeed
+        self._speed = self._startSpeed
         for effect in self._effects:
             try:
                 if phase == PHASE['End']:
@@ -236,7 +237,7 @@ class Pawn(Chess):
                     try:
                         if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
                             oBoard[(positions[1], positions[0])].set_killable(True)
-                            rBoard[positions[0]][positions[1]] = 'x'
+                            rBoard[positions[0]][positions[1]] += 'x'
                     except:
                         pass
                 else:

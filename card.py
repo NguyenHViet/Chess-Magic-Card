@@ -1,3 +1,5 @@
+import copy
+
 import pygame
 import chess
 import effect as ef
@@ -81,11 +83,12 @@ class Card:
     def get_selected_require(self):
         return self.__selected_require
 
-    def play_card(self, nBoard, indexs):
+    def play_card(self, nBoard, indexs, playTeam):
         def GrantEffects(effects, nBoard, indexs):
             try:
-                sChess.add_effect(effects)
-                return 'Success'
+                for effect in effects:
+                    sChess.add_effect(copy.copy(effect))
+                return 'Casted'
             except:
                 return 'Fail'
 
@@ -94,7 +97,8 @@ class Card:
             result = 'Success'
             for effect in effects:
                 try:
-                    result = effect.active_effect(nBoard, indexs, 3, options = self.__options)
+                    result = copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam)
+                    effect.unactive_effect()
                 except:
                     result = 'Fail'
             if result == 'Effected':

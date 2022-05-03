@@ -39,10 +39,12 @@ def mouse_on_cards(pos):
     return False
 Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
 
-def update_display(win, nboard, pos, turns):
+def update_display(win, nboard, pos, turns, phase):
     WIN.fill("white")
     ncard.draw(win, init.font, pos, Players[turns%2].get_cards())
     nboard.draw(win)
+    if phase == chess.PHASE['Finish']:
+        WIN.fill("black")
     pygame.display.update()
 
 def main(WIN, WIDTH):
@@ -93,9 +95,7 @@ def main(WIN, WIDTH):
                             phase = chess.PHASE['Picking']
                     else:
                         try:
-                            new_turns = nboard.select_Move(selectedPos, index, turns)
-                            if new_turns > turns:
-                                turns = new_turns
+                            if nboard.select_Move(selectedPos, index):
                                 phase = chess.PHASE['End']
                             else:
                                 phase = chess.PHASE['Picking']
@@ -129,15 +129,15 @@ def main(WIN, WIDTH):
                     if len(selectedPos) == required:
                         nboard.deselect()
                         Players[turns % 2].decelect()
-                        phase = chess.PHASE['Picking']
+                        phase = Players[turns % 2].update((chess.PHASE['Picking']), init.DECK, 0, False)
                         selected = False
                         selectedPos = []
                         #-----------------------------------------------------------------------------------------------
                 print(" Phase:", phase)
-                nboard.printMap()
+                #nboard.printMap()
         Players[turns % 2].update(phase, init.DECK, 0, False)
-        phase = nboard.update(phase)
-        update_display(WIN, nboard, pygame.mouse.get_pos(), turns)
+        phase, turns = nboard.update(phase, turns)
+        update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
 
 main(WIN, WIDTH)

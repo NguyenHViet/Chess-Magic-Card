@@ -16,6 +16,7 @@ class Effect:
         return  self.__name
 
     def is_over(self):
+        self.unactive_effect()
         if (self.__stack <= 0 or self.__turns <= 0) and '!' not in self.__name:
             return True
         else:
@@ -27,25 +28,28 @@ class Effect:
     def active_effect(self, nBoard, indexs, phase = 0, **options):
         try:
             Options = options['options']
+            options.pop('options')
+            Options.update(options)
         except:
             Options = []
 
+        # Buff Effect
         def IncreaseSpeed(nBoard, indexs, phase, value, options):
             try:
                 index = indexs[0]
                 oBoard = nBoard.getoBoard()
-                rBoard = nBoard.getrBoard()
                 oBoard[(index[1], index[0])].change_speed(value)
                 return 'Effected'
             except:
                 return 'Fail'
 
+        # Card Effect
         def PushChess(nBoard, indexs, phase, value, options):
             oBoard = nBoard.getoBoard()
             rBoard = nBoard.getrBoard()
             try:
                 index = indexs[0]
-                rBoard[index[0]][index[1]] += ':'
+                nBoard.select_Chess(index, phase, options['playTeam'], False)
 
                 moveRange = []
                 directions = options['directions']
@@ -76,15 +80,17 @@ class Effect:
                             pass
                 if len(indexs) == 2:
                     new_index = indexs[1]
-                    if nBoard.select_Move(index, new_index, 0, False) == 1:
+                    if nBoard.select_Move(index, new_index, triggeredEffect = False):
+                        self.unactive_effect()
                         return 'Effected'
                     else:
                         return 'Fail'
             except:
+                print('Lỗi hàm')
                 return 'Fail'
             return 'Success'
 
-        if phase == self.__phase and not self.__actived and '!' not in self.__name:
+        if phase == self.__phase and not self.__actived and '!' not in self.__name and self.__stack > 0:
             func = locals()[self.__name](nBoard, indexs, phase, self.__value, Options)
             if func == 'Effected':
                 self.__actived = True
@@ -94,4 +100,5 @@ class Effect:
 
     def triggered_effect(self):
         self.__stack -= 1
+        self.unactive_effect()
 

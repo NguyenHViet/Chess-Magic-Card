@@ -46,7 +46,6 @@ class Board:
                              (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
         self.__GEI = lImg['GEI']
         self.__cellImg = self.__enviroment.get_env_img()
-        print(self.__cellImg)
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
         self.__CellLayer = []
@@ -66,7 +65,7 @@ class Board:
                 self.__CellLayer[row][col].draw(win, interval, interval)
                 if (row+col) % 2 == 0:
                     win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
-                if self.__readableMap[col][row] == 'x':
+                if 'x' in self.__readableMap[col][row]:
                     win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 elif (self.__readableMap[col][row])[-1] == ':':
                     win.blit(self.__GEI['Choice'],
@@ -81,9 +80,10 @@ class Board:
 
     def count_on_rMap(self, object):
         count = 0
-        for item in self.__readableMap:
-            if object in item:
-                count += 1
+        for items in self.__readableMap:
+            for item in items:
+                if object in item:
+                    count += 1
         return count
 
     def find_Cell(self, pos):
@@ -140,21 +140,22 @@ class Board:
                     new_map[i][j] = ' '
         return new_map
 
-    def select_Move(self, index0, index1, turn = 0, triggeredEffect = True):
+    def select_Move(self, index0, index1, triggeredEffect = True):
+        moved = False
         try:
             if self.__readableMap[index1[0]][index1[1]] == 'x' or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
+                moved = True
+                print(triggeredEffect)
                 if triggeredEffect:
                     self.__OjectLayer[(index0[1], index0[0])].triggered_effects()
                 self.__OjectLayer[(index1[1], index1[0])] = self.__OjectLayer[(index0[1], index0[0])]
                 self.__OjectLayer[(index0[1], index0[0])] = None
-                turn += 1
-                print("Turn", turn)
         except:
             pass
         self.__readableMap = self.convert_to_readable()
         self.deselect()
-        return turn
+        return moved
 
     def is_checkmate(self):
         pass
@@ -165,16 +166,18 @@ class Board:
         else:
             return False
 
-    def update(self, phase):
+    def update(self, phase, turn):
         Phase = phase
         updating = True
         if self.is_finished():
             Phase = chess.PHASE['Finish']
+            print('WIN')
         elif phase == chess.PHASE['Start']:
             print("Bắt đầu lượt mới")
             Phase = chess.PHASE['Picking']
         elif phase == chess.PHASE['End']:
             print("Kết thúc lượt")
+            turn += 1
             #self.__enviroment.apply_env_effect(nBoard)
             Phase = chess.PHASE['Start']
         for i in range(8):
@@ -185,7 +188,7 @@ class Board:
                     pass
             updating = False
         if not updating:
-            return Phase
+            return Phase, turn
 
     def getoBoard(self):
         return self.__OjectLayer

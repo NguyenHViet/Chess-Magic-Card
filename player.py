@@ -19,10 +19,13 @@ class Player:
 
     def draw_card(self, deck):
         if len(self.__cards) < 3:
-            self.__cards.append(random.choice(copy.copy(deck)))
+            self.__cards.append(copy.copy(random.choice(deck)))
 
     def draw_cards(self, deck):
-        self.__cards = random.choices(copy.copy(deck), k = 3)
+        self.__cards.clear()
+        for i in range(3):
+            new_card = random.choice(deck)
+            self.__cards.append(copy.copy(new_card))
 
     def pick_card(self, index):
         if self.__cards[index].get_cost() <= self.__actions:
@@ -36,7 +39,7 @@ class Player:
 
     def play_card(self, nBoard, indexs):
         try:
-            result = self.__cards[self.__picking].play_card(nBoard, indexs)
+            result = self.__cards[self.__picking].play_card(nBoard, indexs, self.__team)
             if result == 'Casted':
                 self.__actions -= self.__cards[self.__picking].get_cost()
                 self.__cards.pop(self.__picking)
@@ -56,7 +59,7 @@ class Player:
             self.__actions = 3
             self.draw_cards(deck)
             self.__timeBonus = timeBonus
-        if self.__actions <= 0:
+        elif self.__actions <= 0:
             nPhase = chess.PHASE['End']
         elif phase == chess.PHASE['End']:
             if addableTime:
