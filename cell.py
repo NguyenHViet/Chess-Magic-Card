@@ -26,6 +26,7 @@ class Cell:
 
     def set_img(self, new_img):
         self.__image = new_img
+
     def draw(self, WIN, height = 100, width = 100):
         """
         Vẽ địa hình của ô cờ

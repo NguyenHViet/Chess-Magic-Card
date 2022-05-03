@@ -33,55 +33,60 @@ class Chess:
     def get_effects(self):
         """
         Lấy danh sách hiệu ứng của quân cờ.
-        :return: Danh sách hiệu ứng của quân cờ (List of str)
+        :return: self._effects : List[str]
         """
         return self._effects
 
     def get_team(self):
         """
         Lấy tên đội của quân cờ
-        :return: Tên đội (str)
+        :return: self._team : str
         """
         return self._team
 
     def get_score(self):
         """
         Lấy điểm số của quân cờ
-        :return: Điểm (int)
+        :return: self._score : int
         """
         return self._score
 
-    def get_dir(self):
-        return self._direction
-
     def get_killable(self):
+        """
+        Kiểm tra xem có thể bị giết không
+        :return: self._killable : bool
+        """
         return self._killable
 
     def is_effective(self, effect = ""):
         """
         Trả về True nếu quân cờ có giá trị hiệu ứng đầu vào, ngược lại trả về False.
         :param effect: Hiệu ứng cần kiểm tra (str)
-        :return: Giá trị boolen
+        :return: bool
         """
         return effect in self._effects
 
     def convert_to_readable(self):
         """
         Chuyển quân cờ thành dạng có thể đọc được
-        :return: Chuỗi ký tự self.team + self.type
+        :return: self._team + self._type : (str)
         """
         return str(self._team + self._type)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index):
         """
         Xuất ra các cách di chuyển của quân cờ
-        :param oBoard: Ma trận 2D các Object trên bàn cờ (2D list)
-        :param rBoard: Ma trận 2D dạng str các object trên bàn cờ (2D list)
+        :param nBoard: Bàn cờ (board.Board)
         :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :return list[tuple(int, int)]
         """
         pass
 
     def get_direction(self):
+        """
+        Lấy hướng đi của quân cờ dưới dạng số
+        :return: int
+        """
         direction = -1
         if self._direction == 'downward':
             direction = 1
@@ -91,13 +96,14 @@ class Chess:
         """
         Vẽ hình ảnh quân cờ trên cửa sổ
         :param win: Cửa sổ được chọn (pygame.display)
-        :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
+        :param pos: Vị trí hình ảnh được vẽ (tuple(int, int))
         """
         win.blit(pygame.transform.scale(self._image, (width, width)), pos)
 
     def set_killable(self, able):
         """
-        Gán killable là True nếu quân cờ không có hiệu ứng "Imortal"
+        Gán self._killable là True nếu quân cờ không có hiệu ứng "Imortal"
+        :param able : Giá trị để gán cho self._killable (bool)
         """
         if not self.is_effective("Imortal") and able:
             self._killable = True
@@ -112,20 +118,34 @@ class Chess:
         self._score = new_score
 
     def change_speed(self, cspeed):
+        """
+        Gán tốc độ mới cho quân cờ
+        :param cspeed: Chỉ số tốc độ mới (int)
+        """
         self._speed += cspeed
 
     def add_effect(self, effect):
         """
         Tăng thêm hiệu ứng cho quân cờ
-        :param effect: Hiệu ứng mới
+        :param effect: Hiệu ứng mới (effect.Effect)
         """
         self._effects += effect
 
     def delete_effect(self, effect):
+        """
+        Xóa hiệu ứng của quân cờ
+        :param effect: Hiệu ứng cần xóa (effect.Effect)
+        """
         if effect in self._effects:
             self._effects.remove(effect)
 
     def active_effects(self, nBoard, index, phase):
+        """
+        Kích hoạt hiệu ứng của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Vị trí quân cờ (turple(int, int))
+        :param phase: Giai đoạn của lượt đấu (int)
+        """
         for effect in self._effects:
             try:
                 effect.active_effect(nBoard, [index], phase)
@@ -133,13 +153,22 @@ class Chess:
                 pass
 
     def triggered_effects(self):
+        """
+        Giảm cộng dồn được tích trữ của các hiệu ứng của quân cờ
+        """
         for effect in self._effects:
             try:
                 effect.triggered_effect()
             except:
                 pass
 
-    def update(self, oBoard, rBoard, index, phase):
+    def update(self, nBoard, index, phase):
+        """
+        Cập nhập lại hiệu ứng của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Vị trí quân cờ (tuple(int, int))
+        :param phase: Giai đoạn lượt đấu (int)
+        """
         if phase == PHASE['End']:
             self._speed = self._startSpeed
         for effect in self._effects:
@@ -148,14 +177,14 @@ class Chess:
                     effect.unactive_effect()
                 if effect.is_over():
                     self.delete_effect(effect)
-                effect.active_effect(oBoard, rBoard, index, phase)
+                effect.active_effect(nBoard, index, phase)
             except:
                 pass
 
 def on_board(index):
     """
     Kiểm tra xem thử vị trí đầu vào có nằm trên bàn cờ không
-    :param index: Vị trí kiểm tra (tuple(x, y))
+    :param index: Vị trí kiểm tra (tuple(int, int))
     """
     if index[0] > -1 and index[1] > -1 and index[0] < 8 and index[1] < 8:
         return True
@@ -175,6 +204,12 @@ class Pawn(Chess):
         super().__init__(team, "pawn",direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 2)], 1)
 
     def get_moves(self, oBoard, rBoard, index):
+        """
+        Xây dựng cách di chuyển của quân "Chốt"
+        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
+        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
+        :param index: Vị trí của quân cờ tuple(int, int)
+        """
         direction = -1
         if self._direction == 'downward':
             direction = 1
@@ -210,6 +245,12 @@ class King(Chess):
         super().__init__(team, "king", direction, img, 1000, effects, 1)
 
     def get_moves(self, oBoard, rBoard, index):
+        """
+        Xây dựng cách di chuyển của quân "Vua"
+        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
+        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
+        :param index: Vị trí của quân cờ tuple(int, int)
+        """
         for y in range(3):
             for x in range(3):
                 if on_board((index[0] - 1 + y, index[1] - 1 + x)):
@@ -234,6 +275,12 @@ class Rook(Chess):
         super().__init__(team, "rook", direction, img, 50, effects, 8)
 
     def get_moves(self, oBoard, rBoard, index):
+        """
+        Xây dựng cách di chuyển của quân "Xa"
+        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
+        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
+        :param index: Vị trí của quân cờ tuple(int, int)
+        """
         cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
                  [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
                  [[index[0], index[1] + i] for i in range(1, 8 - index[1])],
@@ -266,6 +313,12 @@ class Bishop(Chess):
         super().__init__(team, "bishop", direction, img, 30, effects, 8)
 
     def get_moves(self, oBoard, rBoard, index):
+        """
+        Xây dựng cách di chuyển của quân "Tượng"
+        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
+        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
+        :param index: Vị trí của quân cờ tuple(int, int)
+        """
         diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
                      [[index[0] + i, index[1] - i] for i in range(1, 8)],
                      [[index[0] - i, index[1] + i] for i in range(1, 8)],
@@ -299,6 +352,12 @@ class Knight(Chess):
         super().__init__(team, "knight", direction, img, 30, effects, 3)
 
     def get_moves(self, oBoard, rBoard, index):
+        """
+        Xây dựng cách di chuyển của quân "Mã"
+        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
+        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
+        :param index: Vị trí của quân cờ tuple(int, int)
+        """
         for i in range(-2, 3):
             for j in range(-2, 3):
                 if i ** 2 + j ** 2 == 5:
@@ -324,6 +383,12 @@ class Queen(Chess):
         super().__init__(team, "queen", direction, img, 90, effects)
 
     def get_moves(self, oBoard, rBoard, index):
+        """
+        Xây dựng cách di chuyển của quân "Hậu"
+        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
+        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
+        :param index: Vị trí của quân cờ tuple(int, int)
+        """
         cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
                  [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
                  [[index[0], index[1] + i] for i in range(1, 8 - index[1])],

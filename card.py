@@ -2,6 +2,32 @@ import pygame
 import chess
 import effect as ef
 import cell
+import textwrap
+
+def drawText(surface, text, color, rect, font, aa=False, bkg=None):
+    rect = pygame.Rect(rect)
+    y = rect.top
+    lineSpacing = -2
+    fontHeight = font.size("Tg")[1]
+    while text:
+        i = 1
+        if y + fontHeight > rect.bottom:
+            break
+        while font.size(text[:i])[0] < rect.width and i < len(text):
+            i += 1
+
+        if i < len(text):
+            i = text.rfind(" ", 0, i) + 1
+        if bkg:
+            image = font.render(text[:i], 1, color, bkg)
+            image.set_colorkey(bkg)
+        else:
+            image = font.render(text[:i], aa, color)
+        surface.blit(image, (rect.left, y))
+        y += fontHeight + lineSpacing
+        text = text[i:]
+    return text
+
 
 class Card:
     def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = [], **options):
@@ -31,8 +57,9 @@ class Card:
         self.__img = pygame.transform.scale(self.__img, (width, height))
         win.blit(self.__img, pos)
         win.blit(font.render(str(self.__cost), True, (0, 0, 0)), pos)
-        info = pygame.transform.scale(font.render(self.__describe, True, (0, 0, 0)), (width * 0.8, height / 2))
-        win.blit(info, (pos[0] + self.__img.get_width() * 0.1, pos[1] + self.__img.get_height() / 2))
+        info = font.render(self.__describe, True, (0, 0, 0))
+        win.blit(info, (pos[0], pos[1] + self.__img.get_height() / 2))
+
 
 #, (self.__img.get_width() * 0.8, self.__img.get_height() / 2)
 #

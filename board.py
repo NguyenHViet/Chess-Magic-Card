@@ -4,12 +4,14 @@ import pygame
 import chess
 import init
 import cell
+import enviroment
 
 class Board:
-    def __init__(self, x, y, width, pTeam, evironment, lImg):
+    def __init__(self, x, y, width, pTeam, environment, lImg):
         self.__x = x
         self.__y = y
         self.__width = width
+        self.__enviroment = enviroment
         oTeam = 'b'
         if pTeam == 'b':
             oTeam == 'w'
@@ -43,7 +45,7 @@ class Board:
                              (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['k']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']),
                              (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
         self.__GEI = lImg['GEI']
-
+        #self.__cellImg = self.__enviroment.get_env_img()
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
         self.__CellLayer = []
@@ -51,6 +53,7 @@ class Board:
             self.__CellLayer.append([])
             for y in range(8):
                 self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI["Normal"]))
+
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
@@ -171,11 +174,12 @@ class Board:
             Phase = chess.PHASE['Picking']
         elif phase == chess.PHASE['End']:
             print("Kết thúc lượt")
+            #self.__enviroment.apply_env_effect(nBoard)
             Phase = chess.PHASE['Start']
         for i in range(8):
             for j in range(8):
                 try:
-                    self.__OjectLayer[(j, i)].update(self.__OjectLayer, self.__readableMap, (j, i), phase)
+                    self.__OjectLayer[(j, i)].update(self, (j, i), phase)
                 except:
                     pass
             updating = False

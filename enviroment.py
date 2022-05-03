@@ -30,6 +30,7 @@ class Enviroment:
         :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
         return self._image
+
     def get_effect(self):
         """
         Hàm lấy danh sách hiệu ứng

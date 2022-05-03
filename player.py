@@ -51,11 +51,15 @@ class Player:
         return self.__picking
 
     def update(self, phase, deck, timeBonus, addableTime):
+        nPhase = phase
         if phase == chess.PHASE['Start']:
             self.__actions = 3
             self.draw_cards(deck)
             self.__timeBonus = timeBonus
+        if self.__actions <= 0:
+            nPhase = chess.PHASE['End']
         elif phase == chess.PHASE['End']:
             if addableTime:
                 self.__time += self.__timeBonus
                 self.__timeBonus = 0
+        return nPhase

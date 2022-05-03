@@ -19,17 +19,18 @@ listImage = {
         'Darken':pygame.image.load('img\\darkcell.png'),
         'Move':pygame.image.load('img\\move.png'),
         'Choice':pygame.image.load('img\\choice.png'),
-        'Desert_Normal':pygame.image.load(enviroment.Desert.get_env_img()['normal']),
-        'Frozen_river_Normal':pygame.image.load(enviroment.Frozen_river.get_env_img()['normal']),
-        'Foggy_forest_Normal':pygame.image.load(enviroment.Foggy_forest.get_env_img()['normal']),
-        'Swamp_Normal':pygame.image.load(enviroment.Swamp.get_env_img()['normal']),
-        'Grassland':pygame.image.load(enviroment.Grassland.get_env_img()['normal']),
-        'Desert_Speacial':pygame.image.load(enviroment.Desert.get_env_img()['speacial']),
-        'Frozen_river_Speacial':pygame.image.load(enviroment.Frozen_river.get_env_img()['speacial']),
-        'Foggy_forest_Speacial':pygame.image.load(enviroment.Foggy_forest.get_env_img()['speacial']),
-        'Swamp_Speacial':pygame.image.load(enviroment.Swamp.get_env_img()['speacial']),
     }
 }
+
+""" 'Desert_Normal':pygame.image.load(enviroment.Desert.get_env_img()['normal']),
+'Frozen_river_Normal':pygame.image.load(enviroment.Frozen_river.get_env_img()['normal']),
+'Foggy_forest_Normal':pygame.image.load(enviroment.Foggy_forest.get_env_img()['normal']),
+'Swamp_Normal':pygame.image.load(enviroment.Swamp.get_env_img()['normal']),
+'Grassland':pygame.image.load(enviroment.Grassland.get_env_img()['normal']),
+'Desert_Speacial':pygame.image.load(enviroment.Desert.get_env_img()['speacial']),
+'Frozen_river_Speacial':pygame.image.load(enviroment.Frozen_river.get_env_img()['speacial']),
+'Foggy_forest_Speacial':pygame.image.load(enviroment.Foggy_forest.get_env_img()['speacial']),
+'Swamp_Speacial':pygame.image.load(enviroment.Swamp.get_env_img()['speacial']),"""
 
 pygame.font.init()
 font = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
