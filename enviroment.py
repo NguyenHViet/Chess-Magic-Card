@@ -6,7 +6,7 @@ class Enviroment:
     Lớp 'Môi trường'
     """
 
-    def __int__(self, name, image, effect):
+    def __int__(self, name, image, effects = []):
         """
         Hàm tạo môi trường
         :param name: Tên môi trường (str)
@@ -15,7 +15,7 @@ class Enviroment:
         """
         self._name = name
         self._image = image
-        self._effect = effect
+        self._effects = effects
 
     def get_name(self):
         """
@@ -36,7 +36,7 @@ class Enviroment:
         Hàm lấy danh sách hiệu ứng
         :return: Hiệu ứng của môi trường(str)
         """
-        return self._effect
+        return self._effects
 
     def apply_env_effect(self):
         pass
@@ -45,14 +45,14 @@ class Desert(Enviroment):
     """
     Lớp 'Sa mạc'
     """
-    def __init__(self, name, image, effect):
+    def __init__(self, name, image, effects):
         """
         Hàm tạo môi trường sa mạc
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__init__('desert', {'background': '','normal': 'img\desert_normal.png', 'speacial': 'img\desert_speacial.png'}, 'Unmoveable')
+        super().__int__('desert', {'background': '','normal': 'img\desert_normal.png', 'speacial': 'img\desert_speacial.png'}, 'Unmoveable')
 
     def apply_env_effect(self, area):
 
@@ -109,7 +109,7 @@ class Frozen_river(Enviroment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__init__('frozen_river', {'background': '', 'normal': 'img\\frozen_river_normal.png', 'speacial': 'img\\frozen_river_speacial.png'}, '')
+        super().__int__('frozen_river', {'background': '', 'normal': 'img\\frozen_river_normal.png', 'speacial': 'img\\frozen_river_speacial.png'}, '')
 
 
 class Foggy_forest(Enviroment):
@@ -124,7 +124,7 @@ class Foggy_forest(Enviroment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__init__('foggy_forest', {'background': '', 'normal': 'img\\foggy_forest_normal.png', 'speacial': 'img\\foggy_forest_speacial.png'}, 'Glamour')
+        super().__int__('foggy_forest', {'background': '', 'normal': 'img\\foggy_forest_normal.png', 'speacial': 'img\\foggy_forest_speacial.png'}, 'Glamour')
 
     def apply_env_effect(self):
 
@@ -143,7 +143,7 @@ class Swamp(Enviroment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__init__('swamp', {'background': '', 'normal': 'img\swamp_normal.png', 'speacial': 'img\swamp_speacial.png'}, '')
+        super().__int__('swamp', {'background': '', 'normal': 'img\swamp_normal.png', 'speacial': 'img\swamp_speacial.png'}, '')
 
     def apply_env_effect(self):
 
@@ -163,4 +163,8 @@ class Grassland(Enviroment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__init__('grassland', {'background': '', 'normal': 'img\grassland.png', 'speacial': ''}, '')
+        super().__int__('grassland', {'background': '', 'normal': 'img\grassland.png', 'speacial': ''}, '')
+
+class Simp(Enviroment):
+    def __init__(self, lImg, effects = []):
+        super().__int__('Simp', lImg, effects)

@@ -5,6 +5,7 @@ import time
 import chess
 import init
 import board
+import enviroment
 import card
 import player
 
@@ -25,19 +26,8 @@ YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
-'''
-Các giai đoạn trong lượt
-0: Đầu lượt đi
-1: Suy Nghĩ
-2: Chơi cờ
-3: Chơi bài
-4: Kết thúc lượt
-5: Kết thúc trận
-'''
-
 pygame.display.set_caption("Chess: Magic Card")
-
-nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', 'classic', init.listImage)
+nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT['Desert'], init.listImage)
 def mouse_on_board(pos):
     if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
         return True

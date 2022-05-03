@@ -4,10 +4,10 @@ import pygame
 import chess
 import init
 import cell
-import enviroment
+import enviroment as env
 
 class Board:
-    def __init__(self, x, y, width, pTeam, environment, lImg):
+    def __init__(self, x, y, width, pTeam, enviroment, lImg):
         self.__x = x
         self.__y = y
         self.__width = width
@@ -45,14 +45,15 @@ class Board:
                              (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['k']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']),
                              (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
         self.__GEI = lImg['GEI']
-        #self.__cellImg = self.__enviroment.get_env_img()
+        self.__cellImg = self.__enviroment.get_env_img()
+        print(self.__cellImg)
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
         self.__CellLayer = []
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
-                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI["Normal"]))
+                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__cellImg["Normal"]))
 
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]

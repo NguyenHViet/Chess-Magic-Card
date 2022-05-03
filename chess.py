@@ -5,6 +5,15 @@ PHASE = {
     'Start': 0, 'Picking': 1, 'Move': 2, 'Cast': 3, 'End': 4, 'Finish': 5
 }
 
+'''
+Các giai đoạn trong lượt
+0: Đầu lượt đi
+1: Suy Nghĩ
+2: Chơi cờ
+3: Chơi bài
+4: Kết thúc lượt
+5: Kết thúc trận
+'''
 
 class Chess:
     """
@@ -201,7 +210,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn",direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 2)], 1)
+        super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 2)], 1)
 
     def get_moves(self, oBoard, rBoard, index):
         """

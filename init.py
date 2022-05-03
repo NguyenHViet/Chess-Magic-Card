@@ -1,7 +1,8 @@
 import pygame
-import enviroment
+import enviroment as env
 import effect as ef
 from card import Card
+import chess
 
 listImage = {
     'b': {
@@ -15,10 +16,13 @@ listImage = {
         'q':pygame.image.load('img\\w_queen.png'), 'r':pygame.image.load('img\\w_rook.png')
     },
     'GEI': {
-        'Normal':pygame.image.load('img\\classic_normal.png'),
-        'Darken':pygame.image.load('img\\darkcell.png'),
-        'Move':pygame.image.load('img\\move.png'),
-        'Choice':pygame.image.load('img\\choice.png'),
+        'Normal':pygame.image.load('img\\GEI\\classic_normal.png'),
+        'Darken':pygame.image.load('img\\GEI\\darkcell.png'),
+        'Move':pygame.image.load('img\\GEI\\move.png'),
+        'Choice':pygame.image.load('img\\GEI\\choice.png'),
+    },
+    'Desert': {
+        'Normal':pygame.image.load('img\\Desert\\desert_normal.jpg')
     }
 }
 
@@ -44,3 +48,7 @@ DECK = [
     Card('Rút Lui', 2, listImage['b']['k'], 'Lùi về phía sau hoặc chéo lui 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
     Card('Đảo Chiều', 1, listImage['b']['r'], 'Đi ngang sang trái hoặc phải 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False)
 ]
+
+ENVIRONMENT = {
+    'Desert':env.Simp(listImage['Desert'])
+}
