@@ -30,7 +30,9 @@ listImage = {
         'Choice':pygame.image.load('img\\GUI\\choice_white.png'),
         'Pause':pygame.image.load('img\\GUI\\pause_button.png'),
         'Button':pygame.image.load('img\\GUI\\button.png'),
-        'Hover_Button':pygame.image.load('img\\GUI\\button_hover.png')
+        'Hover_Button':pygame.image.load('img\\GUI\\button_hover.png'),
+        'Black Timer':pygame.image.load('img\\GUI\\b_timer.png'),
+        'White Timer':pygame.image.load('img\\GUI\\w_timer.png')
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -70,7 +72,7 @@ DECK = [
     Card('Tấn Công Mạn Sườn', 2, listImage['Cards']['03'], 'Đi ngang sang trái hoặc phải 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False),
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['04'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 2)], directions = ['Ahead'], killable = True),
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['05'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),
-    Card('Linh Động Chiến Trường', 3, listImage['Cards']['06'], 'Di chuyển về 1 hướng bất kỳ 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=2)], directions=['Ahead Left', 'Ahead', 'Ahead Right', 'Back Left', 'Back', 'Back Right', 'Left', 'Right'], killable=False)
+    Card('Linh Động Chiến Trường', 3, listImage['Cards']['06'], 'Di chuyển về 1 hướng bất kỳ 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Ahead Left', 'Ahead', 'Ahead Right', 'Back Left', 'Back', 'Back Right', 'Left', 'Right'], killable=False)
 ]
 
 ENVIRONMENT = {

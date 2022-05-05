@@ -3,6 +3,8 @@ import cell
 import copy
 import random
 import pygame
+import math
+import time
 
 import chess
 
@@ -57,15 +59,19 @@ class Player:
     def get_picking(self):
         return self.__picking
 
-    def count_down(self):
-        self.__time -= 1
-        print(self.__time)
+    def get_time(self):
+        return self.__time
 
-    def update(self, phase, deck, timeBonus, addableTime):
+    def get_action(self):
+        return self.__actions
+
+    def update(self, phase, deck, timeBonus, addableTime, startTurnTime):
+
         nPhase = phase
         if phase == chess.PHASE['Start']:
             self.__time = self.__totalTime + self.__timeBonus
-            self.__actions = 3
+            if self.__actions < 3:
+                self.__actions += 1
             self.draw_cards(deck)
             self.__timeBonus = timeBonus
         elif self.__actions <= 0:

@@ -64,10 +64,6 @@ class Card:
         offsetWidth = (width - cwidth)/2
         win.blit(self.__img, (pos[0] + offsetWidth, pos[1] + offsetHeight))
 
-
-#, (self.__img.get_width() * 0.8, self.__img.get_height() / 2)
-#
-
     def get_cost(self):
         """
         Lấy tiêu hao của lá bài

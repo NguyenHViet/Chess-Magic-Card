@@ -9,6 +9,7 @@ import board
 import enviroment
 import card
 import player
+import math
 
 pygame.init()
 
@@ -27,8 +28,7 @@ YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
-t = time.localtime()
-current_time = time.strftime("%H:%M:%S", t)
+startTurnTime = math.floor(time.time())
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -64,6 +64,10 @@ def mouse_on_cards(pos):
     return False
 
 def updateGUI():
+    nowTime = math.floor(time.time())
+    timing = nowTime - startTurnTime
+    button(str(Players[1].get_time() - (turns%2)*timing), init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 10 + 80, offsetHeight, 230, 60,color = 'white')
+    button(str(Players[0].get_time() - ((turns+1)%2)*timing), init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 10 + 80, offsetHeight + 100, 230, 60)
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
@@ -78,7 +82,7 @@ def update_display(win, nboard, pos, turns, phase):
 
 def main():
     pygame.mixer.music.unpause()
-    global pause, phase, turns
+    global pause, phase, turns, nowTime
     pause = False
     selected = False
     required = 0
@@ -156,7 +160,7 @@ def main():
                     if len(selectedPos) == required:
                         nboard.deselect()
                         Players[turns % 2].decelect()
-                        phase = Players[turns % 2].update((chess.PHASE['Picking']), init.DECK, 0, False)
+                        phase = Players[turns % 2].update((chess.PHASE['Picking']), init.DECK, 0, False, startTurnTime)
                         selected = False
                         selectedPos = []
                         #-----------------------------------------------------------------------------------------------
@@ -165,12 +169,11 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        clock.tick(100)
-        phase = Players[turns % 2].update(phase, init.DECK, 0, False)
+        phase = Players[turns % 2].update(phase, init.DECK, 0, False, startTurnTime)
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
-def button(text, img, img_h, x, y, width, height, action = None):
+def button(text, img, img_h, x, y, width, height, action = None, color = 'black'):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     img = pygame.transform.scale(img, (width, height))
@@ -180,7 +183,7 @@ def button(text, img, img_h, x, y, width, height, action = None):
         WIN.blit(img_h, (x, y))
         if click[0] == 1 and action != None:
             action()
-    textSurface = init.font40.render(text, True, 'black')
+    textSurface = init.font40.render(text, True, color)
     textRect = textSurface.get_rect()
     textRect.center = ((x + (width / 2)), (y + (height / 2)))
     WIN.blit(textSurface, textRect)
