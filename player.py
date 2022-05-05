@@ -2,6 +2,7 @@ import card
 import cell
 import copy
 import random
+import pygame
 
 import chess
 
@@ -13,7 +14,8 @@ class Player:
         self.__actions = 3
         self.__cards = []
         self.__picking = None
-        self.__time = time
+        self.__totalTime = time
+        self.__time = self.__totalTime
         self.__timeBonus = 0
 
     def get_picking(self):
@@ -55,16 +57,22 @@ class Player:
     def get_picking(self):
         return self.__picking
 
+    def count_down(self):
+        self.__time -= 1
+        print(self.__time)
+
     def update(self, phase, deck, timeBonus, addableTime):
         nPhase = phase
         if phase == chess.PHASE['Start']:
+            self.__time = self.__totalTime + self.__timeBonus
             self.__actions = 3
             self.draw_cards(deck)
             self.__timeBonus = timeBonus
         elif self.__actions <= 0:
             nPhase = chess.PHASE['End']
         elif phase == chess.PHASE['End']:
-            if addableTime:
-                self.__time += self.__timeBonus
-                self.__timeBonus = 0
+            if self.__time <= self.__totalTime:
+                self.__totalTime = self.__time
+            elif addableTime:
+                self.__totalTime = self.__time
         return nPhase

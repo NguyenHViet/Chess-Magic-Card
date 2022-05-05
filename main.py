@@ -27,15 +27,21 @@ YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
+t = time.localtime()
+current_time = time.strftime("%H:%M:%S", t)
+
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT['Desert'], init.listImage)
 Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
+clock = pygame.time.Clock()
+
 pause = True
 turns = 0
 phase = chess.PHASE['Start']
 
 def new_game():
+    global turns, phase, nboard, ncard, Players
     turns = 0
     phase = chess.PHASE['Start']
     pause = False
@@ -157,9 +163,10 @@ def main():
                 print(" Phase:", phase)
                 nboard.printMap()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_ESCAPE:
                     paused()
-        Players[turns % 2].update(phase, init.DECK, 0, False)
+        clock.tick(100)
+        phase = Players[turns % 2].update(phase, init.DECK, 0, False)
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
@@ -193,7 +200,7 @@ def paused():
             if event.type == pygame.QUIT:
                 end_game()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_ESCAPE:
                     main()
         button('CHƠI TIẾP', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, main)
         button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, new_game)
@@ -223,9 +230,6 @@ def game_intro():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    main()
         button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, new_game)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, end_game)
         pygame.display.update()
