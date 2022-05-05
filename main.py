@@ -46,6 +46,8 @@ def new_game():
     pygame.mixer.music.play(-1)
     pygame.mixer.music.pause()
 
+    main()
+
 def mouse_on_board(pos):
     if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
         return True
@@ -55,14 +57,17 @@ def mouse_on_cards(pos):
         return True
     return False
 
+def updateGUI():
+    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
+    button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
+
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
     ncard.draw(win, init.font20, pos, Players[turns%2].get_cards(), Players[turns%2].get_picking())
     nboard.draw(win)
     if phase == chess.PHASE['Finish']:
         WIN.fill("black")
-    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
-    button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 50, 50, 50, 50, paused)
+    updateGUI()
     pygame.display.update()
 
 def main():
@@ -81,8 +86,7 @@ def main():
         pygame.time.delay(50) ##stops cpu dying
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                end_game()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
@@ -169,7 +173,7 @@ def button(text, img, img_h, x, y, width, height, action = None):
         WIN.blit(img_h, (x, y))
         if click[0] == 1 and action != None:
             action()
-    textSurface = init.font20.render(text, True, 'black')
+    textSurface = init.font40.render(text, True, 'black')
     textRect = textSurface.get_rect()
     textRect.center = ((x + (width / 2)), (y + (height / 2)))
     WIN.blit(textSurface, textRect)
@@ -178,29 +182,52 @@ def paused():
     pygame.mixer.music.pause()
     global pause
     pause = True
-    textSurface = init.font20.render('Pause', True, 'black')
+    textSurface = init.font60.render('TẠM DỪNG', True, 'black')
     textRect = textSurface.get_rect()
-    textRect.center = ((WinWidth / 2), (WinHeight / 2))
-    cell.Cell(0, 0, init.listImage["GEI"]['Darken']).draw(WIN, WinHeight, WinWidth)
+    interval = (WinHeight - offsetHeight) / 6
+    textRect.center = ((WinWidth / 2), offsetHeight*2)
+    cell.Cell(0, 0, init.listImage['GEI']['Normal']).draw(WIN, WinHeight, WinWidth)
     WIN.blit(textSurface, textRect)
     while pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
+                end_game()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     main()
-        button("Chơi Tiếp", init.listImage['b']['p'], init.listImage['b']['k'], 100, 100, 100, 100, main)
+        button('CHƠI TIẾP', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, main)
+        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, new_game)
+        button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, game_intro)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 5*interval, 363, 100, end_game)
         pygame.display.update()
 
 def end_turn():
     global phase, turns
-    turns += 1
     phase = chess.PHASE['End']
+    pygame.time.delay(50)
+
+def end_game():
+    pygame.quit()
+    quit()
 
 def game_intro():
-    pass
+    global pause
+    pause = True
+    textSurface = init.font60.render('CHESS: MAGIC CARD', True, 'black')
+    textRect = textSurface.get_rect()
+    interval = (WinHeight - offsetHeight) / 6
+    textRect.center = ((WinWidth / 2), offsetHeight*2)
+    cell.Cell(0, 0, init.listImage['GEI']['Normal']).draw(WIN, WinHeight, WinWidth)
+    WIN.blit(textSurface, textRect)
+    while pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end_game()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    main()
+        button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, new_game)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, end_game)
+        pygame.display.update()
 
-new_game()
-main()
+game_intro()

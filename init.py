@@ -28,7 +28,9 @@ listImage = {
     'GUI': {
         'EndTurn': pygame.image.load('img\\GUI\\end_turn_button.png'),
         'Choice':pygame.image.load('img\\GUI\\choice_white.png'),
-        'Pause':pygame.image.load('img\\GUI\\pause_button.png')
+        'Pause':pygame.image.load('img\\GUI\\pause_button.png'),
+        'Button':pygame.image.load('img\\GUI\\button.png'),
+        'Hover_Button':pygame.image.load('img\\GUI\\button_hover.png')
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -55,6 +57,8 @@ listImage = {
 
 pygame.font.init()
 font20 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
+font40 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 40)
+font60 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 60)
 
 EFFECT = {
 

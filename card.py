@@ -120,13 +120,13 @@ class CardArea:
         self.__x = offsetHeight
         self.__y = offsetWidth + width
         self.__Height = height
-        self.__Width = offsetWidth
+        self.__Width = offsetWidth - 40
         self.__cellLayers = []
         self.__GEI = lImg['GEI']
         self.__picking = None
         interval = (height + 10) / 3
         for i in range(3):
-            self.__cellLayers.append(cell.Cell(self.__y + 10, self.__x + interval * i, self.__GEI['Darken']))
+            self.__cellLayers.append(cell.Cell(self.__y + 40, self.__x + interval * i, self.__GEI['Darken']))
 
     def draw(self, win, font, pos, listCard = [], picking = None):
         interval = self.__Height / 3
