@@ -66,10 +66,12 @@ def mouse_on_cards(pos):
 def updateGUI():
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
-    timeLeft = '{:02}'.format((Players[0].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[0].get_time() - (turns%2)*timing)%60) +'b'
-    button(timeLeft, init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 10 + 90, offsetHeight, 230, 60,color = 'white')
-    timeLeft = '{:02}'.format((Players[1].get_time() - ((turns+1)%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - ((turns+1)%2)*timing)%60) + 'w'
-    button((timeLeft), init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 10 + 90, offsetHeight + 100, 230, 60)
+
+    timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
+    button(timeLeft, init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 100, offsetHeight, 230, 60,color = 'white')
+
+    timeLeft = '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)//60) + ':' + '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)%60)
+    button(timeLeft, init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 100, offsetHeight + 100, 230, 60)
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
@@ -162,7 +164,7 @@ def main():
                     if len(selectedPos) == required:
                         nboard.deselect()
                         Players[turns % 2].decelect()
-                        phase = Players[turns % 2].update((chess.PHASE['Picking']), init.DECK, 0, False, startTurnTime)
+                        phase = Players[turns % 2].update((chess.PHASE['Picking']), init.DECK, False, startTurnTime)
                         selected = False
                         selectedPos = []
                         #-----------------------------------------------------------------------------------------------
@@ -171,9 +173,9 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        if phase == chess.PHASE['Start']:
-            startTurnTime = math.floor(time.time())
         phase = Players[turns % 2].update(phase, init.DECK, False, startTurnTime)
+        if phase == chess.PHASE['End']:
+            startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 

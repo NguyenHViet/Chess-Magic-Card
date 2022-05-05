@@ -59,7 +59,10 @@ class Card:
         cheight = self.__img.get_height()
         cwidth = self.__img.get_width()
         nwidth = (height/cheight)*cwidth
-        #self.__img = pygame.transform.scale(self.__img, (nwidth, height))
+        textSurface = font.render(str(self.__cost), True, 'white')
+        textRect = textSurface.get_rect()
+        textRect.center = ((pos[0] + (width / 2)), (pos[1] + (height / 2)))
+        win.blit(textSurface, textRect)
         offsetHeight = (height - cheight)/2
         offsetWidth = (width - cwidth)/2
         win.blit(self.__img, (pos[0] + offsetWidth, pos[1] + offsetHeight))
