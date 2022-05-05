@@ -59,13 +59,13 @@ class Card:
         cheight = self.__img.get_height()
         cwidth = self.__img.get_width()
         nwidth = (height/cheight)*cwidth
-        textSurface = font.render(str(self.__cost), True, 'white')
-        textRect = textSurface.get_rect()
-        textRect.center = ((pos[0] + (width / 2)), (pos[1] + (height / 2)))
-        win.blit(textSurface, textRect)
         offsetHeight = (height - cheight)/2
         offsetWidth = (width - cwidth)/2
         win.blit(self.__img, (pos[0] + offsetWidth, pos[1] + offsetHeight))
+        textSurface = font.render(str(self.__cost), True, 'white')
+        textRect = textSurface.get_rect()
+        textRect.center = ((pos[0] + 57.5), (pos[1]) + 40)
+        win.blit(textSurface, textRect)
 
     def get_cost(self):
         """

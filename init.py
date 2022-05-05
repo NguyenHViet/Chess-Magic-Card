@@ -23,7 +23,7 @@ listImage = {
         'Hover':pygame.image.load('img\\GEI\\choice_magic.png'),
         'Card_Hover':pygame.image.load('img\\GEI\\card_hover.png'),
         'Card_Picking':pygame.image.load('img\\GEI\\picking_card.png'),
-        'Card_Cell':pygame.image.load('img\\GEI\\card_area.png')
+        'Card_Cell':pygame.image.load('img\\GEI\\card_area.png'),
     },
     'GUI': {
         'EndTurn': pygame.image.load('img\\GUI\\end_turn_button.png'),
@@ -32,7 +32,8 @@ listImage = {
         'Button':pygame.image.load('img\\GUI\\button.png'),
         'Hover_Button':pygame.image.load('img\\GUI\\button_hover.png'),
         'Black Timer':pygame.image.load('img\\GUI\\b_timer.png'),
-        'White Timer':pygame.image.load('img\\GUI\\w_timer.png')
+        'White Timer':pygame.image.load('img\\GUI\\w_timer.png'),
+        'Actions': pygame.image.load('img\\GUI\\actions.png')
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),

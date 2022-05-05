@@ -68,16 +68,19 @@ def updateGUI():
     timing = nowTime - startTurnTime
 
     timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
-    button(timeLeft, init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 100, offsetHeight, 230, 60,color = 'white')
+    button(timeLeft, init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 100, offsetHeight, 230, 60 ,color = 'white')
+    button(str(Players[1].get_action()), init.listImage['GUI']['Actions'], init.listImage['GUI']['Actions'], 300, offsetHeight + 5, 50, 50, color='white')
 
     timeLeft = '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)//60) + ':' + '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)%60)
     button(timeLeft, init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 100, offsetHeight + 100, 230, 60)
+    button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], init.listImage['GUI']['Actions'], 300, offsetHeight + 105, 50, 50, color='white')
+
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
-    ncard.draw(win, init.font20, pos, Players[turns%2].get_cards(), Players[turns%2].get_picking())
+    ncard.draw(win, init.font40, pos, Players[turns%2].get_cards(), Players[turns%2].get_picking())
     nboard.draw(win)
     if phase == chess.PHASE['Finish']:
         WIN.fill("black")
