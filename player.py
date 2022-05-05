@@ -65,20 +65,22 @@ class Player:
     def get_action(self):
         return self.__actions
 
-    def update(self, phase, deck, timeBonus, addableTime, startTurnTime):
-
+    def update(self, phase, deck, addableTime, startTurnTime):
+        nowTime = math.floor(time.time())
+        timing = nowTime - startTurnTime
         nPhase = phase
         if phase == chess.PHASE['Start']:
             self.__time = self.__totalTime + self.__timeBonus
             if self.__actions < 3:
                 self.__actions += 1
             self.draw_cards(deck)
-            self.__timeBonus = timeBonus
         elif self.__actions <= 0:
             nPhase = chess.PHASE['End']
         elif phase == chess.PHASE['End']:
-            if self.__time <= self.__totalTime:
-                self.__totalTime = self.__time
+            if self.__time - timing <= self.__totalTime:
+                self.__totalTime = self.__time - timing
+                self.__time = self.__totalTime
+                print(self.__totalTime)
             elif addableTime:
                 self.__totalTime = self.__time
         return nPhase

@@ -66,8 +66,10 @@ def mouse_on_cards(pos):
 def updateGUI():
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
-    button(str(Players[1].get_time() - (turns%2)*timing), init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 10 + 80, offsetHeight, 230, 60,color = 'white')
-    button(str(Players[0].get_time() - ((turns+1)%2)*timing), init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 10 + 80, offsetHeight + 100, 230, 60)
+    timeLeft = '{:02}'.format((Players[0].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[0].get_time() - (turns%2)*timing)%60) +'b'
+    button(timeLeft, init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 10 + 90, offsetHeight, 230, 60,color = 'white')
+    timeLeft = '{:02}'.format((Players[1].get_time() - ((turns+1)%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - ((turns+1)%2)*timing)%60) + 'w'
+    button((timeLeft), init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 10 + 90, offsetHeight + 100, 230, 60)
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
@@ -82,7 +84,7 @@ def update_display(win, nboard, pos, turns, phase):
 
 def main():
     pygame.mixer.music.unpause()
-    global pause, phase, turns, nowTime
+    global pause, phase, turns, startTurnTime
     pause = False
     selected = False
     required = 0
@@ -169,7 +171,9 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        phase = Players[turns % 2].update(phase, init.DECK, 0, False, startTurnTime)
+        if phase == chess.PHASE['Start']:
+            startTurnTime = math.floor(time.time())
+        phase = Players[turns % 2].update(phase, init.DECK, False, startTurnTime)
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
