@@ -132,7 +132,7 @@ class Chess:
         """
         self._speed += cspeed
 
-    def add_effect(self, effect):
+    def add_effect(self, effect = [ef.Effect('!')]):
         """
         Tăng thêm hiệu ứng cho quân cờ
         :param effect: Hiệu ứng mới (effect.Effect)

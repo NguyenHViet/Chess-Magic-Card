@@ -5,7 +5,7 @@ import chess
 import init
 import cell
 import effect as ef
-import enviroment as env
+import environment as env
 
 class Board:
     def __init__(self, x, y, width, pTeam, enviroment, lImg):
@@ -53,7 +53,7 @@ class Board:
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
-                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__cellImg["Normal"]))
+                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__cellImg['Normal']))
 
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
@@ -199,3 +199,6 @@ class Board:
 
     def getrBoard(self):
         return self.__readableMap
+
+    def getcBoard(self):
+        return self.__CellLayer

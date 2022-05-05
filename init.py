@@ -1,8 +1,9 @@
 import pygame
-import enviroment as env
+import environment as env
 import effect as ef
 from card import Card
 import chess
+import random
 
 listImage = {
     'b': {
@@ -43,19 +44,26 @@ listImage = {
         '06':pygame.image.load('img\\Card\\06.png')
     },
     'Desert': {
-        'Normal':pygame.image.load('img\\Desert\\desert_normal.jpg')
+        'Normal':pygame.image.load('img\\Environment\\desert_normal.png'),
+        'Speacial':pygame.image.load('img\\Environment\\derest_speacial.png')
+    },
+    'Frozen_river':{
+        'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
+        'Speacial':pygame.image.load('img\\Environment\\frozen_river_speacial.png'),
+        'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png')
+    },
+    'Foggy_forest': {
+        'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
+        'Speacial':pygame.image.load('img\\Environment\\foggy_forest_speacial.png')
+    },
+    'Swamp': {
+        'Normal':pygame.image.load('img\\Environment\\swamp_normal.png'),
+        'Speacial':pygame.image.load('img\\Environment\\swamp_speacial.png')
+    },
+    'Grassland': {
+        'Normal':pygame.image.load('img\\Environment\\grassland.png')
     }
 }
-
-""" 'Desert_Normal':pygame.image.load(enviroment.Desert.get_env_img()['normal']),
-'Frozen_river_Normal':pygame.image.load(enviroment.Frozen_river.get_env_img()['normal']),
-'Foggy_forest_Normal':pygame.image.load(enviroment.Foggy_forest.get_env_img()['normal']),
-'Swamp_Normal':pygame.image.load(enviroment.Swamp.get_env_img()['normal']),
-'Grassland':pygame.image.load(enviroment.Grassland.get_env_img()['normal']),
-'Desert_Speacial':pygame.image.load(enviroment.Desert.get_env_img()['speacial']),
-'Frozen_river_Speacial':pygame.image.load(enviroment.Frozen_river.get_env_img()['speacial']),
-'Foggy_forest_Speacial':pygame.image.load(enviroment.Foggy_forest.get_env_img()['speacial']),
-'Swamp_Speacial':pygame.image.load(enviroment.Swamp.get_env_img()['speacial']),"""
 
 pygame.font.init()
 font20 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
@@ -76,5 +84,51 @@ DECK = [
 ]
 
 ENVIRONMENT = {
-    'Desert':env.Simp(listImage['GEI'])
+    'Desert':env.Desert(listImage['Desert']),
+    'Frozen_river':env.Frozen_river(listImage['Frozen_river']),
+    'Foggy_forest':env.Foggy_forest(listImage['Foggy_forest']),
+    'Swamp':env.Swamp(listImage['Swamp']),
+    'Grassland':env.Grassland(listImage['Grassland'])
 }
+
+print(ENVIRONMENT['Grassland'])
+def create_area(type_of_environment):
+    """
+    Hàm tạo hình dạng map
+    :param type_of_environment: Tên môi trường (str)
+    :return: Hình dạng map (list of image)
+    """
+
+    image = 'img\\Environment\\'
+    area = list()
+    cell_posision = list()
+    count = int(0)
+
+    while(count < 12):
+        x = random.randint(0, 7)
+        y = random.randint(1, 7)
+        if (x, y) in cell_posision:
+            pass
+        else:
+            cell_posision.append((x, y))
+            count += 1
+
+    count = 0
+    for i in range(8):
+        area.append([])
+        for j in range(8):
+            if ((i, j) in cell_posision) and (count < 12):
+                if type_of_environment == 'Frozen_river':
+                    area[i].append(listImage['Frozen_river']['Speacial'])
+                elif type_of_environment == 'Swamp':
+                    area[i].append(listImage['Swamp']['Speacial'])
+                count += 1
+            else:
+                if type_of_environment == 'Frozen_river':
+                    area[i].append((listImage['Frozen_river']['Normal']))
+                elif type_of_environment == 'Swamp':
+                    area[i].append(listImage['Swamp']['Normal'])
+    return area
+
+frozen_river_map = create_area('Frozen_river')
+swamp_map = create_area('Swamp')

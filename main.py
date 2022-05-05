@@ -6,7 +6,7 @@ import chess
 import init
 import cell
 import board
-import enviroment
+import environment
 import card
 import player
 import math
@@ -30,9 +30,11 @@ BLACK = (0, 0, 0)
 
 startTurnTime = math.floor(time.time())
 
+env = 'Frozen_river'
+
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
-nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT['Desert'], init.listImage)
+nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
 Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
 clock = pygame.time.Clock()
 
@@ -45,7 +47,7 @@ def new_game():
     turns = 0
     phase = chess.PHASE['Start']
     pause = False
-    nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT['Desert'], init.listImage)
+    nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
     Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
     pygame.mixer.music.load('music\\Two Steps From Hell - Star Sky.wav')
     pygame.mixer.music.set_volume(0.1)
