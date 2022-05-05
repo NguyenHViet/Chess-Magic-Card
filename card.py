@@ -37,7 +37,7 @@ class Card:
         self.__startCost = cost
         self.__cost = self.__startCost
         self.__img = img
-        self.__effects = [ef.Effect('!')] + effects
+        self.__effects = [] + effects
         self.__describe = descibe
         self.__selected_require = selectedRequire
         self.__skillCard = skillCard
@@ -56,11 +56,13 @@ class Card:
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
         """
-        self.__img = pygame.transform.scale(self.__img, (width, height))
-        win.blit(self.__img, pos)
-        win.blit(font.render(str(self.__cost), True, (0, 0, 0)), pos)
-        info = font.render(self.__describe, True, (0, 0, 0))
-        win.blit(info, (pos[0], pos[1] + self.__img.get_height() / 2))
+        cheight = self.__img.get_height()
+        cwidth = self.__img.get_width()
+        nwidth = (height/cheight)*cwidth
+        #self.__img = pygame.transform.scale(self.__img, (nwidth, height))
+        offsetHeight = (height - cheight)/2
+        offsetWidth = (width - cwidth)/2
+        win.blit(self.__img, (pos[0] + offsetWidth, pos[1] + offsetHeight))
 
 
 #, (self.__img.get_width() * 0.8, self.__img.get_height() / 2)
@@ -86,26 +88,32 @@ class Card:
     def play_card(self, nBoard, indexs, playTeam):
         def GrantEffects(effects, nBoard, indexs):
             try:
+                oBoard = nBoard.getoBoard()
+                nBoard.select_Chess(indexs, phase, playTeam, False)
                 for effect in effects:
-                    sChess.add_effect(copy.copy(effect))
+                    oBoard[(indexs[1], indexs[0])].add_effect(copy.copy(effect))
                 return 'Casted'
             except:
-                return 'Fail'
+                return ef.STATUS[1]
 
         def ActiveEffects(effects, nBoard, indexs):
             phase = 3
-            result = 'Success'
+            result = []
             for effect in effects:
+                print(0)
                 try:
-                    result = copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam)
+                    result.append(copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam))
                     effect.unactive_effect()
                 except:
-                    result = 'Fail'
-            if result == 'Effected':
-                result = 'Casted'
+                    result.append(ef.STATUS[1])
+            if ef.STATUS[3] in result:
+                result[result.index(ef.STATUS[3])] = 'Casted'
             return result
-
-        return locals()[self.__skillCard](self.__effects, nBoard, indexs)
+        try:
+            result = locals()[self.__skillCard](self.__effects, nBoard, indexs)
+        except:
+            result = 'Fail'
+        return result
 
 class CardArea:
     def __init__(self, height, width, offsetHeight, offsetWidth, lImg):
@@ -115,17 +123,22 @@ class CardArea:
         self.__Width = offsetWidth
         self.__cellLayers = []
         self.__GEI = lImg['GEI']
+        self.__picking = None
         interval = (height + 10) / 3
         for i in range(3):
             self.__cellLayers.append(cell.Cell(self.__y + 10, self.__x + interval * i, self.__GEI['Darken']))
 
-    def draw(self, win, font, pos, listCard = [], picking = -1):
+    def draw(self, win, font, pos, listCard = [], picking = None):
         interval = self.__Height / 3
         for cell in self.__cellLayers:
             if cell.is_mouse_hovering(pos):
-                cell.set_img(self.__GEI['Choice'])
+                cell.set_img(self.__GEI['Card_Hover'])
             else:
-                cell.set_img(self.__GEI['Darken'])
+                cell.set_img(self.__GEI['Card_Cell'])
+            try:
+                self.__cellLayers[picking].set_img(self.__GEI['Card_Picking'])
+            except:
+                pass
             cell.draw(win, interval, self.__Width - 20)
         for i in range(len(listCard)):
             listCard[i].draw(win, font, self.__cellLayers[i].get_pos(), self.__Height / 3, self.__Width)

@@ -12,10 +12,12 @@ class Player:
         self.__team = team
         self.__actions = 3
         self.__cards = []
-        self.__picking = -1
+        self.__picking = None
         self.__time = time
         self.__timeBonus = 0
 
+    def get_picking(self):
+        return self.__picking
 
     def draw_card(self, deck):
         if len(self.__cards) < 3:
@@ -32,15 +34,15 @@ class Player:
             self.__picking = index
             return self.__cards[index].get_selected_require()
         else:
-            return -1
+            return None
 
     def decelect(self):
-        self.__picking = -1
+        self.__picking = None
 
     def play_card(self, nBoard, indexs):
         try:
             result = self.__cards[self.__picking].play_card(nBoard, indexs, self.__team)
-            if result == 'Casted':
+            if 'Casted' in result:
                 self.__actions -= self.__cards[self.__picking].get_cost()
                 self.__cards.pop(self.__picking)
             return result

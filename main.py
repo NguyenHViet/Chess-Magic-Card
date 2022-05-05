@@ -4,6 +4,7 @@ import time
 
 import chess
 import init
+import cell
 import board
 import enviroment
 import card
@@ -27,29 +28,47 @@ BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
 pygame.display.set_caption("Chess: Magic Card")
+ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT['Desert'], init.listImage)
+Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
+pause = True
+turns = 0
+phase = chess.PHASE['Start']
+
+def new_game():
+    turns = 0
+    phase = chess.PHASE['Start']
+    pause = False
+    nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT['Desert'], init.listImage)
+    Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
+    pygame.mixer.music.load('music\\Two Steps From Hell - Star Sky.wav')
+    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.pause()
+
 def mouse_on_board(pos):
     if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
         return True
     return False
-ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
 def mouse_on_cards(pos):
     if pos[0] > offsetWidth + WIDTH and pos[0] < WinWidth and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
         return True
     return False
-Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
 
 def update_display(win, nboard, pos, turns, phase):
-    WIN.fill("white")
-    ncard.draw(win, init.font, pos, Players[turns%2].get_cards())
+    WIN.fill('white')
+    ncard.draw(win, init.font20, pos, Players[turns%2].get_cards(), Players[turns%2].get_picking())
     nboard.draw(win)
     if phase == chess.PHASE['Finish']:
         WIN.fill("black")
+    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
+    button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 50, 50, 50, 50, paused)
     pygame.display.update()
 
-def main(WIN, WIDTH):
-    turns = 0
-    phase = chess.PHASE['Start']
+def main():
+    pygame.mixer.music.unpause()
+    global pause, phase, turns
+    pause = False
     selected = False
     required = 0
     selectedPos = []
@@ -64,8 +83,6 @@ def main(WIN, WIDTH):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-            """This quits the program if the player closes the window"""
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
@@ -134,10 +151,56 @@ def main(WIN, WIDTH):
                         selectedPos = []
                         #-----------------------------------------------------------------------------------------------
                 print(" Phase:", phase)
-                #nboard.printMap()
+                nboard.printMap()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    paused()
         Players[turns % 2].update(phase, init.DECK, 0, False)
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
+def button(text, img, img_h, x, y, width, height, action = None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    img = pygame.transform.scale(img, (width, height))
+    img_h = pygame.transform.scale(img_h, (width, height))
+    WIN.blit(img, (x, y))
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        WIN.blit(img_h, (x, y))
+        if click[0] == 1 and action != None:
+            action()
+    textSurface = init.font20.render(text, True, 'black')
+    textRect = textSurface.get_rect()
+    textRect.center = ((x + (width / 2)), (y + (height / 2)))
+    WIN.blit(textSurface, textRect)
 
-main(WIN, WIDTH)
+def paused():
+    pygame.mixer.music.pause()
+    global pause
+    pause = True
+    textSurface = init.font20.render('Pause', True, 'black')
+    textRect = textSurface.get_rect()
+    textRect.center = ((WinWidth / 2), (WinHeight / 2))
+    cell.Cell(0, 0, init.listImage["GEI"]['Darken']).draw(WIN, WinHeight, WinWidth)
+    WIN.blit(textSurface, textRect)
+    while pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    main()
+        button("Chơi Tiếp", init.listImage['b']['p'], init.listImage['b']['k'], 100, 100, 100, 100, main)
+        pygame.display.update()
+
+def end_turn():
+    global phase, turns
+    turns += 1
+    phase = chess.PHASE['End']
+
+def game_intro():
+    pass
+
+new_game()
+main()

@@ -4,6 +4,7 @@ import pygame
 import chess
 import init
 import cell
+import effect as ef
 import enviroment as env
 
 class Board:
@@ -65,9 +66,11 @@ class Board:
                 self.__CellLayer[row][col].draw(win, interval, interval)
                 if (row+col) % 2 == 0:
                     win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
+                if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
+                    win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if 'x' in self.__readableMap[col][row]:
                     win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
-                elif (self.__readableMap[col][row])[-1] == ':':
+                elif ':' in (self.__readableMap[col][row])[-1]:
                     win.blit(self.__GEI['Choice'],
                              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
@@ -110,7 +113,9 @@ class Board:
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
-            self.__OjectLayer[(x, y)].active_effects(self, index, phase)
+            if ef.STATUS[1] in self.__OjectLayer[(x, y)].active_effects(self, index, phase):
+                print("Không thể chọn")
+                return False
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
                 self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
@@ -146,7 +151,6 @@ class Board:
             if self.__readableMap[index1[0]][index1[1]] == 'x' or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
                 moved = True
-                print(triggeredEffect)
                 if triggeredEffect:
                     self.__OjectLayer[(index0[1], index0[0])].triggered_effects()
                 self.__OjectLayer[(index1[1], index1[0])] = self.__OjectLayer[(index0[1], index0[0])]

@@ -34,7 +34,7 @@ class Chess:
         self._direction = direction
         self._image = img
         self._score = score
-        self._effects = [ef.Effect('!')] + effects
+        self._effects = [] + effects
         self._startSpeed = speed
         self._speed = self._startSpeed
         self._killable = False
@@ -107,17 +107,16 @@ class Chess:
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(int, int))
         """
-        win.blit(pygame.transform.scale(self._image, (width, width)), pos)
+        offsetHeight = (width - self._image.get_height()) / 2
+        offsetWidth = (width - self._image.get_width()) / 2
+        win.blit(self._image, (pos[0] + offsetHeight, pos[1] + offsetWidth))
 
     def set_killable(self, able):
         """
         Gán self._killable là True nếu quân cờ không có hiệu ứng "Imortal"
         :param able : Giá trị để gán cho self._killable (bool)
         """
-        if not self.is_effective("Imortal") and able:
-            self._killable = True
-        else:
-            self._killable = False
+        self._killable = able
 
     def set_score(self, new_score):
         """
@@ -185,7 +184,7 @@ class Chess:
             try:
                 if phase == PHASE['End']:
                     effect.unactive_effect()
-                if effect.is_over():
+                if effect.is_over(phase):
                     self.delete_effect(effect)
                 effect.active_effect(nBoard, index, phase)
             except:
@@ -270,7 +269,7 @@ class King(Chess):
                         try:
                             if oBoard[(index[1] - 1 + x, index[0] - 1 + y)].get_team() != self.get_team():
                                 oBoard[(index[1] - 1 + x, index[0] - 1 + y)].set_killable(True)
-                                rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
+                                rBoard[index[0] - 1 + y][index[1] - 1 + x] += 'x'
                         except:
                             pass
 
@@ -300,15 +299,13 @@ class Rook(Chess):
             for pos in dir:
                 if on_board(pos):
                     if rBoard[pos[0]][pos[1]] == ' ':
-                        print(pos)
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] = 'x'
-                            if not self.is_effective('Unstoppable'):
-                                break
+                                rBoard[pos[0]][pos[1]] += 'x'
+                            break
                         except:
                             pass
 
@@ -335,9 +332,7 @@ class Bishop(Chess):
                      [[index[0] - i, index[1] - i] for i in range(1, 8)]]
 
         for dir in diagonals:
-            print(dir)
             for pos in dir:
-                print(pos)
                 if on_board(pos):
                     if rBoard[pos[0]][pos[1]] == ' ':
                         rBoard[pos[0]][pos[1]] = 'x'
@@ -345,9 +340,8 @@ class Bishop(Chess):
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] = 'x'
-                            if not self.is_effective('Unstoppable'):
-                                break
+                                rBoard[pos[0]][pos[1]] += 'x'
+                            break
                         except:
                             pass
 
@@ -414,8 +408,7 @@ class Queen(Chess):
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(True)
                                 rBoard[pos[0]][pos[1]] = 'x'
-                            if not self.is_effective('Unstoppable'):
-                                break
+                            break
                         except:
                             pass
 
@@ -439,7 +432,6 @@ class Queen(Chess):
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(True)
                                 rBoard[pos[0]][pos[1]] = 'x'
-                            if not self.is_effective('Unstoppable'):
-                                break
+                            break
                         except:
                             pass

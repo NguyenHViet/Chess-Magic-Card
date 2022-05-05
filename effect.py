@@ -1,6 +1,10 @@
 import pygame
 import chess
 
+STATUS = {
+    0:'Not Effected', 1:'Fail', 2:'Success', 3:'Effected'
+}
+
 class Effect:
     def __init__(self, name, value = 1, stack = 1, turns = 1, phase = 0, actived = False):
         self.__name = name
@@ -15,8 +19,10 @@ class Effect:
     def get_name(self):
         return  self.__name
 
-    def is_over(self):
+    def is_over(self, phase):
         self.unactive_effect()
+        if phase == self.__phase:
+            self.__turns -= 1
         if (self.__stack <= 0 or self.__turns <= 0) and '!' not in self.__name:
             return True
         else:
@@ -33,18 +39,25 @@ class Effect:
         except:
             Options = []
 
-        # Buff Effect
+        # Chess Effect
         def IncreaseSpeed(nBoard, indexs, phase, value, options):
+            if phase != self.__phase:
+                return STATUS[0]
             try:
                 index = indexs[0]
                 oBoard = nBoard.getoBoard()
                 oBoard[(index[1], index[0])].change_speed(value)
-                return 'Effected'
+                return STATUS[3]
             except:
-                return 'Fail'
+                return STATUS[1]
+
+        def Unselectable(nBoard, indexs, phase, value, options):
+            return STATUS[1]
 
         # Card Effect
         def PushChess(nBoard, indexs, phase, value, options):
+            if phase != self.__phase:
+                return STATUS[0]
             oBoard = nBoard.getoBoard()
             rBoard = nBoard.getrBoard()
             try:
@@ -74,29 +87,33 @@ class Effect:
                 for positions in moveRange:
                     if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ':
                         rBoard[positions[0]][positions[1]] = 'x'
+                    else:
                         try:
                             oBoard[(positions[1], positions[0])].set_killable(options['killable'])
+                            if oBoard[(positions[1], positions[0])].get_killable() and oBoard[(positions[1], positions[0])].get_team() != oBoard[(index[1], index[0])].get_team():
+                                rBoard[positions[0]][positions[1]] += 'x'
+                                break
                         except:
                             pass
                 if len(indexs) == 2:
                     new_index = indexs[1]
                     if nBoard.select_Move(index, new_index, triggeredEffect = False):
                         self.unactive_effect()
-                        return 'Effected'
+                        return STATUS[3]
                     else:
-                        return 'Fail'
+                        return STATUS[1]
             except:
                 print('Lỗi hàm')
-                return 'Fail'
-            return 'Success'
+                return STATUS[1]
+            return STATUS[2]
 
-        if phase == self.__phase and not self.__actived and '!' not in self.__name and self.__stack > 0:
+        if not self.__actived and self.__stack > 0:
             func = locals()[self.__name](nBoard, indexs, phase, self.__value, Options)
-            if func == 'Effected':
+            if func == STATUS[3]:
                 self.__actived = True
             return func
         else:
-            return 'Fail'
+            return STATUS[1]
 
     def triggered_effect(self):
         self.__stack -= 1
