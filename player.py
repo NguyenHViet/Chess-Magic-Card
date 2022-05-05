@@ -38,7 +38,7 @@ class Player:
             self.__picking = index
             return self.__cards[index].get_selected_require()
         else:
-            return None
+            return -1
 
     def decelect(self):
         self.__picking = None
