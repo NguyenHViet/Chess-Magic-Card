@@ -112,7 +112,6 @@ class Desert(Environment):
                                     oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 1, phase = 2))
                             except:
                                 pass
-                    nBoard.printMap()
                 elif turn%6 == 3:
                     self._CellLayer = self.create_map(nBoard)
             except:
