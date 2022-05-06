@@ -5,7 +5,7 @@ import chess
 import init
 import cell
 import effect as ef
-import enviroment as env
+import environment as env
 
 class Board:
     def __init__(self, x, y, width, pTeam, enviroment, lImg):
@@ -49,21 +49,23 @@ class Board:
         self.__cellImg = self.__enviroment.get_env_img()
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
-        self.__CellLayer = []
-        for x in range(8):
-            self.__CellLayer.append([])
-            for y in range(8):
-                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__cellImg["Normal"]))
+        self.__CellLayer = self.__enviroment.create_map(self)
 
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
 
+    def get_x(self):
+        return self.__x
+
+    def get_y(self):
+        return self.__y
+
     def draw(self, win):
+        self.__enviroment.draw(win)
         interval = self.__width / 8
         for row in range(8):
             for col in range(8):
-                self.__CellLayer[row][col].draw(win, interval, interval)
                 if (row+col) % 2 == 0:
                     win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
@@ -126,14 +128,14 @@ class Board:
             return False
 
     def deselect(self):
-        self.__readableMap = [[' ' for i in range(8)] for i in range(8)]
         for i in range(8):
             for j in range(8):
                 try:
                     self.__readableMap[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
                     self.__OjectLayer[(j, i)].set_killable(False)
                 except:
-                    self.__readableMap[i][j] = ' '
+                    if 'x' in self.__readableMap[i][j]:
+                        self.__readableMap[i][j] = ' '
 
     def convert_to_readable(self):
         new_map = self.__readableMap
@@ -173,9 +175,9 @@ class Board:
     def update(self, phase, turn):
         Phase = phase
         updating = True
+        self.__enviroment.apply_env_effect(self, turn, phase)
         if self.is_finished():
             Phase = chess.PHASE['Finish']
-            print('WIN')
         elif phase == chess.PHASE['Start']:
             print("Bắt đầu lượt mới")
             Phase = chess.PHASE['Picking']
@@ -199,3 +201,6 @@ class Board:
 
     def getrBoard(self):
         return self.__readableMap
+
+    def getcBoard(self):
+        return self.__CellLayer

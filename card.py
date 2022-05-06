@@ -99,7 +99,6 @@ class Card:
             phase = 3
             result = []
             for effect in effects:
-                print(0)
                 try:
                     result.append(copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam))
                     effect.unactive_effect()
