@@ -31,7 +31,7 @@ BLACK = (0, 0, 0)
 startTurnTime = math.floor(time.time())
 timing = 0
 AddTimeAble = True
-env = 'Desert'
+env = 'Foggy_forest'
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -81,8 +81,8 @@ def updateGUI():
     button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 105, 50, 50, color='white')
 
     button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
-    if Players[turns%2].get_time() - timing < 0:
-        endGame()
+    # if Players[turns%2].get_time() - timing < 0:
+    #     endGame()
 
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
