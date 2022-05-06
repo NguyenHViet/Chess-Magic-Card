@@ -29,7 +29,7 @@ BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
 startTurnTime = math.floor(time.time())
-
+AddTimeAble = True
 env = 'Frozen_river'
 
 pygame.display.set_caption("Chess: Magic Card")
@@ -49,7 +49,7 @@ def new_game():
     phase = chess.PHASE['Start']
     pause = False
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
+    Players = [player.Player('Player 1', 'w', 1, 10), player.Player('Player 2', 'b', 1, 10)]
     pygame.mixer.music.load('music\\Two Steps From Hell - Star Sky.wav')
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(-1)
@@ -67,7 +67,7 @@ def mouse_on_cards(pos):
     return False
 
 def updateGUI():
-    global phase
+    global phase, turns
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
 
@@ -81,17 +81,18 @@ def updateGUI():
 
     button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
     if Players[turns%2].get_time() - timing <= 0:
-        phase = chess.PHASE['Finish']
+        phase = chess.PHASE['End']
 
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
-    ncard.draw(win, init.font40, pos, Players[turns%2].get_cards(), Players[turns%2].get_picking())
+    ncard.draw(win, init.font40, pos, Players[turns%2])
     nboard.draw(win)
     if phase == chess.PHASE['Finish']:
-        WIN.fill("black")
+        print('WIN')
+        endGame()
     updateGUI()
     pygame.display.update()
 
@@ -158,6 +159,8 @@ def main():
                                 required = Players[turns % 2].pick_card(index)
                                 if required != -1:
                                     selected = True
+                                else:
+                                    phase = chess.PHASE['Picking']
                             else:
                                 selected = False
                         except:
@@ -186,11 +189,11 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        phase = Players[turns % 2].update(phase, init.DECK, False, startTurnTime)
-        if phase == chess.PHASE['End']:
-            startTurnTime = math.floor(time.time())
+        phase = Players[turns % 2].update(phase, init.DECK, AddTimeAble, startTurnTime)
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
+        if phase == chess.PHASE['End']:
+            startTurnTime = math.floor(time.time())
 
 def button(text, img, img_h, x, y, width, height, action = None, color = 'black'):
     mouse = pygame.mouse.get_pos()
@@ -231,6 +234,28 @@ def paused():
         button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, new_game)
         button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, game_intro)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 5*interval, 363, 100, end_game)
+        pygame.display.update()
+
+def endGame():
+    pygame.mixer.music.pause()
+    global pause
+    pause = True
+    textSurface = init.font60.render('Player ' + str(turns%2 + 1) + ' WIN', True, 'black')
+    textRect = textSurface.get_rect()
+    interval = (WinHeight - offsetHeight) / 6
+    textRect.center = ((WinWidth / 2), offsetHeight*2)
+    cell.Cell(0, 0, init.listImage['GEI']['Normal']).draw(WIN, WinHeight, WinWidth)
+    WIN.blit(textSurface, textRect)
+    while pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end_game()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    main()
+        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, new_game)
+        button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, game_intro)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, end_game)
         pygame.display.update()
 
 def end_turn():

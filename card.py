@@ -4,6 +4,7 @@ import pygame
 import chess
 import effect as ef
 import cell
+import init
 import textwrap
 
 def drawText(surface, text, color, rect, font, aa=False, bkg=None):
@@ -126,7 +127,9 @@ class CardArea:
         for i in range(3):
             self.__cellLayers.append(cell.Cell(self.__y + 40, self.__x + interval * i, self.__GEI['Darken']))
 
-    def draw(self, win, font, pos, listCard = [], picking = None):
+    def draw(self, win, font, pos, nPlayer):
+        listCard = nPlayer.get_cards()
+        picking = nPlayer.get_picking()
         interval = self.__Height / 3
         for cell in self.__cellLayers:
             if cell.is_mouse_hovering(pos):
@@ -140,6 +143,8 @@ class CardArea:
             cell.draw(win, interval, self.__Width - 20)
         for i in range(len(listCard)):
             listCard[i].draw(win, font, self.__cellLayers[i].get_pos(), self.__Height / 3, self.__Width)
+            if listCard[i].get_cost() > nPlayer.get_action():
+                win.blit(init.listImage['GEI']['LockCard'], self.__cellLayers[i].get_pos())
 
     def pick_card(self, pos):
         for i in range(3):

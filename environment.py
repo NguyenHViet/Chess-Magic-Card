@@ -143,7 +143,6 @@ class Frozen_river(Environment):
         for (x, y) in cell_posision:
             self._CellLayer[x][y].set_img(self._image['Specical'])
             self._EffectedCells.update({(x, y): 3})
-        print(self._EffectedCells)
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
@@ -164,6 +163,7 @@ class Frozen_river(Environment):
                         if self._EffectedCells[(y, x)] <= -3:
                             self._CellLayer[y][x].set_img(self._image['Specical'])
                             oBoard[(y, x)] = None
+                            rBoard[x][y] = ' '
                     except:
                         pass
 

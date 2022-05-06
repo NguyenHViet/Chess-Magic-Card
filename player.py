@@ -10,15 +10,15 @@ import chess
 
 
 class Player:
-    def __init__(self, name, team, time = 120):
+    def __init__(self, name, team, time = 120, timeBonus = 0):
         self.__name = name
         self.__team = team
-        self.__actions = 3
+        self.__actions = 1
         self.__cards = []
         self.__picking = None
         self.__totalTime = time
         self.__time = self.__totalTime
-        self.__timeBonus = 0
+        self.__timeBonus = timeBonus
 
     def get_picking(self):
         return self.__picking
@@ -77,10 +77,10 @@ class Player:
         elif self.__actions <= 0:
             nPhase = chess.PHASE['End']
         elif phase == chess.PHASE['End']:
-            if self.__time - timing <= self.__totalTime:
+            if addableTime:
                 self.__totalTime = self.__time - timing
                 self.__time = self.__totalTime
-                print(self.__totalTime)
-            elif addableTime:
-                self.__totalTime = self.__time
+            elif self.__time - timing <= self.__totalTime:
+                self.__totalTime = self.__time - timing
+                self.__time = self.__totalTime
         return nPhase

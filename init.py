@@ -25,6 +25,7 @@ listImage = {
         'Card_Hover':pygame.image.load('img\\GEI\\card_hover.png'),
         'Card_Picking':pygame.image.load('img\\GEI\\picking_card.png'),
         'Card_Cell':pygame.image.load('img\\GEI\\card_area.png'),
+        'LockCard': pygame.image.load('img\\GEI\\lock_card.png')
     },
     'GUI': {
         'EndTurn': pygame.image.load('img\\GUI\\end_turn_button.png'),
@@ -35,7 +36,7 @@ listImage = {
         'Black Timer':pygame.image.load('img\\GUI\\b_timer.png'),
         'White Timer':pygame.image.load('img\\GUI\\w_timer.png'),
         'Actions': pygame.image.load('img\\GUI\\actions.png'),
-        'Lock':pygame.image.load('img\\GUI\\lock.png')
+        'Lock':pygame.image.load('img\\GUI\\lock.png'),
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -92,43 +93,3 @@ ENVIRONMENT = {
     'Swamp':env.Swamp(listImage['Swamp'], 800),
     'Grassland':env.Grassland(listImage['Grassland'], 800)
 }
-
-def create_area(type_of_environment):
-    """
-    Hàm tạo hình dạng map
-    :param type_of_environment: Tên môi trường (str)
-    :return: Hình dạng map (list of image)
-    """
-
-    area = list()
-    cell_posision = list()
-    count = int(0)
-
-    while(count < 12):
-        x = random.randint(0, 7)
-        y = random.randint(1, 6)
-        if (x, y) in cell_posision:
-            pass
-        else:
-            cell_posision.append((x, y))
-            count += 1
-
-    count = 0
-    for i in range(8):
-        area.append([])
-        for j in range(8):
-            if ((i, j) in cell_posision) and (count < 12):
-                if type_of_environment == 'Frozen_river':
-                    area[i].append(listImage['Frozen_river']['Speacial'])
-                elif type_of_environment == 'Swamp':
-                    area[i].append(listImage['Swamp']['Speacial'])
-                count += 1
-            else:
-                if type_of_environment == 'Frozen_river':
-                    area[i].append((listImage['Frozen_river']['Normal']))
-                elif type_of_environment == 'Swamp':
-                    area[i].append(listImage['Swamp']['Normal'])
-    return area
-
-#frozen_river_map = create_area('Frozen_river')
-#swamp_map = create_area('Swamp')

@@ -241,7 +241,7 @@ class Pawn(Chess):
                             oBoard[(positions[1], positions[0])].set_killable(True)
                             rBoard[positions[0]][positions[1]] += 'x'
                     except:
-                        break
+                        pass
                 else:
                     if rBoard[positions[0]][positions[1]] == ' ':
                         rBoard[positions[0]][positions[1]] = 'x'
