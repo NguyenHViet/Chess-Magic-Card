@@ -11,16 +11,18 @@ class Environment:
     Lớp 'Môi trường'
     """
 
-    def __int__(self, name, image, effects = []):
+    def __int__(self, name, image, width, effects = []):
         """
         Hàm tạo môi trường
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Danh sách hiệu ứng của môi trường (list or str)
         """
-        self.__name = name
-        self.__image = image
-        self.__effects = effects
+        self._name = name
+        self._image = image
+        self._effects = effects
+        self._width = width
+        self._CellLayer = []
 
     def get_name(self):
         """
@@ -34,7 +36,7 @@ class Environment:
         Hàm lấy danh sách hình ảnh môi trường
         :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
-        return self.__image
+        return self._image
 
     def get_effect(self):
         """
@@ -46,18 +48,34 @@ class Environment:
     def apply_env_effect(self, **options):
         pass
 
+    def draw(self, win):
+        interval = self._width / 8
+        for row in range(8):
+            for col in range(8):
+                self._CellLayer[row][col].draw(win, interval, interval)
+
+    def create_map(self, nBoard):
+        cBoard = []
+        interval = self._width / 8
+        for x in range(8):
+            cBoard.append([])
+            for y in range(8):
+                cBoard[x].append(cell.Cell((x * interval) + nBoard.get_y(), (y * interval) + nBoard.get_x(), self._image['Normal']))
+        self._CellLayer = cBoard
+        return cBoard
+
 class Desert(Environment):
     """
     Lớp 'Sa mạc'
     """
-    def __init__(self, image, effects = []):
+    def __init__(self, image, width = 0, effects = []):
         """
         Hàm tạo môi trường sa mạc
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__int__('desert', image, 'Unmoveable')
+        super().__int__('desert', image, width, 'Unmoveable')
 
     def apply_env_effect(self, nBoard, turn, phase):
         """
@@ -98,17 +116,56 @@ class Frozen_river(Environment):
     Lớp 'Sông băng'
     """
 
-    def __init__(self, image, effects = []):
+    def __init__(self, image, width, effects = []):
         """
         Hàm tạo môi trường sông băng
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__int__('frozen_river', image, 'Fall_Down')
+        self._EffectedCells = {}
+        super().__int__('frozen_river', image, width, 'Fall_Down')
+
+    def create_map(self, nBoard):
+        super().create_map(nBoard)
+        cell_posision = list()
+        count = int(0)
+        self._EffectedCells = {}
+        while (count < 12):
+            x = random.randint(0, 7)
+            y = random.randint(1, 6)
+            if (x, y) in cell_posision:
+                pass
+            else:
+                cell_posision.append((x, y))
+                count += 1
+
+        for (x, y) in cell_posision:
+            self._CellLayer[x][y].set_img(self._image['Specical'])
+            self._EffectedCells.update({(x, y): 3})
+        print(self._EffectedCells)
+        return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
-        env_obj = chess.Chess('env_obj')
+        rBoard = nBoard.getrBoard()
+        oBoard = nBoard.getoBoard()
+        if phase == chess.PHASE['Start']:
+            for x in range(8):
+                for y in range(8):
+                    try:
+                        if rBoard[x][y] != ' ':
+                            self._EffectedCells[(y, x)] -= 1
+                        if self._EffectedCells[(y, x)] <= 0:
+                            self._CellLayer[y][x].set_img(self._image['Triggered_effect'])
+                            oBoard[(y, x)] = chess.Chess('', '!', '', '', effects=[ef.Effect('Unselectable', turns = 3)])
+                            rBoard[x][y] = '!'
+                            self._EffectedCells[(y, x)] -= 1
+                            nBoard.printMap()
+                        if self._EffectedCells[(y, x)] <= -3:
+                            self._CellLayer[y][x].set_img(self._image['Specical'])
+                            oBoard[(y, x)] = None
+                    except:
+                        pass
 
 
 

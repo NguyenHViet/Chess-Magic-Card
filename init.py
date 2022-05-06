@@ -46,20 +46,20 @@ listImage = {
     },
     'Desert': {
         'Normal':pygame.image.load('img\\Environment\\desert_normal.png'),
-        'Speacial':pygame.image.load('img\\Environment\\derest_speacial.png')
+        'Specical':pygame.image.load('img\\Environment\\derest_speacial.png')
     },
     'Frozen_river':{
         'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
-        'Speacial':pygame.image.load('img\\Environment\\frozen_river_speacial.png'),
+        'Specical':pygame.image.load('img\\Environment\\frozen_river_speacial.png'),
         'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png')
     },
     'Foggy_forest': {
         'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
-        'Speacial':pygame.image.load('img\\Environment\\foggy_forest_speacial.png')
+        'Specical':pygame.image.load('img\\Environment\\foggy_forest_speacial.png')
     },
     'Swamp': {
         'Normal':pygame.image.load('img\\Environment\\swamp_normal.png'),
-        'Speacial':pygame.image.load('img\\Environment\\swamp_speacial.png')
+        'Specical':pygame.image.load('img\\Environment\\swamp_speacial.png')
     },
     'Grassland': {
         'Normal':pygame.image.load('img\\Environment\\grassland.png')
@@ -85,14 +85,13 @@ DECK = [
 ]
 
 ENVIRONMENT = {
-    'Desert':env.Desert(listImage['Desert']),
-    'Frozen_river':env.Frozen_river(listImage['Frozen_river']),
-    'Foggy_forest':env.Foggy_forest(listImage['Foggy_forest']),
-    'Swamp':env.Swamp(listImage['Swamp']),
-    'Grassland':env.Grassland(listImage['Grassland'])
+    'Desert':env.Desert(listImage['Desert'], 800),
+    'Frozen_river':env.Frozen_river(listImage['Frozen_river'], 800),
+    'Foggy_forest':env.Foggy_forest(listImage['Foggy_forest'], 800),
+    'Swamp':env.Swamp(listImage['Swamp'], 800),
+    'Grassland':env.Grassland(listImage['Grassland'], 800)
 }
 
-print(ENVIRONMENT['Grassland'])
 def create_area(type_of_environment):
     """
     Hàm tạo hình dạng map
@@ -100,14 +99,13 @@ def create_area(type_of_environment):
     :return: Hình dạng map (list of image)
     """
 
-    image = 'img\\Environment\\'
     area = list()
     cell_posision = list()
     count = int(0)
 
     while(count < 12):
         x = random.randint(0, 7)
-        y = random.randint(1, 7)
+        y = random.randint(1, 6)
         if (x, y) in cell_posision:
             pass
         else:
@@ -131,5 +129,5 @@ def create_area(type_of_environment):
                     area[i].append(listImage['Swamp']['Normal'])
     return area
 
-frozen_river_map = create_area('Frozen_river')
-swamp_map = create_area('Swamp')
+#frozen_river_map = create_area('Frozen_river')
+#swamp_map = create_area('Swamp')

@@ -107,9 +107,12 @@ class Chess:
         :param win: Cửa sổ được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(int, int))
         """
-        offsetHeight = (width - self._image.get_height()) / 2
-        offsetWidth = (width - self._image.get_width()) / 2
-        win.blit(self._image, (pos[0] + offsetHeight, pos[1] + offsetWidth))
+        try:
+            offsetHeight = (width - self._image.get_height()) / 2
+            offsetWidth = (width - self._image.get_width()) / 2
+            win.blit(self._image, (pos[0] + offsetHeight, pos[1] + offsetWidth))
+        except:
+            pass
 
     def set_killable(self, able):
         """
@@ -224,21 +227,21 @@ class Pawn(Chess):
             direction = 1
 
         for i in range(1, self._speed + 1):
-            if rBoard[index[0] + i * direction][index[1]] == ' ':
+            if rBoard[index[0] + i * direction][index[1]] == ' ' and '!' not in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] = 'x'
             else:
                 break
         top3 = [[index[0] + direction, index[1] + i] for i in range(-1, 2)]
 
         for positions in top3:
-            if on_board(positions):
+            if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]]:
                 if top3.index(positions) % 2 == 0:
                     try:
                         if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
                             oBoard[(positions[1], positions[0])].set_killable(True)
                             rBoard[positions[0]][positions[1]] += 'x'
                     except:
-                        pass
+                        break
                 else:
                     if rBoard[positions[0]][positions[1]] == ' ':
                         rBoard[positions[0]][positions[1]] = 'x'
@@ -262,7 +265,7 @@ class King(Chess):
         """
         for y in range(3):
             for x in range(3):
-                if on_board((index[0] - 1 + y, index[1] - 1 + x)):
+                if on_board((index[0] - 1 + y, index[1] - 1 + x)) and '!' not in rBoard[index[0] - 1 + y][index[1] - 1 + x]:
                     if rBoard[index[0] - 1 + y][index[1] - 1 + x] == ' ':
                         rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
                     else:
@@ -271,7 +274,7 @@ class King(Chess):
                                 oBoard[(index[1] - 1 + x, index[0] - 1 + y)].set_killable(True)
                                 rBoard[index[0] - 1 + y][index[1] - 1 + x] += 'x'
                         except:
-                            pass
+                            break
 
 class Rook(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -297,7 +300,7 @@ class Rook(Chess):
 
         for dir in cross:
             for pos in dir:
-                if on_board(pos):
+                if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
                     if rBoard[pos[0]][pos[1]] == ' ':
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
@@ -307,7 +310,7 @@ class Rook(Chess):
                                 rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
-                            pass
+                            break
 
 class Bishop(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -333,7 +336,7 @@ class Bishop(Chess):
 
         for dir in diagonals:
             for pos in dir:
-                if on_board(pos):
+                if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
                     if rBoard[pos[0]][pos[1]] == ' ':
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
@@ -343,7 +346,7 @@ class Bishop(Chess):
                                 rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
-                            pass
+                            break
 
 class Knight(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -365,7 +368,7 @@ class Knight(Chess):
         for i in range(-2, 3):
             for j in range(-2, 3):
                 if i ** 2 + j ** 2 == 5:
-                    if on_board((index[0] + i, index[1] + j)):
+                    if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
                         if rBoard[index[0] + i][index[1] + j] == ' ':
                             rBoard[index[0] + i][index[1] + j] = 'x'
                         else:
@@ -374,7 +377,7 @@ class Knight(Chess):
                                     oBoard[(index[1] + j, index[0] + i)].set_killable(True)
                                     rBoard[index[0] + i][index[1] + j] = 'x'
                             except:
-                                pass
+                                break
 
 class Queen(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -400,7 +403,7 @@ class Queen(Chess):
 
         for dir in cross:
             for pos in dir:
-                if on_board(pos):
+                if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
                     if rBoard[pos[0]][pos[1]] == ' ':
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
@@ -410,7 +413,7 @@ class Queen(Chess):
                                 rBoard[pos[0]][pos[1]] = 'x'
                             break
                         except:
-                            pass
+                            break
 
         diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
                      [[index[0] + i, index[1] - i] for i in range(1, 8)],
@@ -424,7 +427,7 @@ class Queen(Chess):
 
         for dir in diagonals:
             for pos in dir:
-                if on_board(pos):
+                if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
                     if rBoard[pos[0]][pos[1]] == ' ':
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
@@ -434,4 +437,4 @@ class Queen(Chess):
                                 rBoard[pos[0]][pos[1]] = 'x'
                             break
                         except:
-                            pass
+                            break
