@@ -80,7 +80,7 @@ def updateGUI():
     button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 105, 50, 50, color='white')
 
     button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
-    if Players[turns%2].get_time() - timing <= 0:
+    if Players[turns%2].get_time() - timing < 0:
         phase = chess.PHASE['End']
         Players[turns%2].set_time(0)
 
