@@ -77,15 +77,28 @@ class Desert(Environment):
         """
         super().__int__('desert', image, width, 'Unmoveable')
 
+    def create_map(self, nBoard):
+        super().create_map(nBoard)
+        cell_posision = list()
+
+        for x in range(8):
+            for y in range(8):
+                self._CellLayer[x][y].set_img(self._image['Normal'])
+        return self._CellLayer
+
     def apply_env_effect(self, nBoard, turn, phase):
         """
         Hàm áp dụng effect của môi trường 'Sa mạc' vào bàn cờ
         :param turn: Đếm ngược thời gian xuất hiện bão cát(int)
         """
-        if phase == chess.PHASE['start']:
+        rBoard = nBoard.getrBoard()
+        oBoard = nBoard.getoBoard()
+
+        if phase == chess.PHASE['Start']:
             try:
+                print(turn)
                 if turn%6 == 0:
-                    area = random.Random.randint(1, 5)
+                    area = random.randint(1, 5)
                     if area == 1:
                         count_1 = int(0)
                         count_2 = int(0)
@@ -98,16 +111,19 @@ class Desert(Environment):
                     elif area == 4:
                         count_1 = int(3)
                         count_2 = int(4)
-                    area_effect = list[list]
 
                     for i in range(1, 4):
                         for j in range(4):
-                            board.Board.getcBoard()[j + count_2][i + count_1].set_img(init.listImage['Environment']['Speacial'])
+                            print(self._CellLayer[j][i].get_x())
+                            self._CellLayer[j][i].set_img(self._image['Specical'])
                             try:
-                                if board.Board.getoBoard()[(j + count_2, i + count_1)] != None:
-                                    board.Board.getoBoard()[(j + count_2, i + count_1)].add_effect(ef.Effect(self.get_effect(), 0, 1, 2, 0, True))
+                                if oBoard.getoBoard()[(j + count_2, i + count_1)] != ' ':
+                                    oBoard.getoBoard()[(j + count_2, i + count_1)].add_effect(ef.Effect('IncreaseSpeed', value= -10, turn = 3, phase= 2, stack= 3))
                             except:
                                 pass
+                    nBoard.printMap()
+                elif turn%6 == 3:
+                    self._CellLayer = self.create_map(nBoard)
             except:
                 pass
 
@@ -162,6 +178,7 @@ class Frozen_river(Environment):
                             nBoard.printMap()
                         if self._EffectedCells[(y, x)] <= -3:
                             self._CellLayer[y][x].set_img(self._image['Specical'])
+                            self._EffectedCells[(y,x)] = 3
                             oBoard[(y, x)] = None
                             rBoard[x][y] = ' '
                     except:
