@@ -82,6 +82,7 @@ def updateGUI():
     button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
     if Players[turns%2].get_time() - timing <= 0:
         phase = chess.PHASE['End']
+        Players[turns%2].set_time(0)
 
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)

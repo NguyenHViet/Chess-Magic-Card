@@ -13,12 +13,15 @@ class Player:
     def __init__(self, name, team, time = 120, timeBonus = 0):
         self.__name = name
         self.__team = team
-        self.__actions = 1
+        self.__actions = 0
         self.__cards = []
         self.__picking = None
         self.__totalTime = time
         self.__time = self.__totalTime
         self.__timeBonus = timeBonus
+
+    def set_time(self, new_time):
+        self.__time = new_time
 
     def get_picking(self):
         return self.__picking
