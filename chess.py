@@ -231,7 +231,7 @@ class Pawn(Chess):
                 rBoard[index[0] + i * direction][index[1]] = 'x'
             else:
                 break
-        top3 = [[index[0] + direction * (self._speed > 0), index[1] + i] for i in range(-1, 2)]
+        top3 = [[index[0] + direction * (self._speed > 0), index[1] + i * (self._speed > 0)] for i in range(-1, 2)]
         for positions in top3:
             if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]]:
                 if top3.index(positions) % 2 == 0:

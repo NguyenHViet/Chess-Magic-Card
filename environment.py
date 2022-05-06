@@ -75,6 +75,8 @@ class Desert(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
+        self.__efa_x = 0
+        self.__efa_y = 0
         super().__int__('desert', image, width, 'Unmoveable')
 
     def create_map(self, nBoard):
@@ -97,26 +99,17 @@ class Desert(Environment):
         if phase == chess.PHASE['Start']:
             try:
                 if turn%6 == 0:
-                    area = random.randint(1, 5)
-                    if area == 1:
-                        count_1 = int(0)
-                        count_2 = int(0)
-                    elif area ==2:
-                        count_1 = int(0)
-                        count_2 = int(4)
-                    elif area == 3:
-                        count_1 = int(3)
-                        count_2 = int(0)
-                    elif area == 4:
-                        count_1 = int(3)
-                        count_2 = int(4)
-
-                    for i in range(1, 4):
+                    self.__efa_x = random.randint(1, 4)
+                    self.__efa_y = random.randint(0, 4)
+                x = self.__efa_x
+                y = self.__efa_y
+                if turn%6 < 3:
+                    for i in range(0, 3):
                         for j in range(4):
-                            self._CellLayer[j  + count_2][i + count_1].set_img(self._image['Specical'])
+                            self._CellLayer[j  + y][i + x].set_img(self._image['Specical'])
                             try:
-                                if oBoard[(j + count_2, i + count_1)] != None:
-                                    oBoard[(j + count_2, i + count_1)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 3, phase = 2))
+                                if oBoard[(j + y, i + x)] != None:
+                                    oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 1, phase = 2))
                             except:
                                 pass
                     nBoard.printMap()

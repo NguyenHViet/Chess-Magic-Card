@@ -25,7 +25,8 @@ listImage = {
         'Card_Hover':pygame.image.load('img\\GEI\\card_hover.png'),
         'Card_Picking':pygame.image.load('img\\GEI\\picking_card.png'),
         'Card_Cell':pygame.image.load('img\\GEI\\card_area.png'),
-        'LockCard': pygame.image.load('img\\GEI\\lock_card.png')
+        'LockCard': pygame.image.load('img\\GEI\\lock_card.png'),
+        'Empty':pygame.image.load('img\\GEI\\empty.png')
     },
     'GUI': {
         'EndTurn': pygame.image.load('img\\GUI\\end_turn_button.png'),

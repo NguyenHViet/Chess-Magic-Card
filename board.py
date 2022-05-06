@@ -46,10 +46,14 @@ class Board:
                              (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['k']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']),
                              (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
         self.__GEI = lImg['GEI']
-        self.__cellImg = self.__enviroment.get_env_img()
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
-        self.__CellLayer = self.__enviroment.create_map(self)
+        self.__enviroment.create_map(self)
+        self.__CellLayer = []
+        for x in range(8):
+            self.__CellLayer.append([])
+            for y in range(8):
+                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
 
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
@@ -77,6 +81,7 @@ class Board:
                              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
                     self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
+                self.__CellLayer[row][col].draw(win)
 
     def printMap(self):
         for i in range(8):
