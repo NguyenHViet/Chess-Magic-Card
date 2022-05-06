@@ -41,7 +41,8 @@ turns = 0
 phase = chess.PHASE['Start']
 
 def new_game():
-    global turns, phase, nboard, ncard, Players
+    global turns, phase, nboard, ncard, Players, startTurnTime
+    startTurnTime = math.floor(time.time())
     turns = 0
     phase = chess.PHASE['Start']
     pause = False
@@ -64,18 +65,23 @@ def mouse_on_cards(pos):
     return False
 
 def updateGUI():
+    global phase
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
 
     timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
-    button(timeLeft, init.listImage['GUI']['Black Timer'], init.listImage['GUI']['Black Timer'], 100, offsetHeight, 230, 60 ,color = 'white')
-    button(str(Players[1].get_action()), init.listImage['GUI']['Actions'], init.listImage['GUI']['Actions'], 300, offsetHeight + 5, 50, 50, color='white')
+    button(timeLeft, init.listImage['GUI']['Black Timer'], '', 125, offsetHeight, 230, 60 ,color = 'white')
+    button(str(Players[1].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 5, 50, 50, color='white')
 
     timeLeft = '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)//60) + ':' + '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)%60)
-    button(timeLeft, init.listImage['GUI']['White Timer'], init.listImage['GUI']['White Timer'], 100, offsetHeight + 100, 230, 60)
-    button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], init.listImage['GUI']['Actions'], 300, offsetHeight + 105, 50, 50, color='white')
+    button(timeLeft, init.listImage['GUI']['White Timer'], '', 125, offsetHeight + 100, 230, 60)
+    button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 105, 50, 50, color='white')
 
-    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 10, offsetHeight, 160, 160, end_turn)
+    button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
+    if Players[turns%2].get_time() - timing <= 0:
+        phase = chess.PHASE['Finish']
+
+    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
 def update_display(win, nboard, pos, turns, phase):
@@ -150,6 +156,8 @@ def main():
                                 required = Players[turns % 2].pick_card(index)
                                 if required != -1:
                                     selected = True
+                            else:
+                                selected = False
                         except:
                             selectedPos = []
                             phase = chess.PHASE['Picking']
@@ -186,10 +194,13 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     img = pygame.transform.scale(img, (width, height))
-    img_h = pygame.transform.scale(img_h, (width, height))
     WIN.blit(img, (x, y))
     if x + width > mouse[0] > x and y + height > mouse[1] > y:
-        WIN.blit(img_h, (x, y))
+        try:
+            img_h = pygame.transform.scale(img_h, (width, height))
+            WIN.blit(img_h, (x, y))
+        except:
+            pass
         if click[0] == 1 and action != None:
             action()
     textSurface = init.font40.render(text, True, color)
@@ -221,7 +232,9 @@ def paused():
         pygame.display.update()
 
 def end_turn():
-    global phase, turns
+    global phase, nboard, turns
+    Players[turns % 2].decelect()
+    nboard.deselect()
     phase = chess.PHASE['End']
     pygame.time.delay(50)
 

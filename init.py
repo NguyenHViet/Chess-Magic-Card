@@ -33,7 +33,8 @@ listImage = {
         'Hover_Button':pygame.image.load('img\\GUI\\button_hover.png'),
         'Black Timer':pygame.image.load('img\\GUI\\b_timer.png'),
         'White Timer':pygame.image.load('img\\GUI\\w_timer.png'),
-        'Actions': pygame.image.load('img\\GUI\\actions.png')
+        'Actions': pygame.image.load('img\\GUI\\actions.png'),
+        'Lock':pygame.image.load('img\\GUI\\lock.png')
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
