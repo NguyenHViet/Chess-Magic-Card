@@ -93,39 +93,31 @@ class Desert(Environment):
         """
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
-
+        cell_posision = list()
+        count = int(0)
         if phase == chess.PHASE['Start']:
             try:
-                print(turn)
-                area = random.randint(1, 4)
-                print(area)
                 if turn%6 == 0:
-                    if area == 1:
-                        count_1 = int(0)
-                        count_2 = int(0)
-                    elif area ==2:
-                        count_1 = int(0)
-                        count_2 = int(4)
-                    elif area == 3:
-                        count_1 = int(3)
-                        count_2 = int(0)
-                    elif area == 4:
-                        count_1 = int(3)
-                        count_2 = int(4)
+                    while (count < 12):
+                        x = random.randint(0, 7)
+                        y = random.randint(1, 6)
+                        if (x, y) in cell_posision:
+                            pass
+                        else:
+                            cell_posision.append((x, y))
+                            count += 1
 
 
-                    for i in range(1, 4):
-                        for j in range(4):
-                            self._CellLayer[j + count_2][i + count_1].set_img(self._image['Specical'])
-                            try:
-                                if oBoard.getoBoard()[(j + count_2, i + count_1)] != ' ':
-                                    oBoard.getoBoard()[(j + count_2, i + count_1)].add_effect(ef.Effect('IncreaseSpeed', value= -10, turn = 3, phase= 2, stack= 3))
-                            except:
-                                pass
+                    for (x, y) in cell_posision:
+                        self._CellLayer[x][y].set_img(self._image['Specical'])
+                        try:
+                            if nBoard.getoBoard()[(y, x)] != ' ':
+                                nBoard.getoBoard()[(y, x)].add_effect(ef.Effect('IncreaseSpeed', value= -10, turn = 3, phase= 2, stack= 3))
+                        except:
+                            pass
                     nBoard.printMap()
                 elif turn%6 == 3:
                     self._CellLayer = self.create_map(nBoard)
-                    area = 0
             except:
                 pass
 
