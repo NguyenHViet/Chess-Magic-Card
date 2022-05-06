@@ -49,20 +49,20 @@ listImage = {
     },
     'Desert': {
         'Normal':pygame.image.load('img\\Environment\\desert_normal.png'),
-        'Specical':pygame.image.load('img\\Environment\\derest_speacial.png')
+        'Specical':pygame.image.load('img\\Environment\\derest_special.png')
     },
     'Frozen_river':{
         'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
-        'Specical':pygame.image.load('img\\Environment\\frozen_river_speacial.png'),
+        'Specical':pygame.image.load('img\\Environment\\frozen_river_special.png'),
         'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png')
     },
     'Foggy_forest': {
         'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
-        'Specical':pygame.image.load('img\\Environment\\foggy_forest_speacial.png')
+        'Specical':pygame.image.load('img\\Environment\\foggy_forest_special.png')
     },
     'Swamp': {
         'Normal':pygame.image.load('img\\Environment\\swamp_normal.png'),
-        'Specical':pygame.image.load('img\\Environment\\swamp_speacial.png')
+        'Specical':pygame.image.load('img\\Environment\\swamp_special.png')
     },
     'Grassland': {
         'Normal':pygame.image.load('img\\Environment\\grassland.png')

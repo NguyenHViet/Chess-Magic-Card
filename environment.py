@@ -103,7 +103,7 @@ class Desert(Environment):
                     self.__efa_y = random.randint(0, 4)
                 x = self.__efa_x
                 y = self.__efa_y
-                if turn%6 < 3:
+                if turn%6 < 4:
                     for i in range(0, 3):
                         for j in range(4):
                             self._CellLayer[j  + y][i + x].set_img(self._image['Specical'])
@@ -112,7 +112,7 @@ class Desert(Environment):
                                     oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 1, phase = 2))
                             except:
                                 pass
-                elif turn%6 == 3:
+                elif turn%6 == 4:
                     self._CellLayer = self.create_map(nBoard)
             except:
                 pass
@@ -192,7 +192,7 @@ class Foggy_forest(Environment):
 
     def apply_env_effect(self):
 
-        "Đổi toàn bộ ô cờ sang ô speacial"
+        "Đổi toàn bộ ô cờ sang ô special"
         "Thay đổi giá trị di chuyển của quân cờ trừ mã xuống còn 4"
 
 class Swamp(Environment):
@@ -211,9 +211,9 @@ class Swamp(Environment):
 
     def apply_env_effect(self):
 
-        "Random vị trí 10 ô speacial"
-        "Đổi ô cờ sang ô speacial"
-        "Cài ô speacial như là 1 quân cờ"
+        "Random vị trí 10 ô special"
+        "Đổi ô cờ sang ô special"
+        "Cài ô special như là 1 quân cờ"
 
 class Grassland(Environment):
     """
