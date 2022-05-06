@@ -231,8 +231,7 @@ class Pawn(Chess):
                 rBoard[index[0] + i * direction][index[1]] = 'x'
             else:
                 break
-        top3 = [[index[0] + direction, index[1] + i] for i in range(-1, 2)]
-
+        top3 = [[index[0] + direction * (self._speed > 0), index[1] + i] for i in range(-1, 2)]
         for positions in top3:
             if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]]:
                 if top3.index(positions) % 2 == 0:
@@ -375,7 +374,7 @@ class Knight(Chess):
                             try:
                                 if oBoard[(index[1] + j, index[0] + i)].get_team() != self.get_team():
                                     oBoard[(index[1] + j, index[0] + i)].set_killable(True)
-                                    rBoard[index[0] + i][index[1] + j] = 'x'
+                                    rBoard[index[0] + i][index[1] + j] += 'x'
                             except:
                                 break
 
@@ -410,7 +409,7 @@ class Queen(Chess):
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] = 'x'
+                                rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
                             break
@@ -434,7 +433,7 @@ class Queen(Chess):
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] = 'x'
+                                rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
                             break

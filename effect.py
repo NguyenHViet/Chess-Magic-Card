@@ -21,7 +21,7 @@ class Effect:
 
     def is_over(self, phase):
         self.unactive_effect()
-        if phase == self.__phase:
+        if phase == chess.PHASE['End']:
             self.__turns -= 1
         if (self.__stack <= 0 or self.__turns <= 0) and '!' not in self.__name:
             return True
@@ -62,8 +62,8 @@ class Effect:
             rBoard = nBoard.getrBoard()
             try:
                 index = indexs[0]
-                nBoard.select_Chess(index, phase, options['playTeam'], False)
-
+                if not nBoard.select_Chess(index, phase, options['playTeam'], False):
+                    return STATUS[1]
                 moveRange = []
                 directions = options['directions']
                 for i in range(1, value + 1):
@@ -85,7 +85,7 @@ class Effect:
                         moveRange.append([index[0], index[1] - i])
 
                 for positions in moveRange:
-                    if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ':
+                    if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ' and '!' not in rBoard[positions[0]][positions[1]]:
                         rBoard[positions[0]][positions[1]] = 'x'
                     else:
                         try:

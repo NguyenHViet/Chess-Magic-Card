@@ -96,7 +96,6 @@ class Desert(Environment):
 
         if phase == chess.PHASE['Start']:
             try:
-                print(turn)
                 if turn%6 == 0:
                     area = random.randint(1, 5)
                     if area == 1:
@@ -114,11 +113,10 @@ class Desert(Environment):
 
                     for i in range(1, 4):
                         for j in range(4):
-                            print(self._CellLayer[j][i].get_x())
-                            self._CellLayer[j][i].set_img(self._image['Specical'])
+                            self._CellLayer[j  + count_2][i + count_1].set_img(self._image['Specical'])
                             try:
-                                if oBoard.getoBoard()[(j + count_2, i + count_1)] != ' ':
-                                    oBoard.getoBoard()[(j + count_2, i + count_1)].add_effect(ef.Effect('IncreaseSpeed', value= -10, turn = 3, phase= 2, stack= 3))
+                                if oBoard[(j + count_2, i + count_1)] != None:
+                                    oBoard[(j + count_2, i + count_1)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 3, phase = 2))
                             except:
                                 pass
                     nBoard.printMap()
@@ -176,7 +174,7 @@ class Frozen_river(Environment):
                             rBoard[x][y] = '!'
                             self._EffectedCells[(y, x)] -= 1
                             nBoard.printMap()
-                        if self._EffectedCells[(y, x)] <= -3:
+                        if self._EffectedCells[(y, x)] <= -4:
                             self._CellLayer[y][x].set_img(self._image['Specical'])
                             self._EffectedCells[(y,x)] = 3
                             oBoard[(y, x)] = None

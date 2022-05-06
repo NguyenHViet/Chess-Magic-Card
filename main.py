@@ -29,6 +29,7 @@ BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
 startTurnTime = math.floor(time.time())
+timing = 0
 AddTimeAble = True
 env = 'Desert'
 
@@ -49,7 +50,7 @@ def new_game():
     phase = chess.PHASE['Start']
     pause = False
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('Player 1', 'w', 1, 10), player.Player('Player 2', 'b', 1, 10)]
+    Players = [player.Player('Player 1', 'w', 120, 10), player.Player('Player 2', 'b', 120, 10)]
     pygame.mixer.music.load('music\\Two Steps From Hell - Star Sky.wav')
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(-1)
@@ -67,7 +68,7 @@ def mouse_on_cards(pos):
     return False
 
 def updateGUI():
-    global phase, turns
+    global phase, turns, timing
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
 
@@ -98,7 +99,7 @@ def update_display(win, nboard, pos, turns, phase):
 
 def main():
     pygame.mixer.music.unpause()
-    global pause, phase, turns, startTurnTime
+    global pause, phase, turns, startTurnTime, timing
     pause = False
     selected = False
     required = 0
@@ -169,7 +170,8 @@ def main():
                     elif len(selectedPos) <= required and selected and mouse_on_board(pos):
                         nboard.deselect()
                         index = nboard.find_Cell(pos)
-                        if Players[turns%2].play_card(nboard, selectedPos + [index]) != 'Fail':
+                        result = Players[turns%2].play_card(nboard, selectedPos + [index])
+                        if 'Fail' not in result:
                             selectedPos.append(index)
                     else:
                         Players[turns%2].decelect()
@@ -190,10 +192,10 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     paused()
         phase = Players[turns % 2].update(phase, init.DECK, AddTimeAble, startTurnTime)
-        phase, turns = nboard.update(phase, turns)
-        update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
+        phase, turns = nboard.update(phase, turns)
+        update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
 def button(text, img, img_h, x, y, width, height, action = None, color = 'black'):
     mouse = pygame.mouse.get_pos()
@@ -237,6 +239,7 @@ def paused():
         pygame.display.update()
 
 def endGame():
+    pygame.time.delay(50)
     pygame.mixer.music.pause()
     global pause
     pause = True
@@ -250,9 +253,6 @@ def endGame():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    main()
         button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, new_game)
         button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, game_intro)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, end_game)

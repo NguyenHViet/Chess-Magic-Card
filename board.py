@@ -159,8 +159,9 @@ class Board:
                 self.__OjectLayer[(index0[1], index0[0])] = None
         except:
             pass
-        self.__readableMap = self.convert_to_readable()
-        self.deselect()
+        if moved:
+            self.__readableMap = self.convert_to_readable()
+            self.deselect()
         return moved
 
     def is_checkmate(self):

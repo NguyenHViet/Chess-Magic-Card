@@ -77,13 +77,10 @@ class Player:
             if self.__actions < 3:
                 self.__actions += 1
             self.draw_cards(deck)
-        elif self.__actions <= 0:
+        if self.__actions <= 0:
             nPhase = chess.PHASE['End']
-        elif phase == chess.PHASE['End']:
-            if addableTime:
-                self.__totalTime = self.__time - timing
-                self.__time = self.__totalTime
-            elif self.__time - timing <= self.__totalTime:
+        if phase == chess.PHASE['End']:
+            if addableTime or self.__time - timing <= self.__totalTime:
                 self.__totalTime = self.__time - timing
                 self.__time = self.__totalTime
         return nPhase
