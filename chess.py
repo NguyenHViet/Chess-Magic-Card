@@ -188,6 +188,7 @@ class Chess:
                 if phase == PHASE['End']:
                     effect.unactive_effect()
                 if effect.is_over(phase):
+                    print('0000000000000000000000000000000000')
                     self.delete_effect(effect)
                 effect.active_effect(nBoard, index, phase)
             except:

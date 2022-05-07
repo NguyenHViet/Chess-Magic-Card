@@ -130,7 +130,8 @@ class Board:
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
-            if ef.STATUS[1] in self.__OjectLayer[(x, y)].active_effects(self, index, phase):
+            result = self.__OjectLayer[(x, y)].active_effects(self, index, phase)
+            if ef.STATUS[1] in result:
                 print("Không thể chọn")
                 return False
             self.__readableMap[index[0]][index[1]] += ':'
@@ -192,6 +193,13 @@ class Board:
         Phase = phase
         updating = True
         self.__enviroment.apply_env_effect(self, turn, phase)
+        for i in range(8):
+            for j in range(8):
+                try:
+                    self.__OjectLayer[(j, i)].update(self, (j, i), phase)
+                except:
+                    pass
+            updating = False
         if self.is_finished():
             Phase = chess.PHASE['Finish']
         elif phase == chess.PHASE['Start']:
@@ -200,15 +208,7 @@ class Board:
         elif phase == chess.PHASE['End']:
             print("Kết thúc lượt")
             turn += 1
-            #self.__enviroment.apply_env_effect(nBoard)
             Phase = chess.PHASE['Start']
-        for i in range(8):
-            for j in range(8):
-                try:
-                    self.__OjectLayer[(j, i)].update(self, (j, i), phase)
-                except:
-                    pass
-            updating = False
         if not updating:
             return Phase, turn
 

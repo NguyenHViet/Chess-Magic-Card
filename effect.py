@@ -52,6 +52,8 @@ class Effect:
                 return STATUS[1]
 
         def Unselectable(nBoard, indexs, phase, value, options):
+            index = indexs[0]
+            nBoard.getrBoard()[index[0]][index[1]] += '!'
             return STATUS[1]
 
         # Card Effect

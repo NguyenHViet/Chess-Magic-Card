@@ -52,10 +52,9 @@ def new_game():
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
     Players = [player.Player('Player 1', 'w', 120, 10), player.Player('Player 2', 'b', 120, 10)]
     pygame.mixer.music.load('music\\Two Steps From Hell - Star Sky.wav')
-    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.set_volume(0.005)
     pygame.mixer.music.play(-1)
     pygame.mixer.music.pause()
-
     main()
 
 def mouse_on_board(pos):

@@ -88,10 +88,11 @@ class Card:
     def play_card(self, nBoard, indexs, playTeam):
         def GrantEffects(effects, nBoard, indexs):
             try:
+                index = indexs[0]
                 oBoard = nBoard.getoBoard()
-                nBoard.select_Chess(indexs, phase, playTeam, False)
+                nBoard.select_Chess(index, 3, playTeam, False)
                 for effect in effects:
-                    oBoard[(indexs[1], indexs[0])].add_effect(copy.copy(effect))
+                    oBoard[(index[1], index[0])].add_effect(copy.copy(effect))
                 return 'Casted'
             except:
                 return ef.STATUS[1]
