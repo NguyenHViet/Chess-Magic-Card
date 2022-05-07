@@ -62,6 +62,11 @@ class Board:
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
+                try:
+                    if self.__OjectLayer[(y, x)].get_team() == ' ':
+                        self.__OjectLayer[(y, x)] = None
+                except:
+                    pass
                 self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
 
     def get_x(self):

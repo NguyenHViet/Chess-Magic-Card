@@ -81,7 +81,6 @@ class Desert(Environment):
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
-        cell_posision = list()
 
         for x in range(8):
             for y in range(8):
@@ -193,7 +192,7 @@ class Foggy_forest(Environment):
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
-        print(1)
+
         for x in range(8):
             for y in range(8):
                 self._CellLayer[x][y].set_img(self._image['Normal'])
@@ -205,12 +204,13 @@ class Foggy_forest(Environment):
         "Thay đổi giá trị di chuyển của quân cờ trừ mã xuống còn 4"
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
+        cBoard = nBoard.getcBoard()
         if phase == chess.PHASE['Start']:
             try:
                 if turn % 6 < 4:
                     for i in range(8):
                         for j in range(8):
-                            self._CellLayer[j][i].set_img(self._image['Special'])
+                            cBoard[j][i].set_img(self._image['Special'])
                             try:
                                 if oBoard[(j + y, i + x)] != None:
                                     oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -4, turns=1, phase=2))
@@ -218,6 +218,7 @@ class Foggy_forest(Environment):
                                 pass
                 elif turn % 6 == 4:
                     self._CellLayer = self.create_map(nBoard)
+                    nBoard.clear_map()
             except:
                 pass
 
