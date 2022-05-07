@@ -87,7 +87,7 @@ DECK = [
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['05'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),
     Card('Linh Động Chiến Trường', 3, listImage['Cards']['06'], 'Di chuyển về 1 hướng bất kỳ 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Ahead Left', 'Ahead', 'Ahead Right', 'Back Left', 'Back', 'Back Right', 'Left', 'Right'], killable=False),
     Card('Tấm Khiên Cứng Cáp', 3, listImage['Cards']['07'], 'Không thể bị chọn trong 3 lượt', 'GrantEffects', 1,
-         [ef.Effect('Unselectable')])
+         [ef.Effect('Unselectable', turns = 3)])
 
 ]
 

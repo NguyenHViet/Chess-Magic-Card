@@ -82,9 +82,10 @@ class Chess:
         """
         return str(self._team + self._type)
 
-    def get_moves(self, nBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xuất ra các cách di chuyển của quân cờ
+        :param phase:
         :param nBoard: Bàn cờ (board.Board)
         :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
         :return list[tuple(int, int)]
@@ -114,12 +115,13 @@ class Chess:
         except:
             pass
 
-    def set_killable(self, able):
+    def set_killable(self, nBoard, index, phase, able):
         """
         Gán self._killable là True nếu quân cờ không có hiệu ứng "Imortal"
         :param able : Giá trị để gán cho self._killable (bool)
         """
-        self._killable = able
+        if 'Fail' not in self.active_effects(nBoard, index, phase):
+            self._killable = able
 
     def set_score(self, new_score):
         """
@@ -188,7 +190,6 @@ class Chess:
                 if phase == PHASE['End']:
                     effect.unactive_effect()
                 if effect.is_over(phase):
-                    print('0000000000000000000000000000000000')
                     self.delete_effect(effect)
                 effect.active_effect(nBoard, index, phase)
             except:
@@ -216,13 +217,16 @@ class Pawn(Chess):
         """
         super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 2)], 1)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xây dựng cách di chuyển của quân "Chốt"
+        :param phase:
         :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
         direction = -1
         if self._direction == 'downward':
             direction = 1
@@ -238,8 +242,9 @@ class Pawn(Chess):
                 if top3.index(positions) % 2 == 0:
                     try:
                         if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
-                            oBoard[(positions[1], positions[0])].set_killable(True)
-                            rBoard[positions[0]][positions[1]] += 'x'
+                            oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, True)
+                            if oBoard[(positions[1], positions[0])].get_killable():
+                                rBoard[positions[0]][positions[1]] += 'x'
                     except:
                         pass
                 else:
@@ -256,13 +261,16 @@ class King(Chess):
         """
         super().__init__(team, "king", direction, img, 1000, effects, 1)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xây dựng cách di chuyển của quân "Vua"
+        :param phase:
         :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
         for y in range(-self._speed, self._speed + 1):
             for x in range(-self._speed, self._speed + 1):
                 if on_board((index[0] + y, index[1] + x)) and '!' not in rBoard[index[0] - 1 + y][index[1] - 1 + x]:
@@ -271,8 +279,9 @@ class King(Chess):
                     else:
                         try:
                             if oBoard[(index[1] + x, index[0] + y)].get_team() != self.get_team():
-                                oBoard[(index[1] + x, index[0] + y)].set_killable(True)
-                                rBoard[index[0] + y][index[1] + x] += 'x'
+                                oBoard[(index[1] + x, index[0] + y)].set_killable(nBoard, index, phase, True)
+                                if oBoard[(index[1] + x, index[0] + y)].get_killable():
+                                    rBoard[index[0] + y][index[1] + x] += 'x'
                         except:
                             break
 
@@ -286,13 +295,16 @@ class Rook(Chess):
         """
         super().__init__(team, "rook", direction, img, 50, effects, 8)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xây dựng cách di chuyển của quân "Xa"
+        :param phase:
         :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
         cross = [[[index[0] + i, index[1]] for i in range(1, self._speed)],
                  [[index[0] - i, index[1]] for i in range(1, self._speed)],
                  [[index[0], index[1] + i] for i in range(1, self._speed)],
@@ -306,8 +318,9 @@ class Rook(Chess):
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] += 'x'
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                if oBoard[(pos[1], pos[0])].get_killable():
+                                    rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
                             break
@@ -322,13 +335,16 @@ class Bishop(Chess):
         """
         super().__init__(team, "bishop", direction, img, 30, effects, 8)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xây dựng cách di chuyển của quân "Tượng"
+        :param phase:
         :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
         diagonals = [[[index[0] + i, index[1] + i] for i in range(1, self._speed)],
                      [[index[0] + i, index[1] - i] for i in range(1, self._speed)],
                      [[index[0] - i, index[1] + i] for i in range(1, self._speed)],
@@ -342,8 +358,9 @@ class Bishop(Chess):
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] += 'x'
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                if oBoard[(pos[1], pos[0])].get_killable():
+                                    rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
                             break
@@ -358,13 +375,16 @@ class Knight(Chess):
         """
         super().__init__(team, "knight", direction, img, 30, effects, 3)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xây dựng cách di chuyển của quân "Mã"
+        :param phase:
         :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
         for i in range(-self._speed + 1, self._speed):
             for j in range(-self._speed + 1, self._speed):
                 if (abs(i) == self._speed - 1 and abs(j) == self._speed - 2) or (abs(i) == self._speed - 2 and abs(j) == self._speed - 1):
@@ -374,8 +394,9 @@ class Knight(Chess):
                         else:
                             try:
                                 if oBoard[(index[1] + j, index[0] + i)].get_team() != self.get_team():
-                                    oBoard[(index[1] + j, index[0] + i)].set_killable(True)
-                                    rBoard[index[0] + i][index[1] + j] += 'x'
+                                    oBoard[(index[1] + j, index[0] + i)].set_killable(nBoard, index, phase, True)
+                                    if oBoard[(index[1] + j, index[0] + i)].get_killable():
+                                        rBoard[index[0] + i][index[1] + j] += 'x'
                             except:
                                 break
 
@@ -389,13 +410,16 @@ class Queen(Chess):
         """
         super().__init__(team, "queen", direction, img, 90, effects, 8)
 
-    def get_moves(self, oBoard, rBoard, index):
+    def get_moves(self, nBoard, index, phase):
         """
         Xây dựng cách di chuyển của quân "Hậu"
+        :param phase:
         :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
         cross = [[[index[0] + i, index[1]] for i in range(1, self._speed)],
                  [[index[0] - i, index[1]] for i in range(1, self._speed)],
                  [[index[0], index[1] + i] for i in range(1, self._speed)],
@@ -409,8 +433,9 @@ class Queen(Chess):
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] += 'x'
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                if oBoard[(pos[1], pos[0])].get_killable():
+                                    rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
                             break
@@ -428,8 +453,9 @@ class Queen(Chess):
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(True)
-                                rBoard[pos[0]][pos[1]] += 'x'
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                if oBoard[(pos[1], pos[0])].get_killable():
+                                    rBoard[pos[0]][pos[1]] += 'x'
                             break
                         except:
                             break

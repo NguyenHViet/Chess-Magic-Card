@@ -136,7 +136,7 @@ class Board:
                 return False
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
-                self.__OjectLayer[(x, y)].get_moves(self.__OjectLayer, self.__readableMap, index)
+                self.__OjectLayer[(x, y)].get_moves(self, index, phase)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
             return True
         else:
