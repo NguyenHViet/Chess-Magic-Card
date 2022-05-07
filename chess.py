@@ -262,16 +262,16 @@ class King(Chess):
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
-        for y in range(3):
-            for x in range(3):
-                if on_board((index[0] - 1 + y, index[1] - 1 + x)) and '!' not in rBoard[index[0] - 1 + y][index[1] - 1 + x]:
-                    if rBoard[index[0] - 1 + y][index[1] - 1 + x] == ' ':
-                        rBoard[index[0] - 1 + y][index[1] - 1 + x] = 'x'
+        for y in range(-self._speed, self._speed + 1):
+            for x in range(-self._speed, self._speed + 1):
+                if on_board((index[0] + y, index[1] + x)) and '!' not in rBoard[index[0] - 1 + y][index[1] - 1 + x]:
+                    if rBoard[index[0] + y][index[1] + x] == ' ':
+                        rBoard[index[0] + y][index[1] + x] = 'x'
                     else:
                         try:
-                            if oBoard[(index[1] - 1 + x, index[0] - 1 + y)].get_team() != self.get_team():
-                                oBoard[(index[1] - 1 + x, index[0] - 1 + y)].set_killable(True)
-                                rBoard[index[0] - 1 + y][index[1] - 1 + x] += 'x'
+                            if oBoard[(index[1] + x, index[0] + y)].get_team() != self.get_team():
+                                oBoard[(index[1] + x, index[0] + y)].set_killable(True)
+                                rBoard[index[0] + y][index[1] + x] += 'x'
                         except:
                             break
 
@@ -292,10 +292,10 @@ class Rook(Chess):
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
-        cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
-                 [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
-                 [[index[0], index[1] + i] for i in range(1, 8 - index[1])],
-                 [[index[0], index[1] - i] for i in range(1, index[1] + 1)]]
+        cross = [[[index[0] + i, index[1]] for i in range(1, self._speed)],
+                 [[index[0] - i, index[1]] for i in range(1, self._speed)],
+                 [[index[0], index[1] + i] for i in range(1, self._speed)],
+                 [[index[0], index[1] - i] for i in range(1, self._speed)]]
 
         for dir in cross:
             for pos in dir:
@@ -328,10 +328,10 @@ class Bishop(Chess):
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
-        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
-                     [[index[0] + i, index[1] - i] for i in range(1, 8)],
-                     [[index[0] - i, index[1] + i] for i in range(1, 8)],
-                     [[index[0] - i, index[1] - i] for i in range(1, 8)]]
+        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, self._speed)],
+                     [[index[0] + i, index[1] - i] for i in range(1, self._speed)],
+                     [[index[0] - i, index[1] + i] for i in range(1, self._speed)],
+                     [[index[0] - i, index[1] - i] for i in range(1, self._speed)]]
 
         for dir in diagonals:
             for pos in dir:
@@ -386,7 +386,7 @@ class Queen(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "queen", direction, img, 90, effects)
+        super().__init__(team, "queen", direction, img, 90, effects, 8)
 
     def get_moves(self, oBoard, rBoard, index):
         """
@@ -395,10 +395,10 @@ class Queen(Chess):
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
-        cross = [[[index[0] + i, index[1]] for i in range(1, 8 - index[0])],
-                 [[index[0] - i, index[1]] for i in range(1, index[0] + 1)],
-                 [[index[0], index[1] + i] for i in range(1, 8 - index[1])],
-                 [[index[0], index[1] - i] for i in range(1, index[1] + 1)]]
+        cross = [[[index[0] + i, index[1]] for i in range(1, self._speed)],
+                 [[index[0] - i, index[1]] for i in range(1, self._speed)],
+                 [[index[0], index[1] + i] for i in range(1, self._speed)],
+                 [[index[0], index[1] - i] for i in range(1, self._speed)]]
 
         for dir in cross:
             for pos in dir:
@@ -414,15 +414,10 @@ class Queen(Chess):
                         except:
                             break
 
-        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
-                     [[index[0] + i, index[1] - i] for i in range(1, 8)],
-                     [[index[0] - i, index[1] + i] for i in range(1, 8)],
-                     [[index[0] - i, index[1] - i] for i in range(1, 8)]]
-
-        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, 8)],
-                     [[index[0] + i, index[1] - i] for i in range(1, 8)],
-                     [[index[0] - i, index[1] + i] for i in range(1, 8)],
-                     [[index[0] - i, index[1] - i] for i in range(1, 8)]]
+        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, self._speed)],
+                     [[index[0] + i, index[1] - i] for i in range(1, self._speed)],
+                     [[index[0] - i, index[1] + i] for i in range(1, self._speed)],
+                     [[index[0] - i, index[1] - i] for i in range(1, self._speed)]]
 
         for dir in diagonals:
             for pos in dir:

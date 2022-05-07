@@ -50,14 +50,19 @@ class Board:
         interval = self.__width / 8
         self.__enviroment.create_map(self)
         self.__CellLayer = []
-        for x in range(8):
-            self.__CellLayer.append([])
-            for y in range(8):
-                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
+        self.clear_map()
 
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
+
+    def clear_map(self):
+        interval = self.__width / 8
+        self.__CellLayer = []
+        for x in range(8):
+            self.__CellLayer.append([])
+            for y in range(8):
+                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
 
     def get_x(self):
         return self.__x

@@ -31,7 +31,7 @@ BLACK = (0, 0, 0)
 startTurnTime = math.floor(time.time())
 timing = 0
 AddTimeAble = True
-env = 'Foggy_forest'
+env = 'Desert'
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)

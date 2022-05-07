@@ -95,7 +95,7 @@ class Desert(Environment):
         """
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
-
+        cBoard = nBoard.getcBoard()
         if phase == chess.PHASE['Start']:
             try:
                 if turn%6 == 0:
@@ -106,7 +106,7 @@ class Desert(Environment):
                 if turn%6 < 4:
                     for i in range(0, 3):
                         for j in range(4):
-                            self._CellLayer[j  + y][i + x].set_img(self._image['Special'])
+                            cBoard[j  + y][i + x].set_img(self._image['Special'])
                             try:
                                 if oBoard[(j + y, i + x)] != None:
                                     oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 1, phase = 2))
@@ -114,6 +114,7 @@ class Desert(Environment):
                                 pass
                 elif turn%6 == 4:
                     self._CellLayer = self.create_map(nBoard)
+                    nBoard.clear_map()
             except:
                 pass
 
