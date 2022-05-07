@@ -39,6 +39,9 @@ class Chess:
         self._speed = self._startSpeed
         self._killable = False
 
+    def chess_dup(self):
+        return self._team, self._type, self._direction, self._score, self._startSpeed, self._speed
+
     def get_effects(self):
         """
         Lấy danh sách hiệu ứng của quân cờ.

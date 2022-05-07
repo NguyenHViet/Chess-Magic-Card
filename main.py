@@ -31,7 +31,7 @@ BLACK = (0, 0, 0)
 startTurnTime = math.floor(time.time())
 timing = 0
 AddTimeAble = True
-env = 'Foggy_forest'
+env = 'Desert'
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -148,6 +148,7 @@ def main():
                                 phase = chess.PHASE['Picking']
                             selected = False
                             selectedPos = []
+                            nboard.deselect()
                         except:
                             phase = chess.PHASE['Picking']
                         #-----------------------------------------------------------------------------------------------
@@ -262,7 +263,6 @@ def end_turn():
     Players[turns % 2].decelect()
     nboard.deselect()
     phase = chess.PHASE['End']
-    pygame.time.delay(50)
 
 def end_game():
     pygame.quit()

@@ -1,3 +1,4 @@
+import copy
 import random
 
 import pygame
@@ -82,8 +83,8 @@ class Board:
             for col in range(8):
                 if (row+col) % 2 == 0:
                     win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
-                if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
-                    win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
+                # if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
+                #     win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if 'x' in self.__readableMap[col][row]:
                     win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 elif ':' in (self.__readableMap[col][row]):
