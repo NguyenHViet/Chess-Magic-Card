@@ -81,7 +81,7 @@ class Board:
                     win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if 'x' in self.__readableMap[col][row]:
                     win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
-                elif ':' in (self.__readableMap[col][row])[-1]:
+                elif ':' in (self.__readableMap[col][row]):
                     win.blit(self.__GEI['Choice'],
                              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
@@ -160,7 +160,7 @@ class Board:
     def select_Move(self, index0, index1, triggeredEffect = True):
         moved = False
         try:
-            if self.__readableMap[index1[0]][index1[1]] == 'x' or self.__OjectLayer[(index1[1], index1[0])].get_killable():
+            if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:

@@ -193,7 +193,7 @@ class Foggy_forest(Environment):
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
-
+        print(1)
         for x in range(8):
             for y in range(8):
                 self._CellLayer[x][y].set_img(self._image['Normal'])

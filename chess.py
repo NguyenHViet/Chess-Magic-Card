@@ -19,7 +19,7 @@ class Chess:
     """
     Lớp "Quân Cờ"
     """
-    def __init__(self, team, typechess, direction, img, score = 0, effects = [], speed = 0):
+    def __init__(self, team = '', typechess = '', direction = '', img = '', score = 0, effects = [], speed = 0):
         """
         Hàm khởi tạo quân cờ.
         :param team: Tên đội (str)
@@ -227,7 +227,7 @@ class Pawn(Chess):
             direction = 1
 
         for i in range(1, self._speed + 1):
-            if rBoard[index[0] + i * direction][index[1]] == ' ' and '!' not in rBoard[index[0] + i * direction][index[1]]:
+            if ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] = 'x'
             else:
                 break
@@ -364,9 +364,9 @@ class Knight(Chess):
         :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
         :param index: Vị trí của quân cờ tuple(int, int)
         """
-        for i in range(-2, 3):
-            for j in range(-2, 3):
-                if i ** 2 + j ** 2 == 5:
+        for i in range(-self._speed + 1, self._speed):
+            for j in range(-self._speed + 1, self._speed):
+                if (abs(i) == self._speed - 1 and abs(j) == self._speed - 2) or (abs(i) == self._speed - 2 and abs(j) == self._speed - 1):
                     if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
                         if rBoard[index[0] + i][index[1] + j] == ' ':
                             rBoard[index[0] + i][index[1] + j] = 'x'
