@@ -388,10 +388,11 @@ class Knight(Chess):
         """
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
-        for i in range(-(self._speed - 1), self._speed):
-            for j in range(-(self._speed - 1), self._speed):
-                if (abs(i) == self._speed - 1 and abs(j) == self._speed - 2) or (abs(i) == self._speed - 2 and abs(j) == self._speed - 1):
-                    print(i, j)
+        x = (self._speed - 1) * (-1)
+        y = self._speed
+        for i in range(x, y):
+            for j in range(x, y):
+                if abs(i) + abs(j) == y:
                     if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
                         if rBoard[index[0] + i][index[1] + j] == ' ':
                             rBoard[index[0] + i][index[1] + j] = 'x'

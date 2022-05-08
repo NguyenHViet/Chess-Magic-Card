@@ -89,7 +89,7 @@ class Effect:
                         rBoard[positions[0]][positions[1]] = 'x'
                     else:
                         try:
-                            oBoard[(positions[1], positions[0])].set_killable(options['killable'])
+                            oBoard[(positions[1], positions[0])].set_killable(nBoard, positions, phase, options['killable'])
                             if oBoard[(positions[1], positions[0])].get_killable() and oBoard[(positions[1], positions[0])].get_team() != oBoard[(index[1], index[0])].get_team():
                                 rBoard[positions[0]][positions[1]] += 'x'
                                 break

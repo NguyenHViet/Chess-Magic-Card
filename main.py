@@ -30,8 +30,15 @@ BLACK = (0, 0, 0)
 
 startTurnTime = math.floor(time.time())
 timing = 0
-AddTimeAble = True
 env = 'Desert'
+
+SETTINGS = {
+    'Music Volumn': 0.1,
+    'Sound Volumn': 0,
+    'Time': 180,
+    'Time Bonus': 10,
+    'AddTimeable': True
+}
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -43,6 +50,12 @@ pause = True
 turns = 0
 phase = chess.PHASE['Start']
 
+def turn_off_music():
+    pygame.mixer.music.pause()
+
+def turn_on_music():
+    pygame.mixer.music.unpause()
+
 def new_game():
     global turns, phase, nboard, ncard, Players, startTurnTime
     startTurnTime = math.floor(time.time())
@@ -50,12 +63,15 @@ def new_game():
     phase = chess.PHASE['Start']
     pause = False
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('Player 1', 'w', 120, 10), player.Player('Player 2', 'b', 120, 10)]
-    pygame.mixer.music.load('music\\Two Steps From Hell - Star Sky.wav')
-    pygame.mixer.music.set_volume(0.005)
+    Players = [player.Player('Player 1', 'w', SETTINGS['Time'], SETTINGS['Time Bonus']), player.Player('Player 2', 'b', SETTINGS['Time'], SETTINGS['Time Bonus'])]
+    pygame.mixer.music.load('music\\Two Steps From Hell - Victory (Instrumental).wav')
+    pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(-1)
-    pygame.mixer.music.pause()
+    turn_off_music()
     main()
+
+def setting_game():
+    pass
 
 def mouse_on_board(pos):
     if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
@@ -81,10 +97,16 @@ def updateGUI():
 
     button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
     if Players[turns%2].get_time() - timing < 0:
+        turns += 1
         endGame()
 
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
+
+    if pygame.mixer.music.get_busy():
+        button("", init.listImage['GUI']['Pause'], '', 90, 40, 30, 30, turn_off_music)
+    else:
+        button("", init.listImage['GUI']['Pause'], '', 90, 40, 30, 30, turn_on_music)
 
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
@@ -97,7 +119,8 @@ def update_display(win, nboard, pos, turns, phase):
     pygame.display.update()
 
 def main():
-    pygame.mixer.music.unpause()
+
+    turn_on_music()
     global pause, phase, turns, startTurnTime, timing
     pause = False
     selected = False
@@ -191,7 +214,7 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        phase = Players[turns % 2].update(phase, init.DECK, AddTimeAble, startTurnTime)
+        phase = Players[turns % 2].update(phase, init.DECK, SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns)
@@ -239,7 +262,6 @@ def paused():
         pygame.display.update()
 
 def endGame():
-    pygame.time.delay(50)
     pygame.mixer.music.pause()
     global pause
     pause = True
@@ -269,6 +291,7 @@ def end_game():
     quit()
 
 def game_intro():
+    pygame.time.delay(80)
     global pause
     pause = True
     textSurface = init.font60.render('CHESS: MAGIC CARD', True, 'black')

@@ -260,9 +260,5 @@ class Grassland(Environment):
     def apply_env_effect(self, nBoard, turn, phase):
         pass
 
-class Simp(Environment):
-    def __init__(self, lImg, effects = []):
-        super().__int__('Simp', lImg, effects)
-
 
 #--------------------------
