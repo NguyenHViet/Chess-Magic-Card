@@ -50,7 +50,8 @@ listImage = {
     },
     'Desert': {
         'Normal':pygame.image.load('img\\Environment\\desert_normal.png'),
-        'Special':pygame.image.load('img\\Environment\\derest_special.png')
+        'Special':pygame.image.load('img\\Environment\\derest_special.png'),
+        'Background':pygame.image.load('img\\Environment\\desert_bg.jpg')
     },
     'Frozen_river':{
         'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),

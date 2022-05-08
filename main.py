@@ -110,8 +110,8 @@ def updateGUI():
 
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
-    ncard.draw(win, init.font40, pos, Players[turns%2])
     nboard.draw(win)
+    ncard.draw(win, init.font40, pos, Players[turns%2])
     if phase == chess.PHASE['Finish']:
         print('WIN')
         endGame()

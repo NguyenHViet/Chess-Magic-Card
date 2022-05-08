@@ -49,6 +49,7 @@ class Environment:
         pass
 
     def draw(self, win):
+        win.blit(self._image['Background'], (0, 0))
         interval = self._width / 8
         for row in range(8):
             for col in range(8):
@@ -81,10 +82,6 @@ class Desert(Environment):
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
-
-        for x in range(8):
-            for y in range(8):
-                self._CellLayer[x][y].set_img(self._image['Normal'])
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
