@@ -149,7 +149,7 @@ class Board:
             for j in range(8):
                 try:
                     self.__readableMap[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
-                    self.__OjectLayer[(j, i)].set_killable(False)
+                    self.__OjectLayer[(j, i)].set_killable(self, (i, j), 1, False)
                 except:
                     if 'x' in self.__readableMap[i][j]:
                         self.__readableMap[i][j] = ' '

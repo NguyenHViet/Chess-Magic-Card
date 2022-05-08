@@ -112,7 +112,7 @@ class Effect:
                 self.__actived = True
             return func
         else:
-            return STATUS[1]
+            return STATUS[0]
 
     def triggered_effect(self):
         self.__stack -= 1

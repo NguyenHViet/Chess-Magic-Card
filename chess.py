@@ -388,9 +388,10 @@ class Knight(Chess):
         """
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
-        for i in range(-self._speed + 1, self._speed):
-            for j in range(-self._speed + 1, self._speed):
+        for i in range(-(self._speed - 1), self._speed):
+            for j in range(-(self._speed - 1), self._speed):
                 if (abs(i) == self._speed - 1 and abs(j) == self._speed - 2) or (abs(i) == self._speed - 2 and abs(j) == self._speed - 1):
+                    print(i, j)
                     if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
                         if rBoard[index[0] + i][index[1] + j] == ' ':
                             rBoard[index[0] + i][index[1] + j] = 'x'
@@ -401,7 +402,7 @@ class Knight(Chess):
                                     if oBoard[(index[1] + j, index[0] + i)].get_killable():
                                         rBoard[index[0] + i][index[1] + j] += 'x'
                             except:
-                                break
+                                pass
 
 class Queen(Chess):
     def __init__(self, team, direction, img, effects = []):
