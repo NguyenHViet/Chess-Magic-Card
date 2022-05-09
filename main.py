@@ -30,7 +30,7 @@ BLACK = (0, 0, 0)
 
 startTurnTime = math.floor(time.time())
 timing = 0
-env = 'Foggy_forest'
+env = 'Swamp'
 
 SETTINGS = {
     'Music Volumn': 0.1,
@@ -71,6 +71,8 @@ def new_game():
     main()
 
 def setting_game():
+    global env
+
     pass
 
 def mouse_on_board(pos):

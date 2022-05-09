@@ -23,7 +23,7 @@ class Effect:
         self.unactive_effect()
         if phase == chess.PHASE['End']:
             self.__turns -= 1
-        if (self.__stack <= 0 or self.__turns <= 0) and '!' not in self.__name:
+        if (self.__stack == 0 or self.__turns == 0) and '!' not in self.__name:
             return True
         else:
             return False
@@ -52,7 +52,8 @@ class Effect:
                 return STATUS[1]
 
         def Unselectable(nBoard, indexs, phase, value, options):
-            return STATUS[1]
+            if phase in self.__phase:
+                return STATUS[1]
 
         # Card Effect
         def PushChess(nBoard, indexs, phase, value, options):

@@ -136,7 +136,7 @@ class CardArea:
             if cell.is_mouse_hovering(pos):
                 cell.set_img(self.__GEI['Card_Hover'])
             else:
-                cell.set_img(self.__GEI['Card_Cell'])
+                cell.set_img(self.__GEI['Empty'])
             try:
                 self.__cellLayers[picking].set_img(self.__GEI['Card_Picking'])
             except:

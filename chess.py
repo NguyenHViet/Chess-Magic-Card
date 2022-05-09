@@ -221,7 +221,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = 1000, phase = 2)], 1)
+        super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)], 1)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -265,7 +265,7 @@ class King(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "king", direction, img, 1000, effects, 1)
+        super().__init__(team, "king", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3], stack=-1)], 1)
 
     def get_moves(self, nBoard, index, phase):
         """

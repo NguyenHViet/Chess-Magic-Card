@@ -208,9 +208,8 @@ class Foggy_forest(Environment):
                         for j in range(8):
                             cBoard[j][i].set_img(self._image['Special'])
                             try:
-                                print(oBoard[(j, i)].get_team())
                                 if oBoard[(j, i)] != None:
-                                    if oBoard[(j, i)].get_type() != 'knight':
+                                    if oBoard[(j, i)].get_type() not in ['knight']:
                                         oBoard[(j, i)].add_effect(ef.Effect('IncreaseSpeed', -4, turns=1, phase=2))
                             except:
                                 pass
@@ -236,10 +235,10 @@ class Swamp(Environment):
         super().__int__('swamp', image, width, effects)
 
     def apply_env_effect(self, nBoard, turn, phase):
-
         "Random vị trí 10 ô special"
         "Đổi ô cờ sang ô special"
         "Cài ô special như là 1 quân cờ"
+
 
 class Grassland(Environment):
     """
