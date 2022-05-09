@@ -76,8 +76,8 @@ class Desert(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
-        self.__efa_x = 0
-        self.__efa_y = 0
+        self.__epos = (0, 0)
+        self.__ewh = (0, 0)
         super().__int__('desert', image, width, 'Unmoveable')
 
     def create_map(self, nBoard):
@@ -95,17 +95,19 @@ class Desert(Environment):
         if phase == chess.PHASE['Start']:
             try:
                 if turn%6 == 0:
-                    self.__efa_x = random.randint(1, 4)
-                    self.__efa_y = random.randint(0, 4)
-                x = self.__efa_x
-                y = self.__efa_y
+                    self.__epos = (random.randint(1, 4), random.randint(0, 4))
+                    self.__ewh = (random.randint(2, 3), random.randint(3, 4))
+                x, y = self.__epos
+                w, h = self.__ewh
                 if turn%6 < 4:
-                    for i in range(0, 3):
-                        for j in range(4):
+                    for i in range(w):
+                        for j in range(h):
                             cBoard[j  + y][i + x].set_img(self._image['Special'])
                             try:
                                 if oBoard[(j + y, i + x)] != None:
                                     oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -10, turns = 1, phase = 2))
+                                else:
+                                    oBoard[(j + y, i + x)] = chess.Chess('-', '', '', '')
                             except:
                                 pass
                 elif turn%6 == 4:
@@ -162,7 +164,6 @@ class Frozen_river(Environment):
                             oBoard[(y, x)] = chess.Chess('', '!', '', '', effects=[ef.Effect('Unselectable', turns = 3)])
                             rBoard[x][y] = '!'
                             self._EffectedCells[(y, x)] -= 1
-                            nBoard.printMap()
                         if self._EffectedCells[(y, x)] <= -4:
                             self._CellLayer[y][x].set_img(self._image['Special'])
                             self._EffectedCells[(y,x)] = 3
@@ -232,13 +233,42 @@ class Swamp(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         :param effect: Hiệu ứng của môi trường (str)
         """
+        self._EffectedCells = {}
         super().__int__('swamp', image, width, effects)
+
+    def create_map(self, nBoard):
+        super().create_map(nBoard)
+        cell_posision = list()
+        count = int(0)
+        self._EffectedCells = {}
+        while (count < 12):
+            x = random.randint(0, 7)
+            y = random.randint(1, 6)
+            if (x, y) in cell_posision:
+                pass
+            else:
+                cell_posision.append((x, y))
+                count += 1
+
+        for (x, y) in cell_posision:
+            self._CellLayer[x][y].set_img(self._image['Special'])
+            self._EffectedCells.update({(x, y): None})
+        return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
         "Random vị trí 10 ô special"
         "Đổi ô cờ sang ô special"
         "Cài ô special như là 1 quân cờ"
-
+        rBoard = nBoard.getrBoard()
+        oBoard = nBoard.getoBoard()
+        if phase == chess.PHASE['Start']:
+            for x in range(8):
+                for y in range(8):
+                    try:
+                        if rBoard[x][y] == ' ' and (y, x) in self._EffectedCells.keys():
+                            oBoard[(y, x)] = chess.Chess('-', '', '', '')
+                    except:
+                        pass
 
 class Grassland(Environment):
     """

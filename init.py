@@ -19,6 +19,7 @@ listImage = {
     'GEI': {
         'Normal':pygame.image.load('img\\GEI\\classic_normal.png'),
         'Darken':pygame.image.load('img\\GEI\\darkcell.png'),
+        'Darker':pygame.image.load('img\\GEI\\darker.png'),
         'Move':pygame.image.load('img\\GEI\\move.png'),
         'Choice':pygame.image.load('img\\GEI\\choice.png'),
         'Hover':pygame.image.load('img\\GEI\\choice_magic.png'),
@@ -38,6 +39,8 @@ listImage = {
         'White Timer':pygame.image.load('img\\GUI\\w_timer.png'),
         'Actions': pygame.image.load('img\\GUI\\actions.png'),
         'Lock':pygame.image.load('img\\GUI\\lock.png'),
+        'Arrow_Up':pygame.image.load('img\\GUI\\arrow_up.png'),
+        'Arrow_Down': pygame.image.load('img\\GUI\\arrow_down.png')
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -62,7 +65,7 @@ listImage = {
     'Foggy_forest': {
         'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
         'Special':pygame.image.load('img\\Environment\\foggy_forest_special.png'),
-        'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
+        'Background': pygame.image.load('img\\Environment\\foggy_forest_bg.jpg')
 
     },
     'Swamp': {
@@ -77,8 +80,10 @@ listImage = {
 }
 
 pygame.font.init()
+font15 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 15)
 font20 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
 font40 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 40)
+font50 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 50)
 font60 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 60)
 
 EFFECT = {
@@ -86,8 +91,8 @@ EFFECT = {
 }
 
 DECK = [
-    Card('Tiến Công', 2, listImage['Cards']['01'], 'Tiến thẳng hoặc chéo về phía trước 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
-    Card('Rút Lui', 2, listImage['Cards']['02'], 'Lùi hoặc chéo về phía sau 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
+    Card('Tiến Công', 1, listImage['Cards']['01'], 'Tiến thẳng về phía trước 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
+    Card('Rút Lui', 1, listImage['Cards']['02'], 'Lùi về phía sau 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
     Card('Tấn Công Mạn Sườn', 2, listImage['Cards']['03'], 'Đi ngang sang trái hoặc phải 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False),
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['04'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 2)], directions = ['Ahead'], killable = True),
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['05'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),

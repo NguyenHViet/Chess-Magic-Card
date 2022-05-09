@@ -221,7 +221,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)], 1)
+        super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)]  + effects, 1)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -240,11 +240,12 @@ class Pawn(Chess):
         for i in range(1, self._speed + 1):
             if ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] = 'x'
-            else:
+            elif '-' in rBoard[index[0] + i * direction][index[1]]:
+                rBoard[index[0] + i * direction][index[1]] += 'x'
                 break
         top3 = [[index[0] + direction * (self._speed > 0), index[1] + i * (self._speed > 0)] for i in range(-1, 2)]
         for positions in top3:
-            if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]]:
+            if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]] and rBoard[positions[0]][positions[1]] != '-':
                 if top3.index(positions) % 2 == 0:
                     try:
                         if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
@@ -265,7 +266,7 @@ class King(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "king", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3], stack=-1)], 1)
+        super().__init__(team, "king", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3], stack=-1)]  + effects, 1)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -280,7 +281,7 @@ class King(Chess):
         for y in range(-self._speed, self._speed + 1):
             for x in range(-self._speed, self._speed + 1):
                 if on_board((index[0] + y, index[1] + x)) and '!' not in rBoard[index[0] - 1 + y][index[1] - 1 + x]:
-                    if rBoard[index[0] + y][index[1] + x] == ' ':
+                    if ' ' in rBoard[index[0] + y][index[1] + x]:
                         rBoard[index[0] + y][index[1] + x] = 'x'
                     else:
                         try:
@@ -319,7 +320,7 @@ class Rook(Chess):
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if rBoard[pos[0]][pos[1]] == ' ':
+                    if ' ' in rBoard[pos[0]][pos[1]]:
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
                         try:
@@ -359,7 +360,7 @@ class Bishop(Chess):
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if rBoard[pos[0]][pos[1]] == ' ':
+                    if ' ' in rBoard[pos[0]][pos[1]]:
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
                         try:
@@ -397,7 +398,7 @@ class Knight(Chess):
             for j in range(x, y):
                 if abs(i) + abs(j) == y:
                     if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
-                        if rBoard[index[0] + i][index[1] + j] == ' ':
+                        if ' ' in rBoard[index[0] + i][index[1] + j]:
                             rBoard[index[0] + i][index[1] + j] = 'x'
                         else:
                             try:
@@ -416,7 +417,7 @@ class Queen(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "queen", direction, img, 90, effects, 8)
+        super().__init__(team, "queen", direction, img, 90, [ef.Effect('Unselectable', turns = -1, phase=[3], stack=-1)] + effects, 8)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -428,15 +429,16 @@ class Queen(Chess):
         """
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
-        cross = [[[index[0] + i, index[1]] for i in range(1, self._speed)],
-                 [[index[0] - i, index[1]] for i in range(1, self._speed)],
-                 [[index[0], index[1] + i] for i in range(1, self._speed)],
-                 [[index[0], index[1] - i] for i in range(1, self._speed)]]
+        speed = self._speed
+        cross = [[[index[0] + i, index[1]] for i in range(1, speed)],
+                 [[index[0] - i, index[1]] for i in range(1, speed)],
+                 [[index[0], index[1] + i] for i in range(1, speed)],
+                 [[index[0], index[1] - i] for i in range(1, speed)]]
 
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if rBoard[pos[0]][pos[1]] == ' ':
+                    if ' ' in rBoard[pos[0]][pos[1]]:
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
                         try:
@@ -448,15 +450,15 @@ class Queen(Chess):
                         except:
                             break
 
-        diagonals = [[[index[0] + i, index[1] + i] for i in range(1, self._speed)],
-                     [[index[0] + i, index[1] - i] for i in range(1, self._speed)],
-                     [[index[0] - i, index[1] + i] for i in range(1, self._speed)],
-                     [[index[0] - i, index[1] - i] for i in range(1, self._speed)]]
+        diagonals = [[[index[0] + j, index[1] + j] for j in range(1, speed)],
+                     [[index[0] + j, index[1] - j] for j in range(1, speed)],
+                     [[index[0] - j, index[1] + j] for j in range(1, speed)],
+                     [[index[0] - j, index[1] - j] for j in range(1, speed)]]
 
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if rBoard[pos[0]][pos[1]] == ' ':
+                    if ' ' in rBoard[pos[0]][pos[1]]:
                         rBoard[pos[0]][pos[1]] = 'x'
                     else:
                         try:

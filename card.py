@@ -126,7 +126,7 @@ class CardArea:
         self.__picking = None
         interval = (height + 10) / 3
         for i in range(3):
-            self.__cellLayers.append(cell.Cell(self.__y + 40, self.__x + interval * i, self.__GEI['Darken']))
+            self.__cellLayers.append(cell.Cell(self.__y + 55, self.__x + interval * i, self.__GEI['Darken']))
 
     def draw(self, win, font, pos, nPlayer):
         listCard = nPlayer.get_cards()

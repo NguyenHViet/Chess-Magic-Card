@@ -64,11 +64,13 @@ class Board:
             self.__CellLayer.append([])
             for y in range(8):
                 try:
-                    if self.__OjectLayer[(y, x)].get_team() == ' ':
+                    if self.__OjectLayer[(y, x)].convert_to_readable() == '-':
                         self.__OjectLayer[(y, x)] = None
                 except:
                     pass
                 self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
+        self.__readableMap = [[' ' for i in range(8)] for i in range(8)]
+        self.__readableMap = self.convert_to_readable()
 
     def get_x(self):
         return self.__x
