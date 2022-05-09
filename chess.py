@@ -56,6 +56,9 @@ class Chess:
         """
         return self._team
 
+    def get_type(self):
+        return self._type
+
     def get_score(self):
         """
         Lấy điểm số của quân cờ

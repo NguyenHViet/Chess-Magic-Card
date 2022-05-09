@@ -56,11 +56,14 @@ listImage = {
     'Frozen_river':{
         'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
         'Special':pygame.image.load('img\\Environment\\frozen_river_special.png'),
-        'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png')
+        'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png'),
+        'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
     },
     'Foggy_forest': {
         'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
-        'Special':pygame.image.load('img\\Environment\\foggy_forest_special.png')
+        'Special':pygame.image.load('img\\Environment\\foggy_forest_special.png'),
+        'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
+
     },
     'Swamp': {
         'Normal':pygame.image.load('img\\Environment\\swamp_normal.png'),

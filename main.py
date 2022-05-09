@@ -30,7 +30,7 @@ BLACK = (0, 0, 0)
 
 startTurnTime = math.floor(time.time())
 timing = 0
-env = 'Desert'
+env = 'Foggy_forest'
 
 SETTINGS = {
     'Music Volumn': 0.1,
@@ -122,16 +122,22 @@ def main():
 
     turn_on_music()
     global pause, phase, turns, startTurnTime, timing
+    usedCard = False
     pause = False
     selected = False
     required = 0
     selectedPos = []
     playingTeam = 'w'
     while True:
-        if turns % 2 == 0:
-            playingTeam = 'w'
-        else:
-            playingTeam = 'b'
+        if phase == chess.PHASE['Start']:
+            usedCard = False
+            selected = False
+            required = 0
+            selectedPos = []
+            if turns % 2 == 0:
+                playingTeam = 'w'
+            else:
+                playingTeam = 'b'
         pygame.time.delay(50) ##stops cpu dying
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -142,7 +148,7 @@ def main():
                 index = nboard.find_Cell(pos)
                 if mouse_on_board(pos) and phase == chess.PHASE['Picking']:
                     phase = chess.PHASE['Move']
-                elif mouse_on_cards(pos) and phase == chess.PHASE['Picking']:
+                elif mouse_on_cards(pos) and phase == chess.PHASE['Picking'] and not usedCard:
                     phase = chess.PHASE['Cast']
 
                 if event.button == 3:
@@ -208,6 +214,7 @@ def main():
                         phase = Players[turns % 2].update((chess.PHASE['Picking']), init.DECK, False, startTurnTime)
                         selected = False
                         selectedPos = []
+                        usedCard = True
                         #-----------------------------------------------------------------------------------------------
                 print(" Phase:", phase)
                 nboard.printMap()

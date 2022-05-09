@@ -196,7 +196,6 @@ class Foggy_forest(Environment):
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
-
         "Đổi toàn bộ ô cờ sang ô special"
         "Thay đổi giá trị di chuyển của quân cờ trừ mã xuống còn 4"
         rBoard = nBoard.getrBoard()
@@ -209,8 +208,10 @@ class Foggy_forest(Environment):
                         for j in range(8):
                             cBoard[j][i].set_img(self._image['Special'])
                             try:
-                                if oBoard[(j + y, i + x)] != None:
-                                    oBoard[(j + y, i + x)].add_effect(ef.Effect('IncreaseSpeed', -4, turns=1, phase=2))
+                                print(oBoard[(j, i)].get_team())
+                                if oBoard[(j, i)] != None:
+                                    if oBoard[(j, i)].get_type() != 'knight':
+                                        oBoard[(j, i)].add_effect(ef.Effect('IncreaseSpeed', -4, turns=1, phase=2))
                             except:
                                 pass
                 elif turn % 6 == 4:
