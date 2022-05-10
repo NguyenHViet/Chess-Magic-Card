@@ -40,7 +40,10 @@ listImage = {
         'Actions': pygame.image.load('img\\GUI\\actions.png'),
         'Lock':pygame.image.load('img\\GUI\\lock.png'),
         'Arrow_Up':pygame.image.load('img\\GUI\\arrow_up.png'),
-        'Arrow_Down': pygame.image.load('img\\GUI\\arrow_down.png')
+        'Arrow_Down': pygame.image.load('img\\GUI\\arrow_down.png'),
+        'Arrow_Left': pygame.image.load('img\\GUI\\arrow_left.png'),
+        'Arrow_Right': pygame.image.load('img\\GUI\\arrow_right.png'),
+
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -56,13 +59,13 @@ listImage = {
         'Special':pygame.image.load('img\\Environment\\derest_special.png'),
         'Background':pygame.image.load('img\\Environment\\desert_bg.jpg')
     },
-    'Frozen_river':{
+    'Frozen River':{
         'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
         'Special':pygame.image.load('img\\Environment\\frozen_river_special.png'),
         'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png'),
         'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
     },
-    'Foggy_forest': {
+    'Foggy Forest': {
         'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
         'Special':pygame.image.load('img\\Environment\\foggy_forest_special.png'),
         'Background': pygame.image.load('img\\Environment\\foggy_forest_bg.jpg')
@@ -71,11 +74,14 @@ listImage = {
     'Swamp': {
         'Normal':pygame.image.load('img\\Environment\\swamp_normal.png'),
         'Special':pygame.image.load('img\\Environment\\swamp_special.png'),
-        'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
+        'Background': pygame.image.load('img\\Environment\\swamp_bg.jpg')
     },
     'Grassland': {
         'Normal':pygame.image.load('img\\Environment\\grassland.png'),
         'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
+    },
+    'Random': {
+        'Background':pygame.image.load('img\\Environment\\random_bg.jpg')
     }
 }
 
@@ -103,8 +109,9 @@ DECK = [
 
 ENVIRONMENT = {
     'Desert':env.Desert(listImage['Desert'], 800),
-    'Frozen_river':env.Frozen_river(listImage['Frozen_river'], 800),
-    'Foggy_forest':env.Foggy_forest(listImage['Foggy_forest'], 800),
+    'Frozen River':env.Frozen_river(listImage['Frozen River'], 800),
+    'Foggy Forest':env.Foggy_forest(listImage['Foggy Forest'], 800),
     'Swamp':env.Swamp(listImage['Swamp'], 800),
-    'Grassland':env.Grassland(listImage['Grassland'], 800)
+    'Grassland':env.Grassland(listImage['Grassland'], 800),
+    'Random':env.Environment(),
 }

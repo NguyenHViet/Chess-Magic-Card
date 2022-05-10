@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import sys
 import time
@@ -59,11 +61,13 @@ def turn_on_music():
     pygame.mixer.music.set_volume(SETTINGS['Music Volumn'])
 
 def new_game():
-    global turns, phase, nboard, ncard, Players, startTurnTime
+    global turns, phase, nboard, ncard, Players, startTurnTime, env
     startTurnTime = math.floor(time.time())
     turns = 0
     phase = chess.PHASE['Start']
     pause = False
+    if env == 'Random':
+        env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
     Players = [player.Player('Player 1', 'w', SETTINGS['Time'], SETTINGS['Time Bonus']), player.Player('Player 2', 'b', SETTINGS['Time'], SETTINGS['Time Bonus'])]
     pygame.mixer.music.load('music\\Two Steps From Hell - Victory (Instrumental).wav')
@@ -108,6 +112,25 @@ def setting_game():
             return
         SETTINGS['Time Bonus'] -= 1
         pygame.time.delay(150)
+
+    def next_env():
+        global env
+        temp = list(init.ENVIRONMENT)
+        try:
+            env = temp[temp.index(env) + 1]
+        except:
+            env = temp[0]
+        pygame.time.delay(150)
+
+    def precious_env():
+        global env
+        temp = list(init.ENVIRONMENT)
+        try:
+            env = temp[temp.index(env) - 1]
+        except:
+            env = temp[-1]
+        pygame.time.delay(150)
+
     x = 100
     while pause:
         textSurface = init.font60.render('TÙY CHỈNH', True, 'white')
@@ -134,6 +157,10 @@ def setting_game():
         button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 180, 520 - x, 60, 50, minus_min)
         button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 30, 520 - x, 60, 50, minus_second)
         button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) + 145, 520 - x, 60, 50, minus_time_bonus)
+
+        button('', init.listImage['GUI']['Arrow_Right'], '', (WinWidth / 2) + 245, 720 - x, 50, 60, next_env)
+        button('', init.listImage['GUI']['Arrow_Left'], '', (WinWidth / 2) - 295, 720 - x, 50, 60, precious_env)
+        button(env, init.listImage[env]['Background'], init.listImage['GEI']['Darken'], (WinWidth / 2) - 200, 620 - x, 400, 250, new_game, color='white')
 
         button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 800, 363, 100, new_game)
         pygame.display.update()
@@ -321,13 +348,14 @@ def paused():
     pygame.mixer.music.pause()
     global pause
     pause = True
-    textSurface = init.font60.render('TẠM DỪNG', True, 'black')
+    textSurface = init.font60.render('TẠM DỪNG', True, 'white')
     textRect = textSurface.get_rect()
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
-    cell.Cell(0, 0, init.listImage['GEI']['Normal']).draw(WIN, WinHeight, WinWidth)
-    WIN.blit(textSurface, textRect)
     while pause:
+        cell.Cell(0, 0, init.listImage[env]['Background']).draw(WIN, WinHeight, WinWidth)
+        WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
+        WIN.blit(textSurface, textRect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
@@ -344,13 +372,14 @@ def endGame():
     pygame.mixer.music.pause()
     global pause
     pause = True
-    textSurface = init.font60.render('Player ' + str(turns%2 + 1) + ' WIN', True, 'black')
+    textSurface = init.font60.render('Player ' + str(turns%2 + 1) + ' WIN', True, 'white')
     textRect = textSurface.get_rect()
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
-    cell.Cell(0, 0, init.listImage['GEI']['Normal']).draw(WIN, WinHeight, WinWidth)
-    WIN.blit(textSurface, textRect)
     while pause:
+        cell.Cell(0, 0, init.listImage[env]['Background']).draw(WIN, WinHeight, WinWidth)
+        WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
+        WIN.blit(textSurface, textRect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
@@ -378,7 +407,7 @@ def game_intro():
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
     while pause:
-        cell.Cell(0, 0, init.listImage['Foggy_forest']['Background']).draw(WIN, WinHeight, WinWidth)
+        cell.Cell(0, 0, init.listImage['Foggy Forest']['Background']).draw(WIN, WinHeight, WinWidth)
         WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
         WIN.blit(textSurface, textRect)
         for event in pygame.event.get():
