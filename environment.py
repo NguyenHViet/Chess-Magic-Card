@@ -210,7 +210,7 @@ class Foggy_forest(Environment):
                             cBoard[j][i].set_img(self._image['Special'])
                             try:
                                 if oBoard[(j, i)] != None:
-                                    if oBoard[(j, i)].get_type() not in ['knight']:
+                                    if oBoard[(j, i)].get_type() not in ['Knight', 'Pawn']:
                                         oBoard[(j, i)].add_effect(ef.Effect('IncreaseSpeed', -4, turns=1, phase=2))
                             except:
                                 pass

@@ -5,6 +5,7 @@ import sys
 import time
 
 import chess
+import effect
 import init
 import cell
 import board
@@ -198,12 +199,15 @@ def updateGUI():
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
     for i in range(len(Players[turns%2].get_cards())):
-        button("", init.listImage['GUI']['Pause'], '', offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT/3)*i + (HEIGHT)/8, 50, 50, Players[turns%2].redraw_card, param = i)
+        button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT/3)*i + (HEIGHT)/8, 50, 50, Players[turns%2].redraw_card, param = i)
 
     if pygame.mixer.music.get_busy():
         button("", init.listImage['GUI']['Pause'], '', 90, 40, 30, 30, turn_off_music)
     else:
         button("", init.listImage['GUI']['Pause'], '', 90, 40, 30, 30, turn_on_music)
+
+    button('Turn: {:<12}'.format(turns), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 200, 320, 100, font=init.font30)
+    WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 200))
 
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
@@ -230,10 +234,10 @@ def main():
             selected = False
             required = 0
             selectedPos = []
-            if turns % 2 == 0:
-                playingTeam = 'w'
-            else:
-                playingTeam = 'b'
+        if turns % 2 == 0:
+            playingTeam = 'w'
+        else:
+            playingTeam = 'b'
         pygame.time.delay(50) ##stops cpu dying
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -317,13 +321,14 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
+        #check_evolutions()
         phase = Players[turns % 2].update(phase, init.DECK, SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
-def button(text, img, img_h, x, y, width, height, action = None, color = 'black', font = init.font40, param=None):
+def button(text, img, img_h, x, y, width, height, action = None, color = 'black', font = init.font40, **param):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     img = pygame.transform.scale(img, (width, height))
@@ -335,7 +340,7 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
         except:
             pass
         if click[0] == 1 and action != None:
-            if param != None:
+            if param != {}:
                 action(param)
             else:
                 action()
@@ -397,6 +402,29 @@ def end_turn():
 def end_game():
     pygame.quit()
     quit()
+
+def check_evolutions():
+
+    def evolution(type, team, oBoard, index):
+        newChess = getattr(chess, type)
+        oBoard[index] = newChess(team)
+
+    if phase == chess.PHASE['End']:
+        oBoard = nboard.getoBoard()
+        for object in oBoard.items():
+            try:
+                for effect in object[1].get_effects():
+                    print(effect.active_effect(nboard, object[0], phase))
+                    if object[1].get_type() == 'pawn' and effect.active_effect(nboard, object[0], phase) == 'Effected':
+                        WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
+                        while True:
+                            for event in pygame.event.get():
+                                if event.type == pygame.QUIT:
+                                    end_game()
+                            button('', init.listImage['Chess Art']['Queen'], '', WinWidth/2 - 300,0, 150, 322, evolution, type=object[1].get_type(), team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                            pygame.display.update()
+            except:
+                pass
 
 def game_intro():
     pygame.time.delay(80)

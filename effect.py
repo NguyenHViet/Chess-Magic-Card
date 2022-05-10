@@ -39,6 +39,14 @@ class Effect:
         except:
             Options = []
 
+        def Evolution(nBoard, indexs, phase, value, options):
+            oBoard = nBoard.getoBoard()
+            if phase != self.__phase:
+                return STATUS[0]
+            index = indexs[1]
+            if index == 7*(oBoard[(indexs[0], indexs[1])].get_direction() > 0):
+                return STATUS[3]
+
         # Chess Effect
         def IncreaseSpeed(nBoard, indexs, phase, value, options):
             if phase != self.__phase:
@@ -54,6 +62,8 @@ class Effect:
         def Unselectable(nBoard, indexs, phase, value, options):
             if phase in self.__phase:
                 return STATUS[1]
+            else:
+                return STATUS[0]
 
         # Card Effect
         def PushChess(nBoard, indexs, phase, value, options):
@@ -107,7 +117,7 @@ class Effect:
                 return STATUS[1]
             return STATUS[2]
 
-        if not self.__actived and self.__stack > 0:
+        if not self.__actived and self.__stack > 0 or self.__stack == -1:
             func = locals()[self.__name](nBoard, indexs, phase, self.__value, Options)
             if func == STATUS[3]:
                 self.__actived = True
@@ -116,6 +126,7 @@ class Effect:
             return STATUS[0]
 
     def triggered_effect(self):
-        self.__stack -= 1
+        if self.__stack > 0:
+            self.__stack -= 1
         self.unactive_effect()
 

@@ -7,14 +7,20 @@ import random
 
 listImage = {
     'b': {
-        'b':pygame.image.load('img\\b_bishop.png'), 'k':pygame.image.load('img\\b_king.png'),
-        'kn':pygame.image.load('img\\b_knight.png'), 'p':pygame.image.load('img\\b_pawn.png'),
-        'q':pygame.image.load('img\\b_queen.png'), 'r':pygame.image.load('img\\b_rook.png')
+        'b':pygame.image.load('img\\Chess\\b_bishop.png'), 'k':pygame.image.load('img\\Chess\\b_king.png'),
+        'kn':pygame.image.load('img\\Chess\\b_knight.png'), 'p':pygame.image.load('img\\Chess\\b_pawn.png'),
+        'q':pygame.image.load('img\\Chess\\b_queen.png'), 'r':pygame.image.load('img\\Chess\\b_rook.png')
     },
     'w': {
-        'b':pygame.image.load('img\\w_bishop.png'), 'k':pygame.image.load('img\\w_king.png'),
-        'kn':pygame.image.load('img\\w_knight.png'), 'p':pygame.image.load('img\\w_pawn.png'),
-        'q':pygame.image.load('img\\w_queen.png'), 'r':pygame.image.load('img\\w_rook.png')
+        'b':pygame.image.load('img\\Chess\\w_bishop.png'), 'k':pygame.image.load('img\\Chess\\w_king.png'),
+        'kn':pygame.image.load('img\\Chess\\w_knight.png'), 'p':pygame.image.load('img\\Chess\\w_pawn.png'),
+        'q':pygame.image.load('img\\Chess\\w_queen.png'), 'r':pygame.image.load('img\\Chess\\w_rook.png')
+    },
+    'Chess Art':{
+        'Queen':pygame.image.load('img\\Chess\\m_queen.png'),
+        'Rook': pygame.image.load('img\\Chess\\m_rook.png'),
+        'Knight': pygame.image.load('img\\Chess\\m_knight.png'),
+        'Bishop': pygame.image.load('img\\Chess\\m_bishop.png'),
     },
     'GEI': {
         'Normal':pygame.image.load('img\\GEI\\classic_normal.png'),
@@ -43,7 +49,9 @@ listImage = {
         'Arrow_Down': pygame.image.load('img\\GUI\\arrow_down.png'),
         'Arrow_Left': pygame.image.load('img\\GUI\\arrow_left.png'),
         'Arrow_Right': pygame.image.load('img\\GUI\\arrow_right.png'),
-
+        'Turn Phase':pygame.image.load('img\\GUI\\turn_phase_bot.png'),
+        'Turn Phase Ef': pygame.image.load('img\\GUI\\turn_phase.png'),
+        'Random':pygame.image.load('img\\GUI\\random_button.png')
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -88,6 +96,7 @@ listImage = {
 pygame.font.init()
 font15 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 15)
 font20 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
+font30 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 30)
 font40 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 40)
 font50 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 50)
 font60 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 60)
@@ -97,8 +106,8 @@ EFFECT = {
 }
 
 DECK = [
-    Card('Tiến Công', 1, listImage['Cards']['01'], 'Tiến thẳng về phía trước 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
-    Card('Rút Lui', 1, listImage['Cards']['02'], 'Lùi về phía sau 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
+    Card('Tiến Công', 2, listImage['Cards']['01'], 'Tiến thẳng về phía trước 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
+    Card('Rút Lui', 2, listImage['Cards']['02'], 'Lùi về phía sau 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
     Card('Tấn Công Mạn Sườn', 2, listImage['Cards']['03'], 'Đi ngang sang trái hoặc phải 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False),
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['04'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 2)], directions = ['Ahead'], killable = True),
     Card('Đánh Phủ Đầu', 3, listImage['Cards']['05'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),

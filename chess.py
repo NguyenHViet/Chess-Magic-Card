@@ -221,7 +221,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)]  + effects, 1)
+        super().__init__(team, "Pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2), ef.Effect('Evolution', turns = -1, phase = 4, stack=-1)]  + effects, 1)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -266,7 +266,7 @@ class King(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "king", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3], stack=-1)]  + effects, 1)
+        super().__init__(team, "King", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3])]  + effects, 1)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -292,6 +292,7 @@ class King(Chess):
                         except:
                             break
 
+
 class Rook(Chess):
     def __init__(self, team, direction, img, effects = []):
         """
@@ -300,7 +301,7 @@ class Rook(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "rook", direction, img, 50, effects, 8)
+        super().__init__(team, "Rook", direction, img, 50, effects, 8)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -340,7 +341,7 @@ class Bishop(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "bishop", direction, img, 30, effects, 8)
+        super().__init__(team, "Bishop", direction, img, 30, effects, 8)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -380,7 +381,7 @@ class Knight(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "knight", direction, img, 30, effects, 3)
+        super().__init__(team, "Knight", direction, img, 30, effects, 3)
 
     def get_moves(self, nBoard, index, phase):
         """
@@ -417,7 +418,7 @@ class Queen(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "queen", direction, img, 90, [ef.Effect('Unselectable', turns = -1, phase=[3], stack=-1)] + effects, 8)
+        super().__init__(team, "Queen", direction, img, 90, [ef.Effect('Unselectable', turns = -1, phase=[3])] + effects, 8)
 
     def get_moves(self, nBoard, index, phase):
         """
