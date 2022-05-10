@@ -321,7 +321,7 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        #check_evolutions()
+        check_evolutions()
         phase = Players[turns % 2].update(phase, init.DECK, SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())

@@ -187,7 +187,7 @@ class Board:
         pass
 
     def is_finished(self):
-        if self.count_on_rMap('king') <= 1:
+        if self.count_on_rMap('King') <= 1:
             return True
         else:
             return False
