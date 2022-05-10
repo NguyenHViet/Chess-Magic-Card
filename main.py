@@ -405,24 +405,30 @@ def end_game():
 
 def check_evolutions():
 
-    def evolution(type, team, oBoard, index):
-        newChess = getattr(chess, type)
-        oBoard[index] = newChess(team)
+    def evolution(param):
+        if param['team'] == 'w':
+            direction = 'upwward'
+        else:
+            direction = 'downward'
+        newChess = getattr(chess, param['type'])(param['team'], direction, init.listImage[param['team']][param['type']])
+        param['oBoard'][param['index']] = newChess
+        main()
 
     if phase == chess.PHASE['End']:
         oBoard = nboard.getoBoard()
         for object in oBoard.items():
             try:
-                for effect in object[1].get_effects():
-                    print(effect.active_effect(nboard, object[0], phase))
-                    if object[1].get_type() == 'pawn' and effect.active_effect(nboard, object[0], phase) == 'Effected':
-                        WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
-                        while True:
-                            for event in pygame.event.get():
-                                if event.type == pygame.QUIT:
-                                    end_game()
-                            button('', init.listImage['Chess Art']['Queen'], '', WinWidth/2 - 300,0, 150, 322, evolution, type=object[1].get_type(), team = object[1].get_team(), oBoard = oBoard, index = object[0])
-                            pygame.display.update()
+                if object[1].get_type() == 'Pawn' and object[0][1] == 7*(object[1].get_direction()):
+                    WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
+                    while True:
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                end_game()
+                        button('', init.listImage['Chess Art']['Queen'], init.listImage['GEI']['Darken'], WinWidth/2 - 315, WinHeight/2 - 200, 150, 322, evolution, type='Queen', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Bishop'], init.listImage['GEI']['Darken'], WinWidth/2 - 155, WinHeight/2 - 122, 150, 322, evolution, type='Bishop', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Knight'], init.listImage['GEI']['Darken'], WinWidth/2 + 5, WinHeight/2 - 200, 150, 322, evolution, type='Knight', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Rook'], init.listImage['GEI']['Darken'], WinWidth/2 + 165, WinHeight/2 - 122, 150, 322, evolution, type='Rook', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        pygame.display.update()
             except:
                 pass
 

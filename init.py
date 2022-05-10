@@ -7,14 +7,14 @@ import random
 
 listImage = {
     'b': {
-        'b':pygame.image.load('img\\Chess\\b_bishop.png'), 'k':pygame.image.load('img\\Chess\\b_king.png'),
-        'kn':pygame.image.load('img\\Chess\\b_knight.png'), 'p':pygame.image.load('img\\Chess\\b_pawn.png'),
-        'q':pygame.image.load('img\\Chess\\b_queen.png'), 'r':pygame.image.load('img\\Chess\\b_rook.png')
+        'Bishop':pygame.image.load('img\\Chess\\b_bishop.png'), 'King':pygame.image.load('img\\Chess\\b_king.png'),
+        'Knight':pygame.image.load('img\\Chess\\b_knight.png'), 'Pawn':pygame.image.load('img\\Chess\\b_pawn.png'),
+        'Queen':pygame.image.load('img\\Chess\\b_queen.png'), 'Rook':pygame.image.load('img\\Chess\\b_rook.png')
     },
     'w': {
-        'b':pygame.image.load('img\\Chess\\w_bishop.png'), 'k':pygame.image.load('img\\Chess\\w_king.png'),
-        'kn':pygame.image.load('img\\Chess\\w_knight.png'), 'p':pygame.image.load('img\\Chess\\w_pawn.png'),
-        'q':pygame.image.load('img\\Chess\\w_queen.png'), 'r':pygame.image.load('img\\Chess\\w_rook.png')
+        'Bishop':pygame.image.load('img\\Chess\\w_bishop.png'), 'King':pygame.image.load('img\\Chess\\w_king.png'),
+        'Knight':pygame.image.load('img\\Chess\\w_knight.png'), 'Pawn':pygame.image.load('img\\Chess\\w_pawn.png'),
+        'Queen':pygame.image.load('img\\Chess\\w_queen.png'), 'Rook':pygame.image.load('img\\Chess\\w_rook.png')
     },
     'Chess Art':{
         'Queen':pygame.image.load('img\\Chess\\m_queen.png'),

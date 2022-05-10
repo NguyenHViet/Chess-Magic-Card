@@ -39,14 +39,6 @@ class Effect:
         except:
             Options = []
 
-        def Evolution(nBoard, indexs, phase, value, options):
-            oBoard = nBoard.getoBoard()
-            if phase != self.__phase:
-                return STATUS[0]
-            index = indexs[1]
-            if index == 7*(oBoard[(indexs[0], indexs[1])].get_direction() > 0):
-                return STATUS[3]
-
         # Chess Effect
         def IncreaseSpeed(nBoard, indexs, phase, value, options):
             if phase != self.__phase:

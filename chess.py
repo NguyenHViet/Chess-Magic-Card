@@ -243,6 +243,8 @@ class Pawn(Chess):
             elif '-' in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] += 'x'
                 break
+            else:
+                break
         top3 = [[index[0] + direction * (self._speed > 0), index[1] + i * (self._speed > 0)] for i in range(-1, 2)]
         for positions in top3:
             if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]] and rBoard[positions[0]][positions[1]] != '-':

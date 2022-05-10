@@ -20,14 +20,14 @@ class Board:
         else:
             oTeam == 'b'
         # Tạo phần layer các thực thể trên bàn cờ
-        self.__OjectLayer = {(0, 0): chess.Rook(oTeam, 'downward', lImg[oTeam]['r']), (1, 0): chess.Knight(oTeam, 'downward', lImg[oTeam]['kn']),
-                             (2, 0): chess.Bishop(oTeam, 'downward', lImg[oTeam]['b']), (3, 0): chess.Queen(oTeam, 'downward', lImg[oTeam]['q']),
-                             (4, 0): chess.King(oTeam, 'downward', lImg[oTeam]['k']), (5, 0): chess.Bishop(oTeam, 'downward', lImg[oTeam]['b']),
-                             (6, 0): chess.Knight(oTeam, 'downward', lImg[oTeam]['kn']), (7, 0): chess.Rook(oTeam, 'downward', lImg[oTeam]['r']),
-                             (0, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']), (1, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']),
-                             (2, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']), (3, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']),
-                             (4, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']), (5, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']),
-                             (6, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']), (7, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['p']),
+        self.__OjectLayer = {(0, 0): chess.Rook(oTeam, 'downward', lImg[oTeam]['Rook']), (1, 0): chess.Knight(oTeam, 'downward', lImg[oTeam]['Knight']),
+                             (2, 0): chess.Bishop(oTeam, 'downward', lImg[oTeam]['Bishop']), (3, 0): chess.Queen(oTeam, 'downward', lImg[oTeam]['Queen']),
+                             (4, 0): chess.King(oTeam, 'downward', lImg[oTeam]['King']), (5, 0): chess.Bishop(oTeam, 'downward', lImg[oTeam]['Bishop']),
+                             (6, 0): chess.Knight(oTeam, 'downward', lImg[oTeam]['Knight']), (7, 0): chess.Rook(oTeam, 'downward', lImg[oTeam]['Rook']),
+                             (0, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']), (1, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']),
+                             (2, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']), (3, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']),
+                             (4, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']), (5, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']),
+                             (6, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']), (7, 1): chess.Pawn(oTeam, 'downward', lImg[oTeam]['Pawn']),
 
                              (0, 2): None, (1, 2): None, (2, 2): None, (3, 2): None,
                              (4, 2): None, (5, 2): None, (6, 2): None, (7, 2): None,
@@ -38,14 +38,14 @@ class Board:
                              (0, 5): None, (1, 5): None, (2, 5): None, (3, 5): None,
                              (4, 5): None, (5, 5): None, (6, 5): None, (7, 5): None,
 
-                             (0, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']), (1, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']),
-                             (2, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']), (3, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']),
-                             (4, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']), (5, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']),
-                             (6, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']), (7, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['p']),
-                             (0, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r']), (1, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']),
-                             (2, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']), (3, 7): chess.Queen(pTeam, 'upward', lImg[pTeam]['q']),
-                             (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['k']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['b']),
-                             (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['kn']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['r'])}
+                             (0, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']), (1, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']),
+                             (2, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']), (3, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']),
+                             (4, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']), (5, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']),
+                             (6, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']), (7, 6): chess.Pawn(pTeam, 'upward', lImg[pTeam]['Pawn']),
+                             (0, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['Rook']), (1, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['Knight']),
+                             (2, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['Bishop']), (3, 7): chess.Queen(pTeam, 'upward', lImg[pTeam]['Queen']),
+                             (4, 7): chess.King(pTeam, 'upward', lImg[pTeam]['King']), (5, 7): chess.Bishop(pTeam, 'upward', lImg[pTeam]['Bishop']),
+                             (6, 7): chess.Knight(pTeam, 'upward', lImg[pTeam]['Knight']), (7, 7): chess.Rook(pTeam, 'upward', lImg[pTeam]['Rook'])}
         self.__GEI = lImg['GEI']
         # Tạo phần layer các ô trên bàn cờ
         interval = self.__width / 8
