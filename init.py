@@ -51,7 +51,11 @@ listImage = {
         'Arrow_Right': pygame.image.load('img\\GUI\\arrow_right.png'),
         'Turn Phase':pygame.image.load('img\\GUI\\turn_phase_bot.png'),
         'Turn Phase Ef': pygame.image.load('img\\GUI\\turn_phase.png'),
-        'Random':pygame.image.load('img\\GUI\\random_button.png')
+        'Random':pygame.image.load('img\\GUI\\random_button.png'),
+        'Mute':pygame.image.load('img\\GUI\\mute_button.png'),
+        'Unmute': pygame.image.load('img\\GUI\\unmute_button.png'),
+        'Env Timer':pygame.image.load('img\\GUI\\evironment_timer.png'),
+        'Env Timer Ef': pygame.image.load('img\\GUI\\evironment_timer_ef.png'),
     },
     'Cards': {
         '01':pygame.image.load('img\\Card\\01.png'),
@@ -65,11 +69,13 @@ listImage = {
     'Desert': {
         'Normal':pygame.image.load('img\\Environment\\desert_normal.png'),
         'Special':pygame.image.load('img\\Environment\\derest_special.png'),
-        'Background':pygame.image.load('img\\Environment\\desert_bg.jpg')
+        'Background':pygame.image.load('img\\Environment\\desert_bg.jpg'),
+        'Prepare':pygame.image.load('img\\Environment\\derest_prepare.png')
     },
     'Frozen River':{
         'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
         'Special':pygame.image.load('img\\Environment\\frozen_river_special.png'),
+        'Special 2':pygame.image.load('img\\Environment\\frozen_river_special_2.png'),
         'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png'),
         'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
     },
@@ -96,6 +102,7 @@ listImage = {
 pygame.font.init()
 font15 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 15)
 font20 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
+font25 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 25)
 font30 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 30)
 font40 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 40)
 font50 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 50)

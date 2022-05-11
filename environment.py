@@ -50,6 +50,7 @@ class Environment:
 
     def draw(self, win):
         win.blit(self._image['Background'], (0, 0))
+        #win.blit(pygame.transform.scale(init.listImage['GEI']['Darken'], (1600, 1000)), (0, 0))
         interval = self._width / 8
         for row in range(8):
             for col in range(8):
@@ -99,7 +100,11 @@ class Desert(Environment):
                     self.__ewh = (random.randint(2, 3), random.randint(3, 4))
                 x, y = self.__epos
                 w, h = self.__ewh
-                if turn%6 < 4:
+                if turn%6 < 2:
+                    for i in range(w):
+                        for j in range(h):
+                            self._CellLayer[j  + y][i + x].set_img(self._image['Prepare'])
+                if turn%6 < 5 and turn%6 >= 2:
                     for i in range(w):
                         for j in range(h):
                             cBoard[j  + y][i + x].set_img(self._image['Special'])
@@ -110,7 +115,7 @@ class Desert(Environment):
                                     oBoard[(j + y, i + x)] = chess.Chess('-', '', '', '')
                             except:
                                 pass
-                elif turn%6 == 4:
+                elif turn%6 == 5:
                     self._CellLayer = self.create_map(nBoard)
                     nBoard.clear_map()
             except:
@@ -138,7 +143,7 @@ class Frozen_river(Environment):
         self._EffectedCells = {}
         while (count < 12):
             x = random.randint(0, 7)
-            y = random.randint(1, 6)
+            y = random.randint(2, 5)
             if (x, y) in cell_posision:
                 pass
             else:
@@ -147,7 +152,7 @@ class Frozen_river(Environment):
 
         for (x, y) in cell_posision:
             self._CellLayer[x][y].set_img(self._image['Special'])
-            self._EffectedCells.update({(x, y): 3})
+            self._EffectedCells.update({(x, y): 4})
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
@@ -159,6 +164,11 @@ class Frozen_river(Environment):
                     try:
                         if rBoard[x][y] != ' ':
                             self._EffectedCells[(y, x)] -= 1
+                            if self._EffectedCells[(y, x)] <= 2:
+                                self._CellLayer[y][x].set_img(self._image['Special 2'])
+                        elif self._EffectedCells[(y, x)] < 4:
+                            self._EffectedCells[(y, x)] = 4
+                            self._CellLayer[y][x].set_img(self._image['Special'])
                         if self._EffectedCells[(y, x)] <= 0:
                             self._CellLayer[y][x].set_img(self._image['Triggered_effect'])
                             oBoard[(y, x)] = chess.Chess('', '!', '', '', effects=[ef.Effect('Unselectable', turns = 3)])
@@ -166,7 +176,7 @@ class Frozen_river(Environment):
                             self._EffectedCells[(y, x)] -= 1
                         if self._EffectedCells[(y, x)] <= -4:
                             self._CellLayer[y][x].set_img(self._image['Special'])
-                            self._EffectedCells[(y,x)] = 3
+                            self._EffectedCells[(y,x)] = 4
                             oBoard[(y, x)] = None
                             rBoard[x][y] = ' '
                     except:

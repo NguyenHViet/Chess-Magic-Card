@@ -72,7 +72,7 @@ def new_game():
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
     Players = [player.Player('Player 1', 'w', SETTINGS['Time'], SETTINGS['Time Bonus']), player.Player('Player 2', 'b', SETTINGS['Time'], SETTINGS['Time Bonus'])]
     pygame.mixer.music.load('music\\Two Steps From Hell - Victory (Instrumental).wav')
-    pygame.mixer.music.set_volume(0.1)
+    pygame.mixer.music.set_volume(SETTINGS['Music Volumn'])
     pygame.mixer.music.play(-1)
     turn_off_music()
     main()
@@ -201,13 +201,15 @@ def updateGUI():
     for i in range(len(Players[turns%2].get_cards())):
         button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT/3)*i + (HEIGHT)/8, 50, 50, Players[turns%2].redraw_card, param = i)
 
-    if pygame.mixer.music.get_busy():
-        button("", init.listImage['GUI']['Pause'], '', 90, 40, 30, 30, turn_off_music)
+    if pygame.mixer.music.get_volume() > 0:
+        button("", init.listImage['GUI']['Mute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_off_music)
     else:
-        button("", init.listImage['GUI']['Pause'], '', 90, 40, 30, 30, turn_on_music)
+        button("", init.listImage['GUI']['Unmute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_on_music)
 
-    button('Turn: {:<12}'.format(turns), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 200, 320, 100, font=init.font30)
-    WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 200))
+    button('{}'.format(env), init.listImage['GUI']['Env Timer'], '', 45, offsetHeight + 200, 320, 100, font=init.font30)
+    WIN.blit(init.listImage['GUI']['Env Timer Ef'], (48, offsetHeight + 200))
+    button('Turn: {:<12}'.format(turns), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 300, 320, 100, font=init.font30)
+    WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 300))
 
 def update_display(win, nboard, pos, turns, phase):
     WIN.fill('white')
@@ -368,7 +370,7 @@ def paused():
                 if event.key == pygame.K_ESCAPE:
                     main()
         button('CHƠI TIẾP', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, main)
-        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, new_game)
+        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, setting_game)
         button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, game_intro)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 5*interval, 363, 100, end_game)
         pygame.display.update()
