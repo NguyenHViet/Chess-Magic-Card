@@ -7,106 +7,107 @@ import random
 
 listImage = {
     'b': {
-        'Bishop':pygame.image.load('img\\Chess\\b_bishop.png'), 'King':pygame.image.load('img\\Chess\\b_king.png'),
-        'Knight':pygame.image.load('img\\Chess\\b_knight.png'), 'Pawn':pygame.image.load('img\\Chess\\b_pawn.png'),
-        'Queen':pygame.image.load('img\\Chess\\b_queen.png'), 'Rook':pygame.image.load('img\\Chess\\b_rook.png')
+        'Bishop':pygame.image.load('assets\\img\\Chess\\b_bishop.png'), 'King':pygame.image.load('assets\\img\\Chess\\b_king.png'),
+        'Knight':pygame.image.load('assets\\img\\Chess\\b_knight.png'), 'Pawn':pygame.image.load('assets\\img\\Chess\\b_pawn.png'),
+        'Queen':pygame.image.load('assets\\img\\Chess\\b_queen.png'), 'Rook':pygame.image.load('assets\\img\\Chess\\b_rook.png')
     },
     'w': {
-        'Bishop':pygame.image.load('img\\Chess\\w_bishop.png'), 'King':pygame.image.load('img\\Chess\\w_king.png'),
-        'Knight':pygame.image.load('img\\Chess\\w_knight.png'), 'Pawn':pygame.image.load('img\\Chess\\w_pawn.png'),
-        'Queen':pygame.image.load('img\\Chess\\w_queen.png'), 'Rook':pygame.image.load('img\\Chess\\w_rook.png')
+        'Bishop':pygame.image.load('assets\\img\\Chess\\w_bishop.png'), 'King':pygame.image.load('assets\\img\\Chess\\w_king.png'),
+        'Knight':pygame.image.load('assets\\img\\Chess\\w_knight.png'), 'Pawn':pygame.image.load('assets\\img\\Chess\\w_pawn.png'),
+        'Queen':pygame.image.load('assets\\img\\Chess\\w_queen.png'), 'Rook':pygame.image.load('assets\\img\\Chess\\w_rook.png')
     },
     'Chess Art':{
-        'Queen':pygame.image.load('img\\Chess\\m_queen.png'),
-        'Rook': pygame.image.load('img\\Chess\\m_rook.png'),
-        'Knight': pygame.image.load('img\\Chess\\m_knight.png'),
-        'Bishop': pygame.image.load('img\\Chess\\m_bishop.png'),
+        'Queen':pygame.image.load('assets\\img\\Chess\\m_queen.png'),
+        'Rook': pygame.image.load('assets\\img\\Chess\\m_rook.png'),
+        'Knight': pygame.image.load('assets\\img\\Chess\\m_knight.png'),
+        'Bishop': pygame.image.load('assets\\img\\Chess\\m_bishop.png'),
     },
     'GEI': {
-        'Normal':pygame.image.load('img\\GEI\\classic_normal.png'),
-        'Darken':pygame.image.load('img\\GEI\\darkcell.png'),
-        'Darker':pygame.image.load('img\\GEI\\darker.png'),
-        'Move':pygame.image.load('img\\GEI\\move.png'),
-        'Choice':pygame.image.load('img\\GEI\\choice.png'),
-        'Hover':pygame.image.load('img\\GEI\\choice_magic.png'),
-        'Card_Hover':pygame.image.load('img\\GEI\\card_hover.png'),
-        'Card_Picking':pygame.image.load('img\\GEI\\picking_card.png'),
-        'Card_Cell':pygame.image.load('img\\GEI\\card_area.png'),
-        'LockCard': pygame.image.load('img\\GEI\\lock_card.png'),
-        'Empty':pygame.image.load('img\\GEI\\empty.png')
+        'Normal':pygame.image.load('assets\\img\\GEI\\classic_normal.png'),
+        'Darken':pygame.image.load('assets\\img\\GEI\\darkcell.png'),
+        'Darker':pygame.image.load('assets\\img\\GEI\\darker.png'),
+        'Move':pygame.image.load('assets\\img\\GEI\\move.png'),
+        'Choice':pygame.image.load('assets\\img\\GEI\\choice.png'),
+        'Hover':pygame.image.load('assets\\img\\GEI\\choice_magic.png'),
+        'Card_Hover':pygame.image.load('assets\\img\\GEI\\card_hover.png'),
+        'Card_Picking':pygame.image.load('assets\\img\\GEI\\picking_card.png'),
+        'Card_Cell':pygame.image.load('assets\\img\\GEI\\card_area.png'),
+        'LockCard': pygame.image.load('assets\\img\\GEI\\lock_card.png'),
+        'Empty':pygame.image.load('assets\\img\\GEI\\empty.png')
     },
     'GUI': {
-        'EndTurn': pygame.image.load('img\\GUI\\end_turn_button.png'),
-        'Choice':pygame.image.load('img\\GUI\\choice_white.png'),
-        'Pause':pygame.image.load('img\\GUI\\pause_button.png'),
-        'Button':pygame.image.load('img\\GUI\\button.png'),
-        'Hover_Button':pygame.image.load('img\\GUI\\button_hover.png'),
-        'Black Timer':pygame.image.load('img\\GUI\\b_timer.png'),
-        'White Timer':pygame.image.load('img\\GUI\\w_timer.png'),
-        'Actions': pygame.image.load('img\\GUI\\actions.png'),
-        'Lock':pygame.image.load('img\\GUI\\lock.png'),
-        'Arrow_Up':pygame.image.load('img\\GUI\\arrow_up.png'),
-        'Arrow_Down': pygame.image.load('img\\GUI\\arrow_down.png'),
-        'Arrow_Left': pygame.image.load('img\\GUI\\arrow_left.png'),
-        'Arrow_Right': pygame.image.load('img\\GUI\\arrow_right.png'),
-        'Turn Phase':pygame.image.load('img\\GUI\\turn_phase_bot.png'),
-        'Turn Phase Ef': pygame.image.load('img\\GUI\\turn_phase.png'),
-        'Random':pygame.image.load('img\\GUI\\random_button.png'),
-        'Mute':pygame.image.load('img\\GUI\\mute_button.png'),
-        'Unmute': pygame.image.load('img\\GUI\\unmute_button.png'),
-        'Env Timer':pygame.image.load('img\\GUI\\evironment_timer.png'),
-        'Env Timer Ef': pygame.image.load('img\\GUI\\evironment_timer_ef.png'),
+        'EndTurn': pygame.image.load('assets\\img\\GUI\\end_turn_button.png'),
+        'Choice':pygame.image.load('assets\\img\\GUI\\choice_white.png'),
+        'Pause':pygame.image.load('assets\\img\\GUI\\pause_button.png'),
+        'Button':pygame.image.load('assets\\img\\GUI\\button.png'),
+        'Hover_Button':pygame.image.load('assets\\img\\GUI\\button_hover.png'),
+        'Black Timer':pygame.image.load('assets\\img\\GUI\\b_timer.png'),
+        'White Timer':pygame.image.load('assets\\img\\GUI\\w_timer.png'),
+        'Actions': pygame.image.load('assets\\img\\GUI\\actions.png'),
+        'Lock':pygame.image.load('assets\\img\\GUI\\lock.png'),
+        'Arrow_Up':pygame.image.load('assets\\img\\GUI\\arrow_up.png'),
+        'Arrow_Down': pygame.image.load('assets\\img\\GUI\\arrow_down.png'),
+        'Arrow_Left': pygame.image.load('assets\\img\\GUI\\arrow_left.png'),
+        'Arrow_Right': pygame.image.load('assets\\img\\GUI\\arrow_right.png'),
+        'Turn Phase':pygame.image.load('assets\\img\\GUI\\turn_phase_bot.png'),
+        'Turn Phase Ef': pygame.image.load('assets\\img\\GUI\\turn_phase.png'),
+        'Random':pygame.image.load('assets\\img\\GUI\\random_button.png'),
+        'Mute':pygame.image.load('assets\\img\\GUI\\mute_button.png'),
+        'Unmute': pygame.image.load('assets\\img\\GUI\\unmute_button.png'),
+        'Env Timer':pygame.image.load('assets\\img\\GUI\\evironment_timer.png'),
+        'Env Timer Ef': pygame.image.load('assets\\img\\GUI\\evironment_timer_ef.png'),
     },
     'Cards': {
-        '01':pygame.image.load('img\\Card\\01.png'),
-        '02':pygame.image.load('img\\Card\\02.png'),
-        '03':pygame.image.load('img\\Card\\03.png'),
-        '04':pygame.image.load('img\\Card\\04.png'),
-        '05':pygame.image.load('img\\Card\\05.png'),
-        '06':pygame.image.load('img\\Card\\06.png'),
-        '07':pygame.image.load('img\\Card\\07.png')
+        '01':pygame.image.load('assets\\img\\Card\\01.png'),
+        '02':pygame.image.load('assets\\img\\Card\\02.png'),
+        '03':pygame.image.load('assets\\img\\Card\\03.png'),
+        '04':pygame.image.load('assets\\img\\Card\\04.png'),
+        '05':pygame.image.load('assets\\img\\Card\\05.png'),
+        '06':pygame.image.load('assets\\img\\Card\\06.png'),
+        '07':pygame.image.load('assets\\img\\Card\\07.png')
     },
     'Desert': {
-        'Normal':pygame.image.load('img\\Environment\\desert_normal.png'),
-        'Special':pygame.image.load('img\\Environment\\derest_special.png'),
-        'Background':pygame.image.load('img\\Environment\\desert_bg.jpg'),
-        'Prepare':pygame.image.load('img\\Environment\\derest_prepare.png')
+        'Normal':pygame.image.load('assets\\img\\Environment\\desert_normal.png'),
+        'Special':pygame.image.load('assets\\img\\Environment\\derest_special.png'),
+        'Background':pygame.image.load('assets\\img\\Environment\\desert_bg.jpg'),
+        'Prepare':pygame.image.load('assets\\img\\Environment\\derest_prepare.png')
     },
     'Frozen River':{
-        'Normal':pygame.image.load('img\\Environment\\frozen_river_normal.png'),
-        'Special':pygame.image.load('img\\Environment\\frozen_river_special.png'),
-        'Special 2':pygame.image.load('img\\Environment\\frozen_river_special_2.png'),
-        'Triggered_effect':pygame.image.load('img\\Environment\\frozen_river_hole.png'),
-        'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
+        'Normal':pygame.image.load('assets\\img\\Environment\\frozen_river_normal.png'),
+        'Special':pygame.image.load('assets\\img\\Environment\\frozen_river_special.png'),
+        'Special 2':pygame.image.load('assets\\img\\Environment\\frozen_river_special_2.png'),
+        'Triggered_effect':pygame.image.load('assets\\img\\Environment\\frozen_river_hole.png'),
+        'Background': pygame.image.load('assets\\img\\Environment\\frozen_river_bg.jpg')
     },
     'Foggy Forest': {
-        'Normal':pygame.image.load('img\\Environment\\foggy_forest_normal.png'),
-        'Special':pygame.image.load('img\\Environment\\foggy_forest_special.png'),
-        'Background': pygame.image.load('img\\Environment\\foggy_forest_bg.jpg')
+        'Normal':pygame.image.load('assets\\img\\Environment\\foggy_forest_normal.png'),
+        'Special':pygame.image.load('assets\\img\\Environment\\foggy_forest_special.png'),
+        'Background': pygame.image.load('assets\\img\\Environment\\foggy_forest_bg.jpg')
 
     },
     'Swamp': {
-        'Normal':pygame.image.load('img\\Environment\\swamp_normal.png'),
-        'Special':pygame.image.load('img\\Environment\\swamp_special.png'),
-        'Background': pygame.image.load('img\\Environment\\swamp_bg.jpg')
+        'Normal':pygame.image.load('assets\\img\\Environment\\swamp_normal.png'),
+        'Special':pygame.image.load('assets\\img\\Environment\\swamp_special.png'),
+        'Background': pygame.image.load('assets\\img\\Environment\\swamp_bg.jpg')
     },
     'Grassland': {
-        'Normal':pygame.image.load('img\\Environment\\grassland.png'),
-        'Background': pygame.image.load('img\\Environment\\desert_bg.jpg')
+        'Normal':pygame.image.load('assets\\img\\Environment\\grassland.png'),
+        'Background': pygame.image.load('assets\\img\\Environment\\grassland_bg.jpg')
     },
     'Random': {
-        'Background':pygame.image.load('img\\Environment\\random_bg.jpg')
+        'Background':pygame.image.load('assets\\img\\Environment\\random_bg.jpg'),
+        'Intro':pygame.image.load('assets\\img\\Environment\\game_intro_bg.jpg')
     }
 }
 
 pygame.font.init()
-font15 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 15)
-font20 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 20)
-font25 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 25)
-font30 = pygame.font.Font('font\\Comfortaa-VariableFont_wght.ttf', 30)
-font40 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 40)
-font50 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 50)
-font60 = pygame.font.Font('font\\static\\Comfortaa-SemiBold.ttf', 60)
+font15 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 15)
+font20 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 20)
+font25 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 25)
+font30 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 30)
+font40 = pygame.font.Font('assets\\font\\static\\Comfortaa-SemiBold.ttf', 40)
+font50 = pygame.font.Font('assets\\font\\static\\Comfortaa-SemiBold.ttf', 50)
+font60 = pygame.font.Font('assets\\font\\static\\Comfortaa-SemiBold.ttf', 60)
 
 EFFECT = {
 

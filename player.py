@@ -35,7 +35,7 @@ class Player:
 
     def redraw_card(self, index):
         if not self.__reRoll:
-            self.__cards[index] = copy.copy(random.choice(init.DECK))
+            self.__cards[index['param']] = copy.copy(random.choice(init.DECK))
             self.__reRoll = True
 
     def draw_cards(self, deck):

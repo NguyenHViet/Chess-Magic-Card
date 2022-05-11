@@ -152,7 +152,7 @@ class Frozen_river(Environment):
 
         for (x, y) in cell_posision:
             self._CellLayer[x][y].set_img(self._image['Special'])
-            self._EffectedCells.update({(x, y): 4})
+            self._EffectedCells.update({(x, y): 3})
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
@@ -166,17 +166,17 @@ class Frozen_river(Environment):
                             self._EffectedCells[(y, x)] -= 1
                             if self._EffectedCells[(y, x)] <= 2:
                                 self._CellLayer[y][x].set_img(self._image['Special 2'])
-                        elif self._EffectedCells[(y, x)] < 4:
-                            self._EffectedCells[(y, x)] = 4
+                        elif self._EffectedCells[(y, x)] < 3:
+                            self._EffectedCells[(y, x)] = 3
                             self._CellLayer[y][x].set_img(self._image['Special'])
                         if self._EffectedCells[(y, x)] <= 0:
                             self._CellLayer[y][x].set_img(self._image['Triggered_effect'])
                             oBoard[(y, x)] = chess.Chess('', '!', '', '', effects=[ef.Effect('Unselectable', turns = 3)])
                             rBoard[x][y] = '!'
                             self._EffectedCells[(y, x)] -= 1
-                        if self._EffectedCells[(y, x)] <= -4:
+                        if self._EffectedCells[(y, x)] <= -3:
                             self._CellLayer[y][x].set_img(self._image['Special'])
-                            self._EffectedCells[(y,x)] = 4
+                            self._EffectedCells[(y,x)] = 3
                             oBoard[(y, x)] = None
                             rBoard[x][y] = ' '
                     except:

@@ -84,13 +84,16 @@ class Board:
         for row in range(8):
             for col in range(8):
                 if (row+col) % 2 == 0:
-                    win.blit(self.__GEI['Darken'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
+                    win.blit(self.__GEI['Darker'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 # if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
                 #     win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if 'x' in self.__readableMap[col][row]:
                     win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 elif ':' in (self.__readableMap[col][row]):
                     win.blit(self.__GEI['Choice'],
+                             (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
+                elif '#' in (self.__readableMap[col][row]):
+                    win.blit(self.__GEI['Hover'],
                              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
                     self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
@@ -153,7 +156,7 @@ class Board:
                     self.__readableMap[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
                     self.__OjectLayer[(j, i)].set_killable(self, (i, j), 1, False)
                 except:
-                    if 'x' in self.__readableMap[i][j]:
+                    if ' ' != self.__readableMap[i][j]:
                         self.__readableMap[i][j] = ' '
 
     def convert_to_readable(self):
@@ -166,22 +169,41 @@ class Board:
                     new_map[i][j] = ' '
         return new_map
 
-    def select_Move(self, index0, index1, triggeredEffect = True):
+    def select_Move(self, index0, index1, triggeredEffect = True, swap = False):
         moved = False
         try:
             if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:
+                    try:
+                        self.__OjectLayer[(index1[1], index1[0])].triggered_effects()
+                    except:
+                        pass
                     self.__OjectLayer[(index0[1], index0[0])].triggered_effects()
+                if swap:
+                    swapObject = self.__OjectLayer[(index1[1], index1[0])]
+                else:
+                    swapObject = None
                 self.__OjectLayer[(index1[1], index1[0])] = self.__OjectLayer[(index0[1], index0[0])]
-                self.__OjectLayer[(index0[1], index0[0])] = None
+                self.__OjectLayer[(index0[1], index0[0])] = swapObject
         except:
             pass
         if moved:
             self.__readableMap = self.convert_to_readable()
             self.deselect()
         return moved
+
+    def controlledCells(self, phase, playingTeam = 'w'):
+        for object in self.__OjectLayer.items():
+            y, x = object[0]
+            try:
+                if object[1].get_team() != playingTeam:
+                    object[1].active_effects(self, (x, y), 2)
+                    object[1].get_moves(self, (x, y), phase, mark = '#')
+                    object[1].unactive_effects()
+            except:
+                pass
 
     def is_checkmate(self):
         pass
@@ -192,7 +214,7 @@ class Board:
         else:
             return False
 
-    def update(self, phase, turn):
+    def update(self, phase, turn, playingTeam):
         Phase = phase
         updating = True
         self.__enviroment.apply_env_effect(self, turn, phase)
@@ -208,10 +230,13 @@ class Board:
         elif phase == chess.PHASE['Start']:
             print("Bắt đầu lượt mới")
             Phase = chess.PHASE['Picking']
+            self.deselect()
+            self.controlledCells(phase, playingTeam)
         elif phase == chess.PHASE['End']:
             print("Kết thúc lượt")
             turn += 1
             Phase = chess.PHASE['Start']
+        self.controlledCells(phase, playingTeam)
         if not updating:
             return Phase, turn
 

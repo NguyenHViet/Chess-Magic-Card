@@ -57,6 +57,12 @@ class Effect:
             else:
                 return STATUS[0]
 
+        def Unmove(nBoard, indexs, phase, value, options):
+            if phase == self.__phase:
+                return STATUS[3]
+            else:
+                return STATUS[0]
+
         # Card Effect
         def PushChess(nBoard, indexs, phase, value, options):
             if phase != self.__phase:
@@ -117,8 +123,9 @@ class Effect:
         else:
             return STATUS[0]
 
-    def triggered_effect(self):
-        if self.__stack > 0:
-            self.__stack -= 1
-        self.unactive_effect()
+    def triggered_effect(self, phase = 2):
+        if phase == self.__phase:
+            if self.__stack > 0:
+                self.__stack -= 1
+            self.unactive_effect()
 

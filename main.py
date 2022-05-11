@@ -37,7 +37,7 @@ usedCard = False
 env = 'Desert'
 
 SETTINGS = {
-    'Music Volumn': 0.1,
+    'Music Volumn': 0.0,
     'Sound Volumn': 0,
     'Time': 180,
     'Time Bonus': 10,
@@ -71,7 +71,7 @@ def new_game():
         env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
     Players = [player.Player('Player 1', 'w', SETTINGS['Time'], SETTINGS['Time Bonus']), player.Player('Player 2', 'b', SETTINGS['Time'], SETTINGS['Time Bonus'])]
-    pygame.mixer.music.load('music\\Two Steps From Hell - Victory (Instrumental).wav')
+    pygame.mixer.music.load('assets\\music\\Two Steps From Hell - Victory (Instrumental).wav')
     pygame.mixer.music.set_volume(SETTINGS['Music Volumn'])
     pygame.mixer.music.play(-1)
     turn_off_music()
@@ -208,7 +208,7 @@ def updateGUI():
 
     button('{}'.format(env), init.listImage['GUI']['Env Timer'], '', 45, offsetHeight + 200, 320, 100, font=init.font30)
     WIN.blit(init.listImage['GUI']['Env Timer Ef'], (48, offsetHeight + 200))
-    button('Turn: {:<12}'.format(turns), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 300, 320, 100, font=init.font30)
+    button('Turn: {:<12}'.format(turns+1), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 300, 320, 100, font=init.font30)
     WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 300))
 
 def update_display(win, nboard, pos, turns, phase):
@@ -252,9 +252,12 @@ def main():
                     phase = chess.PHASE['Move']
                 elif mouse_on_cards(pos) and phase == chess.PHASE['Picking'] and not usedCard:
                     phase = chess.PHASE['Cast']
+                else:
+                    pass
 
                 if event.button == 3:
                     nboard.deselect()
+                    nboard.controlledCells(phase, playingTeam)
                     Players[turns%2].decelect()
                     phase = chess.PHASE['Picking']
                     selected = False
@@ -265,7 +268,6 @@ def main():
                 if phase == chess.PHASE['Move']:
                     if selected == False:
                         try:
-                            nboard.deselect()
                             selected = nboard.select_Chess(index, phase, playingTeam)
                             selectedPos = index
                         except:
@@ -280,6 +282,7 @@ def main():
                             selected = False
                             selectedPos = []
                             nboard.deselect()
+                            nboard.controlledCells(phase, playingTeam)
                         except:
                             phase = chess.PHASE['Picking']
                         #-----------------------------------------------------------------------------------------------
@@ -300,6 +303,7 @@ def main():
                             phase = chess.PHASE['Picking']
                     elif len(selectedPos) <= required and selected and mouse_on_board(pos):
                         nboard.deselect()
+                        nboard.controlledCells(phase, playingTeam)
                         index = nboard.find_Cell(pos)
                         result = Players[turns%2].play_card(nboard, selectedPos + [index])
                         if 'Fail' not in result:
@@ -312,6 +316,7 @@ def main():
                     # Nếu đã đủ số lượng đối tượng
                     if len(selectedPos) == required:
                         nboard.deselect()
+                        nboard.controlledCells(phase, playingTeam)
                         Players[turns % 2].decelect()
                         phase = Players[turns % 2].update((chess.PHASE['End']), init.DECK, False, startTurnTime)
                         selected = False
@@ -327,7 +332,7 @@ def main():
         phase = Players[turns % 2].update(phase, init.DECK, SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
-        phase, turns = nboard.update(phase, turns)
+        phase, turns = nboard.update(phase, turns, playingTeam)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
 def button(text, img, img_h, x, y, width, height, action = None, color = 'black', font = init.font40, **param):
@@ -343,6 +348,7 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
             pass
         if click[0] == 1 and action != None:
             if param != {}:
+                pygame.time.delay(50)
                 action(param)
             else:
                 action()
@@ -399,6 +405,7 @@ def end_turn():
     global phase, nboard, turns
     Players[turns % 2].decelect()
     nboard.deselect()
+    nboard.controlledCells(phase, playingTeam)
     phase = chess.PHASE['End']
 
 def end_game():
@@ -406,7 +413,6 @@ def end_game():
     quit()
 
 def check_evolutions():
-
     def evolution(param):
         if param['team'] == 'w':
             direction = 'upwward'
@@ -420,7 +426,7 @@ def check_evolutions():
         oBoard = nboard.getoBoard()
         for object in oBoard.items():
             try:
-                if object[1].get_type() == 'Pawn' and object[0][1] == 7*(object[1].get_direction()):
+                if object[1].get_type() == 'Pawn' and object[0][1] == 7*(object[1].get_direction()>0):
                     WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
                     while True:
                         for event in pygame.event.get():
@@ -435,7 +441,7 @@ def check_evolutions():
                 pass
 
 def game_intro():
-    pygame.time.delay(80)
+    pygame.time.delay(150)
     global pause
     pause = True
     textSurface = init.font60.render('CHESS: MAGIC CARD', True, 'white')
@@ -443,14 +449,13 @@ def game_intro():
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
     while pause:
-        cell.Cell(0, 0, init.listImage['Foggy Forest']['Background']).draw(WIN, WinHeight, WinWidth)
-        WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
+        cell.Cell(0, 0, init.listImage['Random']['Intro']).draw(WIN, WinHeight, WinWidth)
         WIN.blit(textSurface, textRect)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, setting_game)
-        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, end_game)
+        button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2.5*interval, 363, 100, setting_game)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3.5*interval, 363, 100, end_game)
         pygame.display.update()
 
 game_intro()
