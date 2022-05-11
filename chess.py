@@ -88,7 +88,7 @@ class Chess:
         """
         return str(self._team + self._type)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
         Xuất ra các cách di chuyển của quân cờ
         :param mark:
@@ -231,7 +231,7 @@ class Pawn(Chess):
         """
         super().__init__(team, "Pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)]  + effects, 1)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable = True):
         """
         Xây dựng cách di chuyển của quân "Chốt"
         :param mark:
@@ -250,7 +250,9 @@ class Pawn(Chess):
         if mark == '#':
             controlledMark = ' '
         for i in range(1, speed + 1):
-            if (' ' in rBoard[index[0] + i * direction][index[1]] or '#' in rBoard[index[0] + i * direction][index[1]]) and '!' not in rBoard[index[0] + i * direction][index[1]]:
+            if mark == '#' and '#' in rBoard[index[0] + i * direction][index[1]]:
+                pass
+            elif ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] = controlledMark
             elif '-' in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] += controlledMark
@@ -264,7 +266,7 @@ class Pawn(Chess):
                 if top3.index(positions) % 2 == 0:
                     try:
                         if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
-                            oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, True)
+                            oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, killable)
                             if oBoard[(positions[1], positions[0])].get_killable():
                                 rBoard[positions[0]][positions[1]] += mark
                     except:
@@ -285,7 +287,7 @@ class King(Chess):
         """
         super().__init__(team, "King", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3]), ef.Effect('Unmove', turns = -1, phase=2)]  + effects, 1)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
         Xây dựng cách di chuyển của quân "Vua"
         :param mark:
@@ -301,29 +303,29 @@ class King(Chess):
             for x in range(-speed, speed + 1):
                 if on_board((index[0] + y, index[1] + x)) and '!' not in rBoard[index[0] + y][index[1] + x]:
                     if '#' in rBoard[index[0] + y][index[1] + x] and mark == 'x':
-                        print('#' in rBoard[index[0] + y][index[1] + x])
-                    if ' ' in rBoard[index[0] + y][index[1] + x]:
+                        pass
+                    elif ' ' in rBoard[index[0] + y][index[1] + x]:
                         rBoard[index[0] + y][index[1] + x] = mark
                     else:
                         try:
                             if oBoard[(index[1] + x, index[0] + y)].get_team() != self.get_team():
-                                oBoard[(index[1] + x, index[0] + y)].set_killable(nBoard, index, phase, True)
+                                oBoard[(index[1] + x, index[0] + y)].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(index[1] + x, index[0] + y)].get_killable():
                                     rBoard[index[0] + y][index[1] + x] += mark
                         except:
                             break
 
-        if self.is_effective('Unmove'):
+        if self.is_effective('Unmove') and '#' not in rBoard[index[0]][index[1]]:
             result0 = oBoard[index[0], 0].get_effects()[0].active_effect(nBoard, [index], phase)
-            for i in range(index[1], 0, -1):
-                if rBoard[index[0]][i] != ' ' or result0 != 'Success':
+            for i in range(index[1] - 1, 0, -1):
+                if (rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x') or result0 != 'Success':
                     break
                 if mark != '#' and i == 1:
                     rBoard[index[0]][0] += 'x'
 
             result1 = oBoard[index[0], 7].get_effects()[0].active_effect(nBoard, [index], phase)
-            for j in range(index[1], 7):
-                if rBoard[index[0]][j] != ' ' or result1 != 'Success':
+            for j in range(index[1] + 1, 7):
+                if (rBoard[index[0]][j] != ' ' and rBoard[index[0]][j] != 'x') or result1 != 'Success':
                     break
                 if mark != '#' and j == 6:
                     rBoard[index[0]][7] += 'x'
@@ -338,7 +340,7 @@ class Rook(Chess):
         """
         super().__init__(team, "Rook", direction, img, 50, [ef.Effect('Unmove', turns = -1, phase=[2])] + effects, 8)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
         Xây dựng cách di chuyển của quân "Xa"
         :param mark:
@@ -358,12 +360,15 @@ class Rook(Chess):
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]]:
-                        rBoard[pos[0]][pos[1]] = mark
+                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
+                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
+                            rBoard[pos[0]][pos[1]] += mark
+                        else:
+                            break
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                             break
@@ -380,7 +385,7 @@ class Bishop(Chess):
         """
         super().__init__(team, "Bishop", direction, img, 30, effects, 8)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
         Xây dựng cách di chuyển của quân "Tượng"
         :param mark:
@@ -400,12 +405,15 @@ class Bishop(Chess):
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]]:
-                        rBoard[pos[0]][pos[1]] = mark
+                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
+                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
+                            rBoard[pos[0]][pos[1]] += mark
+                        else:
+                            break
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                             break
@@ -422,7 +430,7 @@ class Knight(Chess):
         """
         super().__init__(team, "Knight", direction, img, 30, effects, 3)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
         Xây dựng cách di chuyển của quân "Mã"
         :param mark:
@@ -440,12 +448,15 @@ class Knight(Chess):
             for j in range(x, y):
                 if abs(i) + abs(j) == y:
                     if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
-                        if ' ' in rBoard[index[0] + i][index[1] + j]:
-                            rBoard[index[0] + i][index[1] + j] = mark
+                        if ' ' in rBoard[index[0] + i][index[1] + j] or '#' in rBoard[index[0] + i][index[1] + j]:
+                            if rBoard[index[0] + i][index[1] + j][0] != self.get_team():
+                                rBoard[index[0] + i][index[1] + j] += mark
+                            else:
+                                break
                         else:
                             try:
                                 if oBoard[(index[1] + j, index[0] + i)].get_team() != self.get_team():
-                                    oBoard[(index[1] + j, index[0] + i)].set_killable(nBoard, index, phase, True)
+                                    oBoard[(index[1] + j, index[0] + i)].set_killable(nBoard, index, phase, killable)
                                     if oBoard[(index[1] + j, index[0] + i)].get_killable():
                                         rBoard[index[0] + i][index[1] + j] += mark
                             except:
@@ -461,7 +472,7 @@ class Queen(Chess):
         """
         super().__init__(team, "Queen", direction, img, 90, [ef.Effect('Unselectable', turns = -1, phase=[3])] + effects, 8)
 
-    def get_moves(self, nBoard, index, phase, mark='x'):
+    def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
         Xây dựng cách di chuyển của quân "Hậu"
         :param mark:
@@ -481,12 +492,15 @@ class Queen(Chess):
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]]:
-                        rBoard[pos[0]][pos[1]] = mark
+                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
+                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
+                            rBoard[pos[0]][pos[1]] += mark
+                        else:
+                            break
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                             break
@@ -501,12 +515,15 @@ class Queen(Chess):
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]]:
-                        rBoard[pos[0]][pos[1]] = mark
+                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
+                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
+                            rBoard[pos[0]][pos[1]] += mark
+                        else:
+                            break
                     else:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, True)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                             break

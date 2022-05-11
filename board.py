@@ -142,7 +142,7 @@ class Board:
                 return False
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
-                self.__OjectLayer[(x, y)].get_moves(self, index, phase)
+                self.__OjectLayer[(x, y)].get_moves(self, index, phase, killable=True)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
             return True
         else:
@@ -171,6 +171,20 @@ class Board:
 
     def select_Move(self, index0, index1, triggeredEffect = True, swap = False):
         moved = False
+
+        # Nhập thành
+        if 'King:' in self.__readableMap[index0[0]][index0[1]] and 'Rookx' in self.__readableMap[index1[0]][index1[1]] and self.__OjectLayer[(index0[1], index0[0])].get_team() == self.__OjectLayer[(index1[1], index1[0])].get_team():
+            if index0[1] > index1[1]:
+                direction = -1
+            else:
+                direction = 1
+            self.__OjectLayer[(index0[1] + direction*2, index0[0])] = self.__OjectLayer[(index0[1], index0[0])]
+            self.__OjectLayer[(index0[1] + direction, index0[0])] = self.__OjectLayer[(index1[1], index1[0])]
+            self.__OjectLayer[(index0[1], index0[0])] = None
+            self.__OjectLayer[(index1[1], index1[0])] = None
+            return True
+
+        # Di chuyển quân cờ
         try:
             if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
@@ -200,13 +214,16 @@ class Board:
             try:
                 if object[1].get_team() != playingTeam:
                     object[1].active_effects(self, (x, y), 2)
-                    object[1].get_moves(self, (x, y), phase, mark = '#')
+                    object[1].get_moves(self, (x, y), phase, mark='#', killable=True)
                     object[1].unactive_effects()
             except:
                 pass
 
     def is_checkmate(self):
-        pass
+        if self.count_on_rMap('King#') >= 1:
+            return True
+        else:
+            return False
 
     def is_finished(self):
         if self.count_on_rMap('King') <= 1:
@@ -236,7 +253,6 @@ class Board:
             print("Kết thúc lượt")
             turn += 1
             Phase = chess.PHASE['Start']
-        self.controlledCells(phase, playingTeam)
         if not updating:
             return Phase, turn
 

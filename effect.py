@@ -58,8 +58,8 @@ class Effect:
                 return STATUS[0]
 
         def Unmove(nBoard, indexs, phase, value, options):
-            if phase == self.__phase:
-                return STATUS[3]
+            if phase in self.__phase:
+                return STATUS[2]
             else:
                 return STATUS[0]
 
