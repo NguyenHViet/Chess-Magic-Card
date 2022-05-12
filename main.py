@@ -273,7 +273,9 @@ def main():
                 if phase == chess.PHASE['Move']:
                     if selected == False:
                         try:
+                            nboard.deselect()
                             selected = nboard.select_Chess(index, phase, playingTeam)
+                            nboard.controlledCells(phase, playingTeam)
                             selectedPos = index
                         except:
                             selectedPos = []
