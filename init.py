@@ -100,6 +100,8 @@ listImage = {
     }
 }
 
+listMusic
+
 pygame.font.init()
 font15 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 15)
 font20 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 20)

@@ -11,7 +11,7 @@ import init
 
 
 class Player:
-    def __init__(self, name, team, time = 120, timeBonus = 0, totalActions = 15):
+    def __init__(self, name, team, time = 120, timeBonus = 0, totalActions = 20):
         self.__name = name
         self.__team = team
         self.__totalActions = totalActions
