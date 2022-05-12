@@ -104,8 +104,8 @@ listImage = {
 }
 
 listMusic = [
-    pygame.mixer.Sound('assets\\music\\Two Steps From Hell - Victory (Instrumental).wav'),
-    pygame.mixer.Sound('assets\\music\\Two Steps From Hell - Star Sky.wav'),
+    'assets\\music\\Two Steps From Hell - Victory (Instrumental).wav',
+    'assets\\music\\Two Steps From Hell - Star Sky.wav',
 ]
 
 pygame.font.init()

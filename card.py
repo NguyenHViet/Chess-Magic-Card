@@ -79,7 +79,7 @@ class Card:
         """
         Vẽ hình ảnh lá bài trên cửa sổ hiển thị
         :param win: Cửa sổ hiển thị được chọn (pygame.display)
-        :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
+        :param pos: Vị trí hình ảnh được vẽ (tuple(int, int))
         :return None
         """
         cheight = self.__img.get_height()
@@ -119,7 +119,7 @@ class Card:
         """
         Sử dụng bài phép và kích hoạt kĩ năng bài tương ứng
         :param nBoard: Bàn cờ (board.Board)
-        :param indexs: Danh sách các tọa độ (list(tuple(x, y))
+        :param indexs: Danh sách các tọa độ (list(tuple(int, int))
         :param playTeam: Đội đang trong lượt
         :return: Kết quả (str)
         """
@@ -181,7 +181,7 @@ class CardArea:
         Hàm in các lá bài lên cửa sổ hiển thị
         :param win: Cửa sổ hiển thị (pygame.display)
         :param font: Font chữ (font.Font)
-        :param pos: Vị trí lá bài được hiển thị (tuple(x, y))
+        :param pos: Vị trí lá bài được hiển thị (tuple(int, int))
         :param nPlayer: Danh sách người chơi (list(player.Player))
         :return: None
         """
@@ -206,7 +206,7 @@ class CardArea:
     def pick_card(self, pos):
         """
         Hàm xác định lá bài được chọn
-        :param pos: vị chí con trỏ chuột (tuple(x, y))
+        :param pos: vị chí con trỏ chuột (tuple(int, int))
         :return: Vị trí lá bài trong danh sách bài của người chơi (int)
         """
         for i in range(3):

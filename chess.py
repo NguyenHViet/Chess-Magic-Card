@@ -101,7 +101,7 @@ class Chess:
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
@@ -261,7 +261,7 @@ class Pawn(Chess):
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
@@ -318,7 +318,7 @@ class King(Chess):
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
@@ -372,7 +372,7 @@ class Rook(Chess):
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
@@ -418,7 +418,7 @@ class Bishop(Chess):
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
@@ -464,7 +464,7 @@ class Knight(Chess):
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
@@ -507,7 +507,7 @@ class Queen(Chess):
         """
         Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
-        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(int, int))
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)

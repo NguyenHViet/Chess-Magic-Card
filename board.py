@@ -9,7 +9,19 @@ import effect as ef
 import environment as env
 
 class Board:
+    """
+    Lớp "Bàn cờ"
+    """
     def __init__(self, x, y, width, pTeam, enviroment, lImg):
+        """
+        Hàm khởi tạo
+        :param x: Tạo độ x của bàn cờ (int)
+        :param y: Tạo độ y của bàn cờ (int)
+        :param width: Chiều rộng của bàn cờ (int)
+        :param pTeam: Chiều dài của bàn cờ (int)
+        :param enviroment: Môi trường của bàn cờ (environment.Environment)
+        :param lImg: Danh sách hình ảnh (list(pygame.image))
+        """
         self.__x = x
         self.__y = y
         self.__width = width
@@ -58,27 +70,39 @@ class Board:
         self.__readableMap = self.convert_to_readable()
 
     def clear_map(self):
+        """
+        Thiết lập lại danh sách ô cờ và danh sách các đánh dấu của quân cờ
+        :return: None
+        """
         interval = self.__width / 8
         self.__CellLayer = []
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
-                try:
-                    if self.__OjectLayer[(y, x)].convert_to_readable() == '-':
-                        self.__OjectLayer[(y, x)] = None
-                except:
-                    pass
                 self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
         self.__readableMap = [[' ' for i in range(8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
 
     def get_x(self):
+        """
+        Lấy tạo độ x của bàn cờ
+        :return: Tạo độ x của bàn cờ (int)
+        """
         return self.__x
 
     def get_y(self):
+        """
+        Lấy tạo độ y của bàn cờ
+        :return: Tạo độ y của bàn cờ (int)
+        """
         return self.__y
 
     def draw(self, win):
+        """
+        Hàm in các hình ảnh lên cửa sổ hiển thị
+        :param win: Cửa sổ hiển thị (pygame.display)
+        :return: None
+        """
         self.__enviroment.draw(win)
         interval = self.__width / 8
         for row in range(8):
@@ -100,11 +124,19 @@ class Board:
                 self.__CellLayer[row][col].draw(win)
 
     def printMap(self):
+        """
+        In bàn cờ dưới dạng đọc được
+        :return: None
+        """
         for i in range(8):
             print(" ".join(["{:^8}" for j in range(8)]).format(*self.__readableMap[i]))
-        return True
 
     def count_on_rMap(self, object):
+        """
+        Đếm trên bàn cờ dựa theo dữ liệu object đầu vào
+        :param object: Dữ liệu cần tìm trên bàn cờ (str)
+        :return: Số lượng tìm thấy (int)
+        """
         count = 0
         for items in self.__readableMap:
             for item in items:
@@ -113,6 +145,11 @@ class Board:
         return count
 
     def find_Cell(self, pos):
+        """
+        Lấy tọa đồ trên bàn cờ dựa theo vị trí con trỏ chuột nhấp vào
+        :param pos: Vị trí con trỏ chuột (tuple(int, int))
+        :return: tọa độ trên bàn cờ (tuple(int, int))
+        """
         interval = self.__width / 8
         y, x = pos
         row = (x - self.__x) // interval
@@ -120,6 +157,12 @@ class Board:
         return int(row), int(col)
 
     def check_Team(self, index, teamCheck):
+        """
+        Kiểm tra đội dựa theo đầu vào
+        :param index: Tọa độ trên bàn cờ (tuple(int, int))
+        :param teamCheck: Giá trị đội cần kiểm tra (str)
+        :return: Kết quả (bool)
+        """
         try:
             if self.__OjectLayer[index].get_team() == teamCheck:
                 return True
@@ -128,11 +171,15 @@ class Board:
         except:
             return False
 
-    def select_Cell(self, pos, value):
-        index = self.find_Cell(pos)
-        return value in self.__readableMap[index[0]][index[1]]
-
     def select_Chess(self, index, phase, playingTeam = 'b', set_move = True):
+        """
+        Chọn quân cờ
+        :param index: Tọa độ trên bàn cờ (tuple(int, int)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param playingTeam: Đội đang chơi (str)
+        :param set_move: Đánh dấu các ô có thể di chuyển của quân cờ (bool)
+        :return: Kết quả (bool)
+        """
         y, x = index
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
@@ -150,6 +197,10 @@ class Board:
             return False
 
     def deselect(self):
+        """
+        Hủy chọn quân cờ
+        :return: None
+        """
         for i in range(8):
             for j in range(8):
                 try:
@@ -160,16 +211,28 @@ class Board:
                         self.__readableMap[i][j] = ' '
 
     def convert_to_readable(self):
+        """
+        Chuyển bàn cờ về dạng đọc được
+        :return: Dạng đọc được của bàn cờ (list(list)))
+        """
         new_map = self.__readableMap
         for i in range(8):
             for j in range(8):
                 try:
                     new_map[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
                 except:
-                    new_map[i][j] = ' '
+                    pass
         return new_map
 
     def select_Move(self, index0, index1, triggeredEffect = True, swap = False):
+        """
+        Di chuyển quân cờ
+        :param index0: Vị trí ban đầu
+        :param index1: Vị trí mới
+        :param triggeredEffect: Giảm cộng dồn hiệu ứng (bool)
+        :param swap: Hoán đổi vị trí (bool)
+        :return: Kết quả (bool)
+        """
         moved = False
 
         # Nhập thành
@@ -185,6 +248,8 @@ class Board:
             return True
 
         # Di chuyển quân cờ
+        if index0 == index1:
+            return  moved
         try:
             if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 print('Từ ô',index0,'đến ô', index1)
@@ -209,6 +274,12 @@ class Board:
         return moved
 
     def controlledCells(self, phase, playingTeam = 'w'):
+        """
+        Đánh dấu các vị trí của quân đối thủ có thể chiếu vào
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param playingTeam: Đội đang chơi (str)
+        :return: None
+        """
         for object in self.__OjectLayer.items():
             y, x = object[0]
             try:
@@ -220,18 +291,33 @@ class Board:
                 pass
 
     def is_checkmate(self):
+        """
+        Kiểm tra chiếu tướng
+        :return: Kết quả (bool)
+        """
         if self.count_on_rMap('King#') >= 1:
             return True
         else:
             return False
 
     def is_finished(self):
+        """
+        Kiểm tra kết thúc trận đấu
+        :return: Kết quả (bool)
+        """
         if self.count_on_rMap('King') <= 1:
             return True
         else:
             return False
 
     def update(self, phase, turn, playingTeam):
+        """
+        Cập nhập bàn cờ
+        :param phase: Gia đoạn của lượt hiện tại (int)
+        :param turn: Lượt hiện tại (int)
+        :param playingTeam: Đội đang chơi (str)
+        :return: Giai đoạn và lượt hiện tại (tuple(int, str))
+        """
         Phase = phase
         updating = True
         self.__enviroment.apply_env_effect(self, turn, phase)
@@ -257,10 +343,22 @@ class Board:
             return Phase, turn
 
     def getoBoard(self):
+        """
+        Lấy danh sách các đối tượng trên bàn cờ
+        :return: Danh sách các đối tượng trên bàn cờ (dict(chess.Chess))
+        """
         return self.__OjectLayer
 
     def getrBoard(self):
+        """
+        Lấy danh sách các ký hiệu trên bàn cờ
+        :return: Danh sách các ký hiệu trên bàn cờ (list(list))
+        """
         return self.__readableMap
 
     def getcBoard(self):
+        """
+        Lấy danh sách các ô trên bàn cờ
+        :return: Danh sách các ô trên bàn cờ (list(list)))
+        """
         return self.__CellLayer

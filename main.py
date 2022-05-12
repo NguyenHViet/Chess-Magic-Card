@@ -31,10 +31,12 @@ YELLOW = (204, 204, 0)
 BLUE = (50, 255, 255)
 BLACK = (0, 0, 0)
 
+# Khởi tạo các giá trị global
 startTurnTime = math.floor(time.time())
 timing = 0
 usedCard = False
 env = 'Desert'
+MUSIC_END = pygame.USEREVENT + 1
 
 SETTINGS = {
     'Music Volumn': 10,
@@ -56,21 +58,34 @@ pause = True
 turns = 0
 phase = chess.PHASE['Start']
 
-def turn_off_music():
-    pygame.mixer.music.set_volume(0)
+def turn_off_music(id = 0):
+    """
+    Tạm dừng nhạc nền
+    :return: None
+    """
+    pygame.mixer.music.pause()
 
 def turn_on_music():
-    pygame.mixer.music.set_volume(SETTINGS['Music Volumn']/100)
+    """
+    Chạy tiếp nhạc nền
+    :return: None
+    """
+    pygame.mixer.music.unpause()
 
 def new_game():
+    """
+    Khởi tạo các giá trị và tạo ván đấu mới
+    :return: None
+    """
     global turns, phase, nboard, ncard, Players, startTurnTime, env
     random.shuffle(init.listMusic)
-    for i in range(len(init.listMusic)):
-        pygame.mixer.Channel(i).play(init.listMusic[i])
-        pygame.mixer.Channel(i).set_volume(SETTINGS['Music Volumn']/100)
-        pygame.mixer.Channel(i).pause()
-        pygame.mixer.Channel(i).queue(init.listMusic[i-1])
-    pygame.mixer.Channel(0).unpause()
+    pygame.mixer.music.load(init.listMusic[0])
+    init.listMusic.append(init.listMusic.pop(0))
+    pygame.mixer.music.play()
+    pygame.mixer.music.set_volume(SETTINGS['Music Volumn']/100)
+    pygame.mixer.music.queue(init.listMusic[0])
+    init.listMusic.append(init.listMusic.pop(0))
+    pygame.mixer.music.set_endevent(MUSIC_END)
     startTurnTime = math.floor(time.time())
     turns = 0
     phase = chess.PHASE['Start']
@@ -83,59 +98,39 @@ def new_game():
     main()
 
 def setting_game():
+    """
+    Cài dặt các thông số trong trận đấu
+    :return: None
+    """
     global env, SETTINGS
 
-    def add_min():
-        SETTINGS['Time'] += 60
-        pygame.time.delay(150)
+    def add_min(param):
+        if SETTINGS['Time'] // 60 <= 0:
+            return
+        SETTINGS['Time'] += param['value']
+        pygame.time.delay(100)
 
-    def add_second():
+    def add_second(param):
         temp = SETTINGS['Time']%60
         SETTINGS['Time'] -= temp
-        temp = (temp+1)%60
+        temp = (temp + param['value'])%60
         SETTINGS['Time'] += temp
-        pygame.time.delay(150)
+        pygame.time.delay(100)
 
-    def add_time_bonus():
-        SETTINGS['Time Bonus'] += 1
-        pygame.time.delay(150)
-
-    def minus_min():
-        if SETTINGS['Time']//60<=0:
+    def add_time_bonus(param):
+        if SETTINGS['Time Bonus'] <= 0:
             return
-        SETTINGS['Time'] -= 60
-        pygame.time.delay(150)
+        SETTINGS['Time Bonus'] += param['value']
+        pygame.time.delay(100)
 
-    def minus_second():
-        temp = SETTINGS['Time'] % 60
-        SETTINGS['Time'] -= temp
-        temp = (temp - 1) % 60
-        SETTINGS['Time'] += temp
-        pygame.time.delay(150)
-
-    def minus_time_bonus():
-        if SETTINGS['Time Bonus']<=0:
-            return
-        SETTINGS['Time Bonus'] -= 1
-        pygame.time.delay(150)
-
-    def next_env():
+    def next_env(param):
         global env
         temp = list(init.ENVIRONMENT)
         try:
-            env = temp[temp.index(env) + 1]
+            env = temp[temp.index(env) + param['value']]
         except:
             env = temp[0]
-        pygame.time.delay(150)
-
-    def precious_env():
-        global env
-        temp = list(init.ENVIRONMENT)
-        try:
-            env = temp[temp.index(env) - 1]
-        except:
-            env = temp[-1]
-        pygame.time.delay(150)
+        pygame.time.delay(100)
 
     x = 100
     while pause:
@@ -157,34 +152,47 @@ def setting_game():
         button(str(SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], '', (WinWidth / 2) + 125, 400 - x, 100, 100, font=init.font50)
         WIN.blit(init.font15.render('THƯỞNG', True, 'black'), ((WinWidth / 2) + 140, 402 - x))
         WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) + 155, 477 - x))
-        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 180, 330 - x, 60, 50, add_min)
-        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 30, 330 - x, 60, 50, add_second)
-        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) + 145, 330 - x, 60, 50, add_time_bonus)
-        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 180, 520 - x, 60, 50, minus_min)
-        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 30, 520 - x, 60, 50, minus_second)
-        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) + 145, 520 - x, 60, 50, minus_time_bonus)
+        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 180, 330 - x, 60, 50, add_min, value = 60)
+        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 30, 330 - x, 60, 50, add_second, value = 1)
+        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) + 145, 330 - x, 60, 50, add_time_bonus, value = 1)
+        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 180, 520 - x, 60, 50, add_min, value = -60)
+        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 30, 520 - x, 60, 50, add_second, value = -1)
+        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) + 145, 520 - x, 60, 50, add_time_bonus, value = -1)
 
-        button('', init.listImage['GUI']['Arrow_Right'], '', (WinWidth / 2) + 245, 720 - x, 50, 60, next_env)
-        button('', init.listImage['GUI']['Arrow_Left'], '', (WinWidth / 2) - 295, 720 - x, 50, 60, precious_env)
+        button('', init.listImage['GUI']['Arrow_Right'], '', (WinWidth / 2) + 245, 720 - x, 50, 60, next_env, value = 1)
+        button('', init.listImage['GUI']['Arrow_Left'], '', (WinWidth / 2) - 295, 720 - x, 50, 60, next_env, value = -1)
         button(env, init.listImage[env]['Background'], init.listImage['GEI']['Darken'], (WinWidth / 2) - 200, 620 - x, 400, 250, new_game, color='white')
 
         button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 800, 363, 100, new_game)
         pygame.display.update()
 
 def mouse_on_board(pos):
+    """
+    Kiểm tra con trỏ chuột có nằm trên bàn cờ
+    :param pos: Vị trí con trỏ chuột (tuple(int, int))
+    :return: Kết quả (bool)
+    """
     if pos[0] > offsetWidth and pos[0] < offsetWidth + WIDTH and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
         return True
     return False
 def mouse_on_cards(pos):
+    """
+    Kiểm tra con trỏ chuột có nằm trên khu vực bài
+    :param pos: Vị trí con trỏ chuột (tuple(int, int))
+    :return: Kết quả (bool)
+    """
     if pos[0] > offsetWidth + WIDTH + 55 and pos[0] < WinWidth and pos[1] > offsetHeight and pos[1] < offsetHeight + HEIGHT:
         return True
     return False
 
 def updateGUI():
+    """
+    Cập nhập giao diện cùng các nút bấm
+    :return: None
+    """
     global phase, turns, timing
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
-
     timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
     button(timeLeft, init.listImage['GUI']['Black Timer'], '', 125, offsetHeight, 230, 60 ,color = 'white')
     button(str(Players[1].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 5, 50, 50, color='white')
@@ -206,7 +214,7 @@ def updateGUI():
     for i in range(len(Players[turns%2].get_cards())):
         button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT/3)*i + (HEIGHT)/8, 50, 50, Players[turns%2].redraw_card, param = i)
 
-    if pygame.mixer.music.get_volume() > 0:
+    if pygame.mixer.music.get_busy():
         button("", init.listImage['GUI']['Mute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_off_music)
     else:
         button("", init.listImage['GUI']['Unmute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_on_music)
@@ -217,6 +225,15 @@ def updateGUI():
     WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 300))
 
 def update_display(win, nboard, pos, turns, phase):
+    """
+    Cập nhập cửa sổ hiển thị
+    :param win: Cửa sổ hiển thị (pygame.image)
+    :param nboard: Bàn cờ (board.Board)
+    :param pos: Vị trí con trỏ chuột (tuple(int, int))
+    :param turns: Lượt hiện tại (int)
+    :param phase: Giai đoạn của lượt hiện tại (int)
+    :return: None
+    """
     WIN.fill('white')
     nboard.draw(win)
     ncard.draw(win, init.font40, pos, Players[turns%2])
@@ -227,6 +244,10 @@ def update_display(win, nboard, pos, turns, phase):
     pygame.display.update()
 
 def main():
+    """
+    Chạy game
+    :return: None
+    """
     turn_on_music()
     global pause, phase, turns, startTurnTime, timing, playingTeam
     redraw = False
@@ -247,6 +268,10 @@ def main():
             playingTeam = 'b'
         pygame.time.delay(50) ##stops cpu dying
         for event in pygame.event.get():
+            if event.type == MUSIC_END:
+                pygame.mixer.music.queue(init.listMusic[0])
+                init.listMusic.append(init.listMusic.pop(0))
+
             if event.type == pygame.QUIT:
                 end_game()
 
@@ -257,8 +282,6 @@ def main():
                     phase = chess.PHASE['Move']
                 elif mouse_on_cards(pos) and phase == chess.PHASE['Picking'] and not usedCard:
                     phase = chess.PHASE['Cast']
-                else:
-                    pass
 
                 if event.button == 3:
                     nboard.deselect()
@@ -343,27 +366,49 @@ def main():
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
 
 def button(text, img, img_h, x, y, width, height, action = None, color = 'black', font = init.font40, **param):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+    """
+    Tạo các nút trên màn hình
+    :param text: Văn bản hiển thị trên nút (str)
+    :param img: Hình ảnh của nút (pygame.image)
+    :param img_h: Hình ảnh của nút khi con trỏ chuột đi qua (pygame.image)
+    :param x: Tọa độ x của nút (int)
+    :param y: Tọa độ y của nút (int)
+    :param width: Chiều rộng của nút (int)
+    :param height: Chiều cao của nút (int)
+    :param action: Hàm được gọi khi nút được nhấn (str)
+    :param color: Màu sắc của chữ được hiển thị (str|(int, int, int))
+    :param font: Font chữ của chữ được hiển thị (font.Font)
+    :param param: Các giá trị tùy chọn
+    :return: None
+    """
     img = pygame.transform.scale(img, (width, height))
     WIN.blit(img, (x, y))
-    if x + width > mouse[0] > x and y + height > mouse[1] > y:
-        try:
-            img_h = pygame.transform.scale(img_h, (width, height))
-            WIN.blit(img_h, (x, y))
-        except:
-            pass
-        if click[0] == 1 and action != None:
-            if param != {}:
-                action(param)
-            else:
-                action()
+    if action != None:
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            try:
+                img_h = pygame.transform.scale(img_h, (width, height))
+                WIN.blit(img_h, (x, y))
+            except:
+                pass
+            if click[0] == 1:
+                if param != {}:
+                    action(param)
+                else:
+                    action()
+    else:
+        pass
     textSurface = font.render(text, True, color)
     textRect = textSurface.get_rect()
     textRect.center = ((x + (width / 2)), (y + (height / 2)))
     WIN.blit(textSurface, textRect)
 
 def paused():
+    """
+    Tạm dừng trận đấu
+    :return: None
+    """
     pygame.mixer.music.pause()
     global pause
     pause = True
@@ -388,6 +433,10 @@ def paused():
         pygame.display.update()
 
 def endGame():
+    """
+    Kết thúc trận đấu
+    :return: None
+    """
     pygame.mixer.music.pause()
     global pause
     pause = True
@@ -408,6 +457,10 @@ def endGame():
         pygame.display.update()
 
 def end_turn():
+    """
+    Kết thúc lượt
+    :return: None
+    """
     global phase, nboard, turns
     Players[turns % 2].decelect()
     nboard.deselect()
@@ -415,10 +468,18 @@ def end_turn():
     phase = chess.PHASE['End']
 
 def end_game():
+    """
+    Thoát game
+    :return: None
+    """
     pygame.quit()
     quit()
 
 def check_evolutions():
+    """
+    Kiểm tra thăng cấp cho quân "Chốt"
+    :return: None
+    """
     def evolution(param):
         if param['team'] == 'w':
             direction = 'upwward'
@@ -447,7 +508,11 @@ def check_evolutions():
                 pass
 
 def game_intro():
-    pygame.time.delay(100)
+    """
+    Màn hình chờ của game
+    :return: None
+    """
+    pygame.time.delay(50)
     global pause
     pause = True
     textSurface = init.font60.render('CHESS: MAGIC CARD', True, 'white')

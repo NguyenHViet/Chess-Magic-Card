@@ -99,7 +99,7 @@ class Desert(Environment):
         Hàm áp dụng hiệu ứng môi trường
         :param nBoard: Bàn cờ (board.Board)
         :param turn: Lượt hiện tại của trận đấu
-        :param phase: Giai đoạn của lượt hiện tại.
+        :param phase: Giai đoạn của lượt hiện tại (int)
         :return None
         """
         rBoard = nBoard.getrBoard()
@@ -176,7 +176,7 @@ class Frozen_river(Environment):
         Hàm áp dụng hiệu ứng môi trường
         :param nBoard: Bàn cờ (board.Board)
         :param turn: Lượt hiện tại của trận đấu
-        :param phase: Giai đoạn của lượt hiện tại.
+        :param phase: Giai đoạn của lượt hiện tại (int)
         :return None
         """
         rBoard = nBoard.getrBoard()
@@ -233,7 +233,7 @@ class Foggy_forest(Environment):
         Hàm áp dụng hiệu ứng môi trường
         :param nBoard: Bàn cờ (board.Board)
         :param turn: Lượt hiện tại của trận đấu
-        :param phase: Giai đoạn của lượt hiện tại.
+        :param phase: Giai đoạn của lượt hiện tại (int)
         :return None
         """
         rBoard = nBoard.getrBoard()
@@ -296,7 +296,7 @@ class Swamp(Environment):
         Hàm áp dụng hiệu ứng môi trường
         :param nBoard: Bàn cờ (board.Board)
         :param turn: Lượt hiện tại của trận đấu
-        :param phase: Giai đoạn của lượt hiện tại.
+        :param phase: Giai đoạn của lượt hiện tại (int)
         :return None
         """
         rBoard = nBoard.getrBoard()
@@ -328,7 +328,7 @@ class Grassland(Environment):
         Hàm áp dụng hiệu ứng môi trường
         :param nBoard: Bàn cờ (board.Board)
         :param turn: Lượt hiện tại của trận đấu
-        :param phase: Giai đoạn của lượt hiện tại.
+        :param phase: Giai đoạn của lượt hiện tại (int)
         :return None
         """
         pass
