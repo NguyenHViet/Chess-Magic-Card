@@ -8,6 +8,15 @@ import random
 pygame.mixer.pre_init()
 pygame.mixer.init()
 
+SETTINGS = {
+    'Music Volumn': 10,
+    'Sound Volumn': 10,
+    'Time': 180,
+    'Time Bonus': 10,
+    'AddTimeable': True,
+    'TotalActions': 15,
+}
+
 listImage = {
     'b': {
         'Bishop':pygame.image.load('assets\\img\\Chess\\b_bishop.png'), 'King':pygame.image.load('assets\\img\\Chess\\b_king.png'),
@@ -36,7 +45,10 @@ listImage = {
         'Card_Picking':pygame.image.load('assets\\img\\GEI\\picking_card.png'),
         'Card_Cell':pygame.image.load('assets\\img\\GEI\\card_area.png'),
         'LockCard': pygame.image.load('assets\\img\\GEI\\lock_card.png'),
-        'Empty':pygame.image.load('assets\\img\\GEI\\empty.png')
+        'Empty':pygame.image.load('assets\\img\\GEI\\empty.png'),
+        'Phase 1':pygame.image.load('assets\\img\\GEI\\picking_phase.png'),
+        'Phase 2': pygame.image.load('assets\\img\\GEI\\chess_phase.png'),
+        'Phase 3': pygame.image.load('assets\\img\\GEI\\card_phase.png')
     },
     'GUI': {
         'EndTurn': pygame.image.load('assets\\img\\GUI\\end_turn_button.png'),
@@ -106,6 +118,13 @@ listImage = {
 listMusic = [
     'assets\\music\\Two Steps From Hell - Victory (Instrumental).wav',
     'assets\\music\\Two Steps From Hell - Star Sky.wav',
+    'assets\\music\\Scarborough Fair.mp3'
+]
+
+listSFX = [
+    'assets\\music\\swords_hit.wav',
+    'assets\\music\\magic_spell.wav',
+    'assets\\music\\glass_smash.wav',
 ]
 
 pygame.font.init()

@@ -270,15 +270,15 @@ class Pawn(Chess):
         speed = self._speed
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
-        direction = -1
-        if self._direction == 'downward':
-            direction = 1
+
+        direction = self.get_direction()
+
         controlledMark = 'x'
         if mark == '#':
-            controlledMark = ' '
+            controlledMark = '2'
         for i in range(1, speed + 1):
-            if mark == '#' and '#' in rBoard[index[0] + i * direction][index[1]]:
-                pass
+            if mark == '#':
+                break
             elif ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]]:
                 rBoard[index[0] + i * direction][index[1]] = controlledMark
             elif '-' in rBoard[index[0] + i * direction][index[1]]:
@@ -289,20 +289,25 @@ class Pawn(Chess):
 
         top3 = [[index[0] + direction * (speed > 0), index[1] + i * (speed > 0)] for i in range(-1, 2)]
         for positions in top3:
-            if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]] and rBoard[positions[0]][positions[1]] != '-':
-                if top3.index(positions) % 2 == 0:
-                    try:
-                        if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
-                            oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, killable)
-                            if oBoard[(positions[1], positions[0])].get_killable():
+            try:
+                if on_board(positions) and '!' not in rBoard[positions[0]][positions[1]] and rBoard[positions[0]][positions[1]] != '-':
+                    if top3.index(positions) % 2 == 0:
+                        try:
+                            if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
+                                oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, killable)
+                                if oBoard[(positions[1], positions[0])].get_killable():
+                                    rBoard[positions[0]][positions[1]] += mark
+                        except:
+                            if mark == '#':
                                 rBoard[positions[0]][positions[1]] += mark
-                    except:
-                        if mark == '#':
-                            rBoard[positions[0]][positions[1]] += mark
-                        pass
-                else:
-                    if rBoard[positions[0]][positions[1]] == ' ':
-                        rBoard[positions[0]][positions[1]] = controlledMark
+                            pass
+                    else:
+                        if rBoard[positions[0]][positions[1]] == ' ' and mark != '#':
+                            rBoard[positions[0]][positions[1]] = controlledMark
+                elif rBoard[positions[0]][positions[1]] == '-' and mark == '#':
+                    rBoard[positions[0]][positions[1]] += mark
+            except:
+                pass
 
 class King(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -389,20 +394,20 @@ class Rook(Chess):
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
-                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
-                            rBoard[pos[0]][pos[1]] += mark
-                        else:
-                            break
-                    else:
+                    if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                            elif mark == '#':
+                                rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
                             break
+                    else:
+                        rBoard[pos[0]][pos[1]] += mark
+
 
 class Bishop(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -435,20 +440,19 @@ class Bishop(Chess):
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
-                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
-                            rBoard[pos[0]][pos[1]] += mark
-                        else:
-                            break
-                    else:
+                    if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                            elif mark == '#':
+                                rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
                             break
+                    else:
+                        rBoard[pos[0]][pos[1]] += mark
 
 class Knight(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -524,20 +528,19 @@ class Queen(Chess):
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
-                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
-                            rBoard[pos[0]][pos[1]] += mark
-                        else:
-                            break
-                    else:
+                    if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                            elif mark == '#':
+                                rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
                             break
+                    else:
+                        rBoard[pos[0]][pos[1]] += mark
 
         diagonals = [[[index[0] + j, index[1] + j] for j in range(1, speed)],
                      [[index[0] + j, index[1] - j] for j in range(1, speed)],
@@ -547,17 +550,16 @@ class Queen(Chess):
         for dir in diagonals:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
-                    if ' ' in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
-                        if rBoard[pos[0]][pos[1]][0] != self.get_team():
-                            rBoard[pos[0]][pos[1]] += mark
-                        else:
-                            break
-                    else:
+                    if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                            elif mark == '#':
+                                rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
                             break
+                    else:
+                        rBoard[pos[0]][pos[1]] += mark

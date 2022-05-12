@@ -189,7 +189,7 @@ class Board:
                 return False
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
-                self.__OjectLayer[(x, y)].get_moves(self, index, phase, killable=True)
+                self.__OjectLayer[(x, y)].get_moves(self, index, phase)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
             return True
         else:
@@ -221,7 +221,7 @@ class Board:
                 try:
                     new_map[i][j] = self.__OjectLayer[(j, i)].convert_to_readable()
                 except:
-                    pass
+                    new_map[i][j] = ' '
         return new_map
 
     def select_Move(self, index0, index1, triggeredEffect = True, swap = False):
@@ -234,7 +234,6 @@ class Board:
         :return: Kết quả (bool)
         """
         moved = False
-
         # Nhập thành
         if 'King:' in self.__readableMap[index0[0]][index0[1]] and 'Rookx' in self.__readableMap[index1[0]][index1[1]] and self.__OjectLayer[(index0[1], index0[0])].get_team() == self.__OjectLayer[(index1[1], index1[0])].get_team():
             if index0[1] > index1[1]:
@@ -252,6 +251,15 @@ class Board:
             return  moved
         try:
             if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
+                try:
+                    if self.__OjectLayer[(index1[1], index1[0])].get_killable():
+                        sfx = pygame.mixer.Sound('assets\\music\\swords_hit.wav')
+                        sfx.set_volume(init.SETTINGS['Sound Volumn']/100)
+                        sfx.play()
+                    elif '-' in self.__readableMap[index1[0]][index1[1]]:
+                        self.__enviroment.play_sfx()
+                except:
+                    pass
                 print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:

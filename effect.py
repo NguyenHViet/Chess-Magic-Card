@@ -6,7 +6,19 @@ STATUS = {
 }
 
 class Effect:
+    """
+    Lớp "Hiệu Ứng"
+    """
     def __init__(self, name, value = 1, stack = 1, turns = 1, phase = 0, actived = False):
+        """
+        Hàm khởi tạo
+        :param name: Tên hiệu ứng (str)
+        :param value: Giá trị được sử dụng (int)
+        :param stack: Tích lũy của hiệu ứng (int)
+        :param turns: Số lượt hiệu ứng tồn tại (int)
+        :param phase: Giai đoạn hiệu ứng được áp dụng trong lượt (int)
+        :param actived: Trạng thái kích hoạt hiệu ứng (bool)
+        """
         self.__name = name
         self.__value = value
         self.__stack = stack
@@ -17,9 +29,18 @@ class Effect:
         pass
 
     def get_name(self):
+        """
+        Lấy tên hiệu ứng
+        :return: Tên hiệu ứng (str)
+        """
         return  self.__name
 
     def is_over(self, phase):
+        """
+        Kiểm tra hiệu ứng đã kết thúc
+        :param phase: Giai đoạn của lượt hiện tại
+        :return: Kết quả (bool)
+        """
         self.unactive_effect()
         if phase == chess.PHASE['End']:
             self.__turns -= 1
@@ -29,9 +50,21 @@ class Effect:
             return False
 
     def unactive_effect(self):
+        """
+        Hủy kích hoạt hiệu ứng
+        :return: None
+        """
         self.__actived = False
 
     def active_effect(self, nBoard, indexs, phase = 0, **options):
+        """
+        Kích hoạt hiệu ứng
+        :param nBoard: Bàn cờ (board.Board)
+        :param indexs: Tọa độ những ô được chọn trên bàn cờ (list(tuple(int, int)))
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param options: Các giá trị tùy chọn
+        :return: Kết quả hiệu ứng
+        """
         try:
             Options = options['options']
             options.pop('options')
@@ -41,6 +74,15 @@ class Effect:
 
         # Chess Effect
         def IncreaseSpeed(nBoard, indexs, phase, value, options):
+            """
+            Tăng tốc độ cho quân cờ được chọn
+            :param nBoard: Bàn cờ (board.Board)
+            :param indexs: Tọa độ ô được chọn (list(tuple(int, int)))
+            :param phase: Giai đoạn của lượt hiện tại
+            :param value: Lượng tốc độ được tăng (int)
+            :param options: Các giá trị tùy chọn
+            :return: Kết quả hiệu ứng (str)
+            """
             if phase != self.__phase:
                 return STATUS[0]
             try:
@@ -52,12 +94,30 @@ class Effect:
                 return STATUS[1]
 
         def Unselectable(nBoard, indexs, phase, value, options):
+            """
+            Quân cờ không thể được chọn
+            :param nBoard: Bàn cờ (board.Board)
+            :param indexs: Tọa độ ô được chọn (list(tuple(int, int)))
+            :param phase: Giai đoạn của lượt hiện tại
+            :param value: Lượng tốc độ được tăng (int)
+            :param options: Các giá trị tùy chọn
+            :return: Kết quả hiệu ứng (str)
+            """
             if phase in self.__phase:
                 return STATUS[1]
             else:
                 return STATUS[0]
 
         def Unmove(nBoard, indexs, phase, value, options):
+            """
+            Quân cờ vẫn chưa di chuyển lần nào trong trận đấu
+            :param nBoard: Bàn cờ (board.Board)
+            :param indexs: Tọa độ ô được chọn (list(tuple(int, int)))
+            :param phase: Giai đoạn của lượt hiện tại
+            :param value: Lượng tốc độ được tăng (int)
+            :param options: Các giá trị tùy chọn
+            :return: Kết quả hiệu ứng (str)
+            """
             if phase in self.__phase:
                 return STATUS[2]
             else:
@@ -65,6 +125,15 @@ class Effect:
 
         # Card Effect
         def PushChess(nBoard, indexs, phase, value, options):
+            """
+            Tăng thêm khả năng di chuyển cho quân cờ được chọn
+            :param nBoard: Bàn cờ (board.Board)
+            :param indexs: Tọa độ ô được chọn (list(tuple(int, int)))
+            :param phase: Giai đoạn của lượt hiện tại
+            :param value: Lượng tốc độ được tăng (int)
+            :param options: Các giá trị tùy chọn
+            :return: Kết quả hiệu ứng (str)
+            """
             if phase != self.__phase:
                 return STATUS[0]
             oBoard = nBoard.getoBoard()
@@ -124,6 +193,11 @@ class Effect:
             return STATUS[0]
 
     def triggered_effect(self, phase = 2):
+        """
+        Giảm tích lũy của hiệu ứng
+        :param phase: Giai đoạn của lượt hiện tại
+        :return: None
+        """
         if phase == self.__phase:
             if self.__stack > 0:
                 self.__stack -= 1

@@ -35,17 +35,8 @@ BLACK = (0, 0, 0)
 startTurnTime = math.floor(time.time())
 timing = 0
 usedCard = False
-env = 'Desert'
+env = 'Grassland'
 MUSIC_END = pygame.USEREVENT + 1
-
-SETTINGS = {
-    'Music Volumn': 10,
-    'Sound Volumn': 0,
-    'Time': 180,
-    'Time Bonus': 10,
-    'AddTimeable': True,
-    'TotalActions': 15,
-}
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -82,7 +73,7 @@ def new_game():
     pygame.mixer.music.load(init.listMusic[0])
     init.listMusic.append(init.listMusic.pop(0))
     pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(SETTINGS['Music Volumn']/100)
+    pygame.mixer.music.set_volume(init.SETTINGS['Music Volumn']/100)
     pygame.mixer.music.queue(init.listMusic[0])
     init.listMusic.append(init.listMusic.pop(0))
     pygame.mixer.music.set_endevent(MUSIC_END)
@@ -93,7 +84,7 @@ def new_game():
     if env == 'Random':
         env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('Player 1', 'w', SETTINGS['Time'], SETTINGS['Time Bonus']), player.Player('Player 2', 'b', SETTINGS['Time'], SETTINGS['Time Bonus'])]
+    Players = [player.Player('Player 1', 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player('Player 2', 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
     turn_off_music()
     main()
 
@@ -103,25 +94,26 @@ def setting_game():
     :return: None
     """
     global env, SETTINGS
+    pygame.time.delay(50)
 
     def add_min(param):
-        if SETTINGS['Time'] // 60 <= 0:
+        if init.SETTINGS['Time'] // 60 <= 0:
             return
-        SETTINGS['Time'] += param['value']
-        pygame.time.delay(100)
+        init.SETTINGS['Time'] += param['value']
+        pygame.time.delay(50)
 
     def add_second(param):
-        temp = SETTINGS['Time']%60
-        SETTINGS['Time'] -= temp
+        temp = init.SETTINGS['Time']%60
+        init.SETTINGS['Time'] -= temp
         temp = (temp + param['value'])%60
-        SETTINGS['Time'] += temp
-        pygame.time.delay(100)
+        init.SETTINGS['Time'] += temp
+        pygame.time.delay(50)
 
     def add_time_bonus(param):
-        if SETTINGS['Time Bonus'] <= 0:
+        if init.SETTINGS['Time Bonus'] <= 0:
             return
-        SETTINGS['Time Bonus'] += param['value']
-        pygame.time.delay(100)
+        init.SETTINGS['Time Bonus'] += param['value']
+        pygame.time.delay(50)
 
     def next_env(param):
         global env
@@ -130,7 +122,7 @@ def setting_game():
             env = temp[temp.index(env) + param['value']]
         except:
             env = temp[0]
-        pygame.time.delay(100)
+        pygame.time.delay(50)
 
     x = 100
     while pause:
@@ -141,7 +133,7 @@ def setting_game():
         cell.Cell(0, 0, init.listImage[env]['Background']).draw(WIN, WinHeight, WinWidth)
         WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
         WIN.blit(textSurface, textRect)
-        timeLeft = '{:02}'.format(SETTINGS['Time'] // 60) + '   :   ' + '{:02}'.format(SETTINGS['Time'] % 60)
+        timeLeft = '{:02}'.format(init.SETTINGS['Time'] // 60) + '   :   ' + '{:02}'.format(init.SETTINGS['Time'] % 60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
@@ -149,7 +141,7 @@ def setting_game():
         WIN.blit(init.font15.render('THỜI GIAN TỔNG', True, 'black'), ((WinWidth / 2) - 140, 402 - x))
         WIN.blit(init.font15.render('PHÚT', True, 'black'), ((WinWidth / 2) - 170, 477 - x))
         WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) - 20, 477 - x))
-        button(str(SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], '', (WinWidth / 2) + 125, 400 - x, 100, 100, font=init.font50)
+        button(str(init.SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], '', (WinWidth / 2) + 125, 400 - x, 100, 100, font=init.font50)
         WIN.blit(init.font15.render('THƯỞNG', True, 'black'), ((WinWidth / 2) + 140, 402 - x))
         WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) + 155, 477 - x))
         button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 180, 330 - x, 60, 50, add_min, value = 60)
@@ -191,6 +183,9 @@ def updateGUI():
     :return: None
     """
     global phase, turns, timing
+
+    button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
+
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
     timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
@@ -204,12 +199,12 @@ def updateGUI():
     button(str(Players[0].get_totalAction()), init.listImage['GUI']['Actions'], '', 330, offsetHeight + 135, 30, 30, font=init.font20)
 
     button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
+
+    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
+
     if Players[turns%2].get_time() - timing < 0:
         turns += 1
         endGame()
-
-    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
-    button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
     for i in range(len(Players[turns%2].get_cards())):
         button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT/3)*i + (HEIGHT)/8, 50, 50, Players[turns%2].redraw_card, param = i)
@@ -223,6 +218,10 @@ def updateGUI():
     WIN.blit(init.listImage['GUI']['Env Timer Ef'], (48, offsetHeight + 200))
     button('Turn: {:<12}'.format(turns+1), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 300, 320, 100, font=init.font30)
     WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 300))
+    try:
+        WIN.blit(init.listImage['GEI']['Phase ' + str(phase)], (275, offsetHeight + 325))
+    except:
+        pass
 
 def update_display(win, nboard, pos, turns, phase):
     """
@@ -266,7 +265,7 @@ def main():
             playingTeam = 'w'
         else:
             playingTeam = 'b'
-        pygame.time.delay(50) ##stops cpu dying
+
         for event in pygame.event.get():
             if event.type == MUSIC_END:
                 pygame.mixer.music.queue(init.listMusic[0])
@@ -354,12 +353,13 @@ def main():
                         usedCard = True
                         #-----------------------------------------------------------------------------------------------
                 print(" Phase:", phase)
+                print("Turn:", turns)
                 nboard.printMap()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
         check_evolutions()
-        phase = Players[turns % 2].update(phase, init.DECK, SETTINGS['AddTimeable'], startTurnTime)
+        phase = Players[turns % 2].update(phase, init.DECK, init.SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns, playingTeam)
@@ -383,22 +383,19 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
     """
     img = pygame.transform.scale(img, (width, height))
     WIN.blit(img, (x, y))
-    if action != None:
-        mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        if x + width > mouse[0] > x and y + height > mouse[1] > y:
-            try:
-                img_h = pygame.transform.scale(img_h, (width, height))
-                WIN.blit(img_h, (x, y))
-            except:
-                pass
-            if click[0] == 1:
-                if param != {}:
-                    action(param)
-                else:
-                    action()
-    else:
-        pass
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    if x + width > mouse[0] > x and y + height > mouse[1] > y:
+        try:
+            img_h = pygame.transform.scale(img_h, (width, height))
+            WIN.blit(img_h, (x, y))
+        except:
+            pass
+        if click[0] == 1:
+            if param != {}:
+                action(param)
+            else:
+                action()
     textSurface = font.render(text, True, color)
     textRect = textSurface.get_rect()
     textRect.center = ((x + (width / 2)), (y + (height / 2)))
@@ -409,6 +406,9 @@ def paused():
     Tạm dừng trận đấu
     :return: None
     """
+    global timing, startTurnTime
+    nowTime = math.floor(time.time())
+    timing = nowTime - startTurnTime
     pygame.mixer.music.pause()
     global pause
     pause = True
@@ -417,6 +417,7 @@ def paused():
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
     while pause:
+        startTurnTime = math.floor(time.time()) - timing
         cell.Cell(0, 0, init.listImage[env]['Background']).draw(WIN, WinHeight, WinWidth)
         WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
         WIN.blit(textSurface, textRect)
@@ -512,9 +513,9 @@ def game_intro():
     Màn hình chờ của game
     :return: None
     """
-    pygame.time.delay(50)
     global pause
     pause = True
+    pygame.time.delay(50)
     textSurface = init.font60.render('CHESS: MAGIC CARD', True, 'white')
     textRect = textSurface.get_rect()
     interval = (WinHeight - offsetHeight) / 6
