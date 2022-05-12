@@ -27,7 +27,8 @@ class Chess:
         :param direction: Hướng di chuyển (str)
         :param img: Hình ảnh quân cờ (pygame.image)
         :param score: Điểm của quân cờ (int)
-        :param effects: Danh sách hiệu ứng (list of str)
+        :param effects: Danh sách hiệu ứng (list(effect.Effect))
+        :param speed: Tốc dộ di chuyển (int)
         """
         self._team = team
         self._type = typechess
@@ -40,69 +41,78 @@ class Chess:
         self._killable = False
 
     def chess_dup(self):
+        """
+        Tạo bản sao của quân cờ
+        :return: Các thuộc tính cơ bản của quân cờ
+        """
         return self._team, self._type, self._direction, self._score, self._startSpeed, self._speed
 
     def get_effects(self):
         """
         Lấy danh sách hiệu ứng của quân cờ.
-        :return: self._effects : List[str]
+        :return: Danh sách hiệu ứng (list(effect.Effect))
         """
         return self._effects
 
     def get_team(self):
         """
         Lấy tên đội của quân cờ
-        :return: self._team : str
+        :return: Tên đội của quân cờ (str)
         """
         return self._team
 
     def get_type(self):
+        """
+        Lấy loại quân cờ
+        :return: Loại quân cờ (str)
+        """
         return self._type
 
     def get_score(self):
         """
         Lấy điểm số của quân cờ
-        :return: self._score : int
+        :return: Điểm của quân cờ (int)
         """
         return self._score
 
     def get_killable(self):
         """
         Kiểm tra xem có thể bị giết không
-        :return: self._killable : bool
+        :return: Thuộc tính killable của quân cờ (bool)
         """
         return self._killable
 
     def is_effective(self, effect = ""):
         """
-        Trả về True nếu quân cờ có giá trị hiệu ứng đầu vào, ngược lại trả về False.
-        :param effect: Hiệu ứng cần kiểm tra (str)
-        :return: bool
+        Trả về True nếu quân cờ có tên giống giá trị hiệu ứng đầu vào, ngược lại trả về False.
+        :param effect: Tên hiệu ứng cần kiểm tra (str)
+        :return: Giá trị đúng sai (bool)
         """
         return effect in [self.get_effects()[i].get_name() for i in range(len(self.get_effects()))]
 
     def convert_to_readable(self):
         """
         Chuyển quân cờ thành dạng có thể đọc được
-        :return: self._team + self._type : (str)
+        :return: Chuỗi bao gồm đội và loại quân cờ (str)
         """
         return str(self._team + self._type)
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
-        Xuất ra các cách di chuyển của quân cờ
-        :param mark:
-        :param phase:
+        Đánh dấu các nước có thể di chuyển của quân cờ
         :param nBoard: Bàn cờ (board.Board)
         :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
-        :return list[tuple(int, int)]
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         pass
 
     def get_direction(self):
         """
         Lấy hướng đi của quân cờ dưới dạng số
-        :return: int
+        :return: Hướng di chuyển (int)
         """
         direction = -1
         if self._direction == 'downward':
@@ -111,9 +121,10 @@ class Chess:
 
     def draw(self, win, pos, width = 60):
         """
-        Vẽ hình ảnh quân cờ trên cửa sổ
-        :param win: Cửa sổ được chọn (pygame.display)
+        Vẽ hình ảnh quân cờ trên cửa sổ hiển thị
+        :param win: Cửa sổ hiển thị được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(int, int))
+        :return None
         """
         try:
             offsetHeight = (width - self._image.get_height()) / 2
@@ -124,8 +135,9 @@ class Chess:
 
     def set_killable(self, nBoard, index, phase, able):
         """
-        Gán self._killable là True nếu quân cờ không có hiệu ứng "Imortal"
-        :param able : Giá trị để gán cho self._killable (bool)
+        Gán thuộc tính _killable bằng giá trị able đầu vào nếu không bị ngăn cản bởi hiệu ứng
+        :param able : Giá trị để gán cho thuộc tính _killable (bool)
+        :return None
         """
         if 'Fail' not in self.active_effects(nBoard, index, phase):
             self._killable = able
@@ -134,13 +146,15 @@ class Chess:
         """
         Gán giá trị điểm mới cho quân cờ
         :param new_score: Điểm số mới (int)
+        :return None
         """
         self._score = new_score
 
     def change_speed(self, cspeed):
         """
-        Gán tốc độ mới cho quân cờ
-        :param cspeed: Chỉ số tốc độ mới (int)
+        Tăng tốc độ mới cho quân cờ
+        :param cspeed: Lượng tốc độ được tăng (int)
+        :return None
         """
         self._speed += cspeed
 
@@ -148,6 +162,7 @@ class Chess:
         """
         Tăng thêm hiệu ứng cho quân cờ
         :param effect: Hiệu ứng mới (effect.Effect)
+        :return None
         """
         self._effects += [effect]
 
@@ -155,6 +170,7 @@ class Chess:
         """
         Xóa hiệu ứng của quân cờ
         :param effect: Hiệu ứng cần xóa (effect.Effect)
+        :return None
         """
         if effect in self._effects:
             self._effects.remove(effect)
@@ -165,6 +181,7 @@ class Chess:
         :param nBoard: Bàn cờ (board.Board)
         :param index: Vị trí quân cờ (turple(int, int))
         :param phase: Giai đoạn của lượt đấu (int)
+        :return None
         """
         result = []
         for effect in self._effects:
@@ -175,6 +192,10 @@ class Chess:
         return result
 
     def unactive_effects(self):
+        """
+        Ngắt kích hoạt hiệu ứng của quân cờ
+        :return: None
+        """
         for effect in self._effects:
             try:
                 effect.unactive_effect()
@@ -184,6 +205,7 @@ class Chess:
     def triggered_effects(self):
         """
         Giảm cộng dồn được tích trữ của các hiệu ứng của quân cờ
+        :return None
         """
         for effect in self._effects:
             try:
@@ -197,6 +219,7 @@ class Chess:
         :param nBoard: Bàn cờ (board.Board)
         :param index: Vị trí quân cờ (tuple(int, int))
         :param phase: Giai đoạn lượt đấu (int)
+        :return None
         """
         self._speed = self._startSpeed
         for effect in self._effects:
@@ -213,9 +236,12 @@ def on_board(index):
     """
     Kiểm tra xem thử vị trí đầu vào có nằm trên bàn cờ không
     :param index: Vị trí kiểm tra (tuple(int, int))
+    :return Kết quả đúng sai (bool)
     """
     if index[0] > -1 and index[1] > -1 and index[0] < 8 and index[1] < 8:
         return True
+    else:
+        return False
 
 class Pawn(Chess):
     """
@@ -227,18 +253,19 @@ class Pawn(Chess):
         :param team: Tên đội (str)
         :param direction: Hướng di chuyển (str)
         :param img: Hình ảnh quân cờ (pygame.image)
-        :param effects: Danh sách hiệu ứng (list of str)
+        :param effects: Danh sách hiệu ứng (list(effect.Effect)
         """
         super().__init__(team, "Pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)]  + effects, 1)
 
     def get_moves(self, nBoard, index, phase, mark='x', killable = True):
         """
-        Xây dựng cách di chuyển của quân "Chốt"
-        :param mark:
-        :param phase:
-        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
-        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
-        :param index: Vị trí của quân cờ tuple(int, int)
+        Đánh dấu các nước có thể di chuyển của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         speed = self._speed
         oBoard = nBoard.getoBoard()
@@ -289,12 +316,13 @@ class King(Chess):
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
-        Xây dựng cách di chuyển của quân "Vua"
-        :param mark:
-        :param phase:
-        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
-        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
-        :param index: Vị trí của quân cờ tuple(int, int)
+        Đánh dấu các nước có thể di chuyển của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         speed = self._speed
         oBoard = nBoard.getoBoard()
@@ -342,12 +370,13 @@ class Rook(Chess):
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
-        Xây dựng cách di chuyển của quân "Xa"
-        :param mark:
-        :param phase:
-        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
-        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
-        :param index: Vị trí của quân cờ tuple(int, int)
+        Đánh dấu các nước có thể di chuyển của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         speed = self._speed
         oBoard = nBoard.getoBoard()
@@ -387,12 +416,13 @@ class Bishop(Chess):
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
-        Xây dựng cách di chuyển của quân "Tượng"
-        :param mark:
-        :param phase:
-        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
-        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
-        :param index: Vị trí của quân cờ tuple(int, int)
+        Đánh dấu các nước có thể di chuyển của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         speed = self._speed
         oBoard = nBoard.getoBoard()
@@ -432,12 +462,13 @@ class Knight(Chess):
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
-        Xây dựng cách di chuyển của quân "Mã"
-        :param mark:
-        :param phase:
-        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
-        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
-        :param index: Vị trí của quân cờ tuple(int, int)
+        Đánh dấu các nước có thể di chuyển của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         speed = self._speed
         oBoard = nBoard.getoBoard()
@@ -474,12 +505,13 @@ class Queen(Chess):
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """
-        Xây dựng cách di chuyển của quân "Hậu"
-        :param mark:
-        :param phase:
-        :param oBoard: Danh sách các quân cờ (tuple(tuple(chess.Chess)))
-        :param rBoard: Danh sách các vị trí quân cờ dưới dạng str (list[list[str]])
-        :param index: Vị trí của quân cờ tuple(int, int)
+        Đánh dấu các nước có thể di chuyển của quân cờ
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Tạo độ quân cờ trên bàn cờ (tuple(row, col))
+        :param mark: Kí hiệu dùng để đánh dấu (str)
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
+        :return None
         """
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()

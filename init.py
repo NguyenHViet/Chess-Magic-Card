@@ -133,10 +133,10 @@ DECK = [
 ]
 
 ENVIRONMENT = {
-    'Desert':env.Desert(listImage['Desert'], 800),
-    'Frozen River':env.Frozen_river(listImage['Frozen River'], 800),
-    'Foggy Forest':env.Foggy_forest(listImage['Foggy Forest'], 800),
-    'Swamp':env.Swamp(listImage['Swamp'], 800),
-    'Grassland':env.Grassland(listImage['Grassland'], 800),
+    'Desert': env.Desert(listImage['Desert'], 800),
+    'Frozen River': env.Frozen_river(listImage['Frozen River'], 800),
+    'Foggy Forest': env.Foggy_forest(listImage['Foggy Forest'], 800),
+    'Swamp': env.Swamp(listImage['Swamp'], 800),
+    'Grassland': env.Grassland(listImage['Grassland'], 800),
     'Random':env.Environment(),
 }

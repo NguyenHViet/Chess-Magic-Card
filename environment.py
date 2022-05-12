@@ -10,17 +10,15 @@ class Environment:
     """
     Lớp 'Môi trường'
     """
-
-    def __int__(self, name, image, width, effects = []):
+    def __int__(self, name, image, width):
         """
-        Hàm tạo môi trường
+        Hàm khởi tạo
         :param name: Tên môi trường (str)
-        :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param effect: Danh sách hiệu ứng của môi trường (list or str)
+        :param image: Danh sách hình ảnh của môi trường (dict)
+        :param width: Kích thước bàn cờ (int)
         """
         self._name = name
         self._image = image
-        self._effects = effects
         self._width = width
         self._CellLayer = []
 
@@ -34,21 +32,23 @@ class Environment:
     def get_env_img(self):
         """
         Hàm lấy danh sách hình ảnh môi trường
-        :return: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :return: Danh sách hình ảnh môi trường (dict(pygame.image))
         """
         return self._image
 
-    def get_effect(self):
-        """
-        Hàm lấy danh sách hiệu ứng
-        :return: Hiệu ứng của môi trường(str)
-        """
-        return self.__effects
-
     def apply_env_effect(self, **options):
+        """
+        Hàm áp dụng hiệu ứng môi trường
+        :param options: các giá trị tùy chọn
+        """
         pass
 
     def draw(self, win):
+        """
+        Hàm in các hình ảnh lên cửa sổ hiển thị
+        :param win: Cửa sổ hiển thị (pygame.display)
+        :return None
+        """
         win.blit(self._image['Background'], (0, 0))
         #win.blit(pygame.transform.scale(init.listImage['GEI']['Darken'], (1600, 1000)), (0, 0))
         interval = self._width / 8
@@ -57,6 +57,11 @@ class Environment:
                 self._CellLayer[row][col].draw(win, interval, interval)
 
     def create_map(self, nBoard):
+        """
+        Khởi tạo bàn cờ theo môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :return: Danh sách 2D các ô trong bàn cờ (list(list))
+        """
         cBoard = []
         interval = self._width / 8
         for x in range(8):
@@ -70,25 +75,32 @@ class Desert(Environment):
     """
     Lớp 'Sa mạc'
     """
-    def __init__(self, image, width = 0, effects = []):
+    def __init__(self, image, width = 0):
         """
-        Hàm tạo môi trường sa mạc
+        Hàm tạo môi trường "Sa Mạc"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param effect: Hiệu ứng của môi trường (str)
         """
         self.__epos = (0, 0)
         self.__ewh = (0, 0)
-        super().__int__('desert', image, width, 'Unmoveable')
+        super().__int__('desert', image, width)
 
     def create_map(self, nBoard):
+        """
+        Khởi tạo bàn cờ theo môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :return: Danh sách 2D các ô trong bàn cờ (list(list))
+        """
         super().create_map(nBoard)
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
         """
-        Hàm áp dụng effect của môi trường 'Sa mạc' vào bàn cờ
-        :param turn: Đếm ngược thời gian xuất hiện bão cát(int)
+        Hàm áp dụng hiệu ứng môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :param turn: Lượt hiện tại của trận đấu
+        :param phase: Giai đoạn của lượt hiện tại.
+        :return None
         """
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
@@ -126,17 +138,21 @@ class Frozen_river(Environment):
     Lớp 'Sông băng'
     """
 
-    def __init__(self, image, width, effects = []):
+    def __init__(self, image, width):
         """
-        Hàm tạo môi trường sông băng
+        Hàm khởi tạo môi trường "Sông Băng"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param effect: Hiệu ứng của môi trường (str)
         """
         self._EffectedCells = {}
-        super().__int__('frozen_river', image, width, 'Fall_Down')
+        super().__int__('frozen_river', image, width)
 
     def create_map(self, nBoard):
+        """
+        Khởi tạo bàn cờ theo môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :return: Danh sách 2D các ô trong bàn cờ (list(list))
+        """
         super().create_map(nBoard)
         cell_posision = list()
         count = int(0)
@@ -156,6 +172,13 @@ class Frozen_river(Environment):
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
+        """
+        Hàm áp dụng hiệu ứng môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :param turn: Lượt hiện tại của trận đấu
+        :param phase: Giai đoạn của lượt hiện tại.
+        :return None
+        """
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
         if phase == chess.PHASE['Start']:
@@ -188,17 +211,16 @@ class Foggy_forest(Environment):
     """
     Lớp 'Rừng sương mù'
     """
-
-    def __init__(self, image , width, effects = []):
+    def __init__(self, image , width):
         """
-        Hàm tạo môi trường sông băng
+        Hàm tạo môi trường "Rừng Sương Mù"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__int__('foggy_forest', image, width, 'Glamour')
+        super().__int__('foggy_forest', image, width)
 
     def create_map(self, nBoard):
+
         super().create_map(nBoard)
 
         for x in range(8):
@@ -207,8 +229,13 @@ class Foggy_forest(Environment):
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
-        "Đổi toàn bộ ô cờ sang ô special"
-        "Thay đổi giá trị di chuyển của quân cờ trừ mã xuống còn 4"
+        """
+        Hàm áp dụng hiệu ứng môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :param turn: Lượt hiện tại của trận đấu
+        :param phase: Giai đoạn của lượt hiện tại.
+        :return None
+        """
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
         cBoard = nBoard.getcBoard()
@@ -236,22 +263,21 @@ class Swamp(Environment):
     Lớp 'Đầm lầy'
     """
 
-    def __init__(self, image , width, effects = []):
+    def __init__(self, image , width):
         """
-        Hàm tạo môi trường đầm lầy
+        Hàm tạo môi trường "Đầm Lầy"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param effect: Hiệu ứng của môi trường (str)
         """
         self._EffectedCells = {}
-        super().__int__('swamp', image, width, effects)
+        super().__int__('swamp', image, width)
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
         cell_posision = list()
         count = int(0)
         self._EffectedCells = {}
-        while (count < 12):
+        while (count < 10):
             x = random.randint(0, 7)
             y = random.randint(1, 6)
             if (x, y) in cell_posision:
@@ -266,9 +292,13 @@ class Swamp(Environment):
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
-        "Random vị trí 10 ô special"
-        "Đổi ô cờ sang ô special"
-        "Cài ô special như là 1 quân cờ"
+        """
+        Hàm áp dụng hiệu ứng môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :param turn: Lượt hiện tại của trận đấu
+        :param phase: Giai đoạn của lượt hiện tại.
+        :return None
+        """
         rBoard = nBoard.getrBoard()
         oBoard = nBoard.getoBoard()
         if phase == chess.PHASE['Start']:
@@ -285,16 +315,22 @@ class Grassland(Environment):
     Lớp 'Thảo nguyên'
     """
 
-    def __init__(self, image , width, effects = []):
+    def __init__(self, image , width):
         """
-        Hàm tạo môi trường bình thường
+        Hàm tạo môi trường 'Thảo Nguyên'
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param effect: Hiệu ứng của môi trường (str)
         """
-        super().__int__('grassland', image, width, effects)
+        super().__int__('grassland', image, width)
 
     def apply_env_effect(self, nBoard, turn, phase):
+        """
+        Hàm áp dụng hiệu ứng môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :param turn: Lượt hiện tại của trận đấu
+        :param phase: Giai đoạn của lượt hiện tại.
+        :return None
+        """
         pass
 
 

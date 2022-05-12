@@ -7,7 +7,17 @@ import cell
 import init
 import textwrap
 
-def drawText(surface, text, color, rect, font, aa=False, bkg=None):
+def drawText(surface, text, color, rect, font, bkg=None):
+    """
+    Hàm dùng để tạo text có thể format xuống dòng
+    :param surface: Surface được chọn để hiển thị (pygame.display)
+    :param text: Văn bản được in (str)
+    :param color: Màu sắc văn bản (str|(int, int, int)
+    :param rect: Tạo độ góc trên bên trái và kích thước (((float, float), (float, float)))
+    :param font: Font chữ của văn bản (font.Font)
+    :param bkg: Màu nền (str|(int, int, int)
+    :return: Văn bản đã được format (str)
+    """
     rect = pygame.Rect(rect)
     y = rect.top
     lineSpacing = -2
@@ -25,7 +35,7 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
             image = font.render(text[:i], 1, color, bkg)
             image.set_colorkey(bkg)
         else:
-            image = font.render(text[:i], aa, color)
+            image = font.render(text[:i], False, color)
         surface.blit(image, (rect.left, y))
         y += fontHeight + lineSpacing
         text = text[i:]
@@ -33,7 +43,21 @@ def drawText(surface, text, color, rect, font, aa=False, bkg=None):
 
 
 class Card:
+    """
+    Lớp "Bài phép"
+    """
     def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = [], **options):
+        """
+        Hàm khởi tạo bài phép
+        :param name: Tên bài phép (str)
+        :param cost: Giá trị tiêu hao (int)
+        :param img: Hình ảnh bài phép (pygame.image)
+        :param descibe: Mô tả (str)
+        :param skillCard: Tên kĩ năng của bài phép (str)
+        :param selectedRequire: Số lượng quân cờ cần thiết (int)
+        :param effects: Hiệu ứng bài phép (effect.Effect)
+        :param options: Các giá trị tùy chọn
+        """
         self.__name = name
         self.__startCost = cost
         self.__cost = self.__startCost
@@ -47,15 +71,16 @@ class Card:
     def get_effects(self):
         """
         Lấy danh sách hiệu ứng của quân cờ.
-        :return: Danh sách hiệu ứng của quân cờ (List of str)
+        :return: Danh sách hiệu ứng của quân cờ (list(effect.Effect))
         """
         return self.effects
 
     def draw(self, win, font, pos, height = 100, width = 100):
         """
-        Vẽ hình ảnh lá bài trên cửa sổ
-        :param win: Cửa sổ được chọn (pygame.display)
+        Vẽ hình ảnh lá bài trên cửa sổ hiển thị
+        :param win: Cửa sổ hiển thị được chọn (pygame.display)
         :param pos: Vị trí hình ảnh được vẽ (tuple(x, y))
+        :return None
         """
         cheight = self.__img.get_height()
         cwidth = self.__img.get_width()
@@ -79,13 +104,25 @@ class Card:
         """
         Gán tiêu hao mới của lá bài
         :param new_cost: Tiêu hao mới (int)
+        :return None
         """
         self.__cost = new_cost
 
     def get_selected_require(self):
+        """
+        Lấy số lượng quân cờ cần thiết để sử dụng phép
+        :return: Số lượng quân cờ cần thiết (int)
+        """
         return self.__selected_require
 
     def play_card(self, nBoard, indexs, playTeam):
+        """
+        Sử dụng bài phép và kích hoạt kĩ năng bài tương ứng
+        :param nBoard: Bàn cờ (board.Board)
+        :param indexs: Danh sách các tọa độ (list(tuple(x, y))
+        :param playTeam: Đội đang trong lượt
+        :return: Kết quả (str)
+        """
         def GrantEffects(effects, nBoard, indexs):
             try:
                 index = indexs[0]
@@ -116,7 +153,18 @@ class Card:
         return result
 
 class CardArea:
+    """
+    Lớp "Khu vực bài phép"
+    """
     def __init__(self, height, width, offsetHeight, offsetWidth, lImg):
+        """
+        Hàm khởi tộ
+        :param height: Chiều cao (int)
+        :param width: Chiều rộng (int)
+        :param offsetHeight: Khoảng các từ mép trên cửa sổ hiển thị đến bàn cờ (int)
+        :param offsetWidth: Khoảng các từ mép bên cửa sổ hiển thị đến bàn cờ (int)
+        :param lImg: Danh sách hình ảnh (list(pygame.image))
+        """
         self.__x = offsetHeight
         self.__y = offsetWidth + width
         self.__Height = height
@@ -129,6 +177,14 @@ class CardArea:
             self.__cellLayers.append(cell.Cell(self.__y + 55, self.__x + interval * i, self.__GEI['Darken']))
 
     def draw(self, win, font, pos, nPlayer):
+        """
+        Hàm in các lá bài lên cửa sổ hiển thị
+        :param win: Cửa sổ hiển thị (pygame.display)
+        :param font: Font chữ (font.Font)
+        :param pos: Vị trí lá bài được hiển thị (tuple(x, y))
+        :param nPlayer: Danh sách người chơi (list(player.Player))
+        :return: None
+        """
         listCard = nPlayer.get_cards()
         picking = nPlayer.get_picking()
         interval = self.__Height / 3
@@ -148,6 +204,11 @@ class CardArea:
                 win.blit(init.listImage['GEI']['LockCard'], self.__cellLayers[i].get_pos())
 
     def pick_card(self, pos):
+        """
+        Hàm xác định lá bài được chọn
+        :param pos: vị chí con trỏ chuột (tuple(x, y))
+        :return: Vị trí lá bài trong danh sách bài của người chơi (int)
+        """
         for i in range(3):
             if self.__cellLayers[i].is_mouse_hovering(pos):
                 return i
