@@ -37,7 +37,7 @@ usedCard = False
 env = 'Desert'
 
 SETTINGS = {
-    'Music Volumn': 0.0,
+    'Music Volumn': 10,
     'Sound Volumn': 0,
     'Time': 180,
     'Time Bonus': 10,
@@ -50,6 +50,7 @@ ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
 Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
 clock = pygame.time.Clock()
+playingTeam = 'w'
 
 pause = True
 turns = 0
@@ -59,10 +60,17 @@ def turn_off_music():
     pygame.mixer.music.set_volume(0)
 
 def turn_on_music():
-    pygame.mixer.music.set_volume(SETTINGS['Music Volumn'])
+    pygame.mixer.music.set_volume(SETTINGS['Music Volumn']/100)
 
 def new_game():
     global turns, phase, nboard, ncard, Players, startTurnTime, env
+    random.shuffle(init.listMusic)
+    for i in range(len(init.listMusic)):
+        pygame.mixer.Channel(i).play(init.listMusic[i])
+        pygame.mixer.Channel(i).set_volume(SETTINGS['Music Volumn']/100)
+        pygame.mixer.Channel(i).pause()
+        pygame.mixer.Channel(i).queue(init.listMusic[i-1])
+    pygame.mixer.Channel(0).unpause()
     startTurnTime = math.floor(time.time())
     turns = 0
     phase = chess.PHASE['Start']
@@ -71,9 +79,6 @@ def new_game():
         env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
     Players = [player.Player('Player 1', 'w', SETTINGS['Time'], SETTINGS['Time Bonus']), player.Player('Player 2', 'b', SETTINGS['Time'], SETTINGS['Time Bonus'])]
-    pygame.mixer.music.load('assets\\music\\Two Steps From Hell - Victory (Instrumental).wav')
-    pygame.mixer.music.set_volume(SETTINGS['Music Volumn'])
-    pygame.mixer.music.play(-1)
     turn_off_music()
     main()
 
@@ -223,7 +228,7 @@ def update_display(win, nboard, pos, turns, phase):
 
 def main():
     turn_on_music()
-    global pause, phase, turns, startTurnTime, timing
+    global pause, phase, turns, startTurnTime, timing, playingTeam
     redraw = False
     pause = False
     selected = False
@@ -348,7 +353,6 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
             pass
         if click[0] == 1 and action != None:
             if param != {}:
-                pygame.time.delay(50)
                 action(param)
             else:
                 action()
@@ -441,7 +445,7 @@ def check_evolutions():
                 pass
 
 def game_intro():
-    pygame.time.delay(150)
+    pygame.time.delay(100)
     global pause
     pause = True
     textSurface = init.font60.render('CHESS: MAGIC CARD', True, 'white')

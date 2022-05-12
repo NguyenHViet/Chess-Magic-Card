@@ -5,6 +5,9 @@ from card import Card
 import chess
 import random
 
+pygame.mixer.pre_init()
+pygame.mixer.init()
+
 listImage = {
     'b': {
         'Bishop':pygame.image.load('assets\\img\\Chess\\b_bishop.png'), 'King':pygame.image.load('assets\\img\\Chess\\b_king.png'),
@@ -100,7 +103,10 @@ listImage = {
     }
 }
 
-listMusic
+listMusic = [
+    pygame.mixer.Sound('assets\\music\\Two Steps From Hell - Victory (Instrumental).wav'),
+    pygame.mixer.Sound('assets\\music\\Two Steps From Hell - Star Sky.wav'),
+]
 
 pygame.font.init()
 font15 = pygame.font.Font('assets\\font\\Comfortaa-VariableFont_wght.ttf', 15)

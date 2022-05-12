@@ -94,7 +94,7 @@ class Effect:
                         moveRange.append([index[0], index[1] - i])
 
                 for positions in moveRange:
-                    if chess.on_board(positions) and rBoard[positions[0]][positions[1]] == ' ' and '!' not in rBoard[positions[0]][positions[1]]:
+                    if chess.on_board(positions) and oBoard[(positions[1], positions[0])] == None and '!' not in rBoard[positions[0]][positions[1]]:
                         rBoard[positions[0]][positions[1]] = 'x'
                     else:
                         try:

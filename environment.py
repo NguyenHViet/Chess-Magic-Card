@@ -162,7 +162,7 @@ class Frozen_river(Environment):
             for x in range(8):
                 for y in range(8):
                     try:
-                        if rBoard[x][y] != ' ':
+                        if oBoard[(y, x)] != None:
                             self._EffectedCells[(y, x)] -= 1
                             if self._EffectedCells[(y, x)] <= 2:
                                 self._CellLayer[y][x].set_img(self._image['Special 2'])
