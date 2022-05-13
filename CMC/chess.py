@@ -1,5 +1,5 @@
 import pygame
-import effect as ef
+import CMC.effect as ef
 
 PHASE = {
     'Start': 0, 'Picking': 1, 'Move': 2, 'Cast': 3, 'End': 4, 'Finish': 5

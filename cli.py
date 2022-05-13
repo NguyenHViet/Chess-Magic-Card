@@ -1,4 +1,5 @@
-from CMC.main import main
+from CMC.main import game_intro
 
-if __name__ == 'main':
-    main()
+print(__name__)
+if __name__ == '__main__':
+    game_intro()

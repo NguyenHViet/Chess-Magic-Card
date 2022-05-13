@@ -1,4 +1,4 @@
-import chess
+import CMC.chess as chess
 
 STATUS = {
     0:'Not Effected', 1:'Fail', 2:'Success', 3:'Effected'

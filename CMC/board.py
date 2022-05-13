@@ -1,8 +1,8 @@
 import pygame
-import chess
-import init
-import cell
-import effect as ef
+import CMC.chess as chess
+import CMC.init as init
+import CMC.cell as cell
+import CMC.effect as ef
 
 
 class Board:

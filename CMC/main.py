@@ -3,12 +3,12 @@ import random
 import pygame
 import time
 
-import chess
-import init
-import cell
-import board
-import card
-import player
+import CMC.chess as chess
+import CMC.init as init
+import CMC.cell as cell
+import CMC.board as board
+import CMC.card as card
+import CMC.player as player
 import math
 
 pygame.init()
@@ -526,5 +526,3 @@ def game_intro():
         button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, end_game)
         pygame.display.update()
-
-game_intro()

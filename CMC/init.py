@@ -1,8 +1,8 @@
 import pygame
-import environment as env
-import effect as ef
-from card import Card
-import chess
+import CMC.environment as env
+import CMC.effect as ef
+from CMC.card import Card
+import CMC.chess as chess
 import random
 
 pygame.mixer.pre_init()

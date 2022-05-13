@@ -1,8 +1,8 @@
 import pygame
-import cell
-import effect as ef
-import init
-import chess
+import CMC.cell as cell
+import CMC.effect as ef
+import CMC.init as init
+import CMC.chess as chess
 import random
 
 class Environment:

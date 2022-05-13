@@ -1,9 +1,9 @@
 import copy
 
 import pygame
-import effect as ef
-import cell
-import init
+import CMC.effect as ef
+import CMC.cell as cell
+import CMC.init as init
 
 
 def drawText(surface, text, color, rect, font, bkg=None):

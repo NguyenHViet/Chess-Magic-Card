@@ -3,8 +3,8 @@ import random
 import math
 import time
 
-import chess
-import init
+import CMC.chess as chess
+import CMC.init as init
 
 
 class Player:
