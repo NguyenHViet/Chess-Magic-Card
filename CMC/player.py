@@ -1,8 +1,5 @@
-import card
-import cell
 import copy
 import random
-import pygame
 import math
 import time
 

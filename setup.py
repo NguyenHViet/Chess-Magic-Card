@@ -8,5 +8,8 @@ setup(
     license='',
     author='Nguyen Hoang Viet, Tran Doan Thanh Vuong',
     author_email='',
-    description=''
+    description='',
+    package='CMC',
+    include_package_data=True,
+    entrypoints={"console_scripts": ["Chess-Magic-Card=CMC.main:main"]},
 )

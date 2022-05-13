@@ -1,12 +1,9 @@
-import copy
-import random
-
 import pygame
 import chess
 import init
 import cell
 import effect as ef
-import environment as env
+
 
 class Board:
     """
@@ -79,7 +76,8 @@ class Board:
         for x in range(8):
             self.__CellLayer.append([])
             for y in range(8):
-                self.__CellLayer[x].append(cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
+                self.__CellLayer[x].append(
+                    cell.Cell((x * interval) + self.__y, (y * interval) + self.__x, self.__GEI['Empty']))
         self.__readableMap = [[' ' for i in range(8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
 
@@ -253,8 +251,8 @@ class Board:
             if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
                 try:
                     if self.__OjectLayer[(index1[1], index1[0])].get_killable():
-                        sfx = pygame.mixer.Sound('assets\\music\\swords_hit.wav')
-                        sfx.set_volume(init.SETTINGS['Sound Volumn']/100)
+                        sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
+                        sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
                         sfx.play()
                     elif '-' in self.__readableMap[index1[0]][index1[1]]:
                         self.__enviroment.play_sfx()

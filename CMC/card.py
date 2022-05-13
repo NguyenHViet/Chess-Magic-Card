@@ -1,11 +1,10 @@
 import copy
 
 import pygame
-import chess
 import effect as ef
 import cell
 import init
-import textwrap
+
 
 def drawText(surface, text, color, rect, font, bkg=None):
     """

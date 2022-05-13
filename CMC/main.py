@@ -1,15 +1,12 @@
 import random
 
 import pygame
-import sys
 import time
 
 import chess
-import effect
 import init
 import cell
 import board
-import environment
 import card
 import player
 import math
@@ -73,7 +70,7 @@ def new_game():
     pygame.mixer.music.load(init.listMusic[0])
     init.listMusic.append(init.listMusic.pop(0))
     pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(init.SETTINGS['Music Volumn']/100)
+    pygame.mixer.music.set_volume(init.SETTINGS['Music Volumn'] / 100)
     pygame.mixer.music.queue(init.listMusic[0])
     init.listMusic.append(init.listMusic.pop(0))
     pygame.mixer.music.set_endevent(MUSIC_END)
@@ -103,7 +100,7 @@ def setting_game():
         pygame.time.delay(50)
 
     def add_second(param):
-        temp = init.SETTINGS['Time']%60
+        temp = init.SETTINGS['Time'] % 60
         init.SETTINGS['Time'] -= temp
         temp = (temp + param['value'])%60
         init.SETTINGS['Time'] += temp
@@ -189,7 +186,7 @@ def updateGUI():
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
     timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
-    button(timeLeft, init.listImage['GUI']['Black Timer'], '', 125, offsetHeight, 230, 60 ,color = 'white')
+    button(timeLeft, init.listImage['GUI']['Black Timer'], '', 125, offsetHeight, 230, 60, color ='white')
     button(str(Players[1].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 5, 50, 50, color='white')
     button(str(Players[1].get_totalAction()), init.listImage['GUI']['Actions'], '', 330, offsetHeight + 35, 30, 30, font=init.font20)
 
@@ -198,7 +195,7 @@ def updateGUI():
     button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 105, 50, 50, color='white')
     button(str(Players[0].get_totalAction()), init.listImage['GUI']['Actions'], '', 330, offsetHeight + 135, 30, 30, font=init.font20)
 
-    button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns%2)*100, 230, 60)
+    button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns % 2) * 100, 230, 60)
 
     button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
 
@@ -207,7 +204,7 @@ def updateGUI():
         endGame()
 
     for i in range(len(Players[turns%2].get_cards())):
-        button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT/3)*i + (HEIGHT)/8, 50, 50, Players[turns%2].redraw_card, param = i)
+        button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT / 3) * i + (HEIGHT) / 8, 50, 50, Players[turns % 2].redraw_card, param = i)
 
     if pygame.mixer.music.get_busy():
         button("", init.listImage['GUI']['Mute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_off_music)
@@ -235,7 +232,7 @@ def update_display(win, nboard, pos, turns, phase):
     """
     WIN.fill('white')
     nboard.draw(win)
-    ncard.draw(win, init.font40, pos, Players[turns%2])
+    ncard.draw(win, init.font40, pos, Players[turns % 2])
     if phase == chess.PHASE['Finish']:
         print('WIN')
         endGame()
@@ -427,10 +424,10 @@ def paused():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     main()
-        button('CHƠI TIẾP', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, main)
-        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, setting_game)
-        button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, game_intro)
-        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 5*interval, 363, 100, end_game)
+        button('CHƠI TIẾP', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, main)
+        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3 * interval, 363, 100, setting_game)
+        button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4 * interval, 363, 100, game_intro)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 5 * interval, 363, 100, end_game)
         pygame.display.update()
 
 def endGame():
@@ -441,7 +438,7 @@ def endGame():
     pygame.mixer.music.pause()
     global pause
     pause = True
-    textSurface = init.font60.render('Player ' + str(turns%2 + 1) + ' WIN', True, 'white')
+    textSurface = init.font60.render('Player ' + str(turns % 2 + 1) + ' WIN', True, 'white')
     textRect = textSurface.get_rect()
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
@@ -452,9 +449,9 @@ def endGame():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2*interval, 363, 100, new_game)
-        button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3*interval, 363, 100, game_intro)
-        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 4*interval, 363, 100, end_game)
+        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, new_game)
+        button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3 * interval, 363, 100, game_intro)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4 * interval, 363, 100, end_game)
         pygame.display.update()
 
 def end_turn():
@@ -500,10 +497,10 @@ def check_evolutions():
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:
                                 end_game()
-                        button('', init.listImage['Chess Art']['Queen'], init.listImage['GEI']['Darken'], WinWidth/2 - 315, WinHeight/2 - 200, 150, 322, evolution, type='Queen', team = object[1].get_team(), oBoard = oBoard, index = object[0])
-                        button('', init.listImage['Chess Art']['Bishop'], init.listImage['GEI']['Darken'], WinWidth/2 - 155, WinHeight/2 - 122, 150, 322, evolution, type='Bishop', team = object[1].get_team(), oBoard = oBoard, index = object[0])
-                        button('', init.listImage['Chess Art']['Knight'], init.listImage['GEI']['Darken'], WinWidth/2 + 5, WinHeight/2 - 200, 150, 322, evolution, type='Knight', team = object[1].get_team(), oBoard = oBoard, index = object[0])
-                        button('', init.listImage['Chess Art']['Rook'], init.listImage['GEI']['Darken'], WinWidth/2 + 165, WinHeight/2 - 122, 150, 322, evolution, type='Rook', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Queen'], init.listImage['GEI']['Darken'], WinWidth / 2 - 315, WinHeight / 2 - 200, 150, 322, evolution, type='Queen', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Bishop'], init.listImage['GEI']['Darken'], WinWidth / 2 - 155, WinHeight / 2 - 122, 150, 322, evolution, type='Bishop', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Knight'], init.listImage['GEI']['Darken'], WinWidth / 2 + 5, WinHeight / 2 - 200, 150, 322, evolution, type='Knight', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        button('', init.listImage['Chess Art']['Rook'], init.listImage['GEI']['Darken'], WinWidth / 2 + 165, WinHeight / 2 - 122, 150, 322, evolution, type='Rook', team = object[1].get_team(), oBoard = oBoard, index = object[0])
                         pygame.display.update()
             except:
                 pass
@@ -526,8 +523,8 @@ def game_intro():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 2.5*interval, 363, 100, setting_game)
-        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363/2, 3.5*interval, 363, 100, end_game)
+        button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game)
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, end_game)
         pygame.display.update()
 
 game_intro()

@@ -1,6 +1,5 @@
 import pygame
 import cell
-import board
 import effect as ef
 import init
 import chess
@@ -67,7 +66,8 @@ class Environment:
         for x in range(8):
             cBoard.append([])
             for y in range(8):
-                cBoard[x].append(cell.Cell((x * interval) + nBoard.get_y(), (y * interval) + nBoard.get_x(), self._image['Normal']))
+                cBoard[x].append(
+                    cell.Cell((x * interval) + nBoard.get_y(), (y * interval) + nBoard.get_x(), self._image['Normal']))
         self._CellLayer = cBoard
         return cBoard
 
@@ -86,7 +86,7 @@ class Desert(Environment):
         """
         self.__epos = (0, 0)
         self.__ewh = (0, 0)
-        self.__env_ef = pygame.mixer.Sound('assets\\music\\sand_storm.wav')
+        self.__env_ef = pygame.mixer.Sound('assets/music/sand_storm.wav')
         super().__int__('desert', image, width)
 
     def create_map(self, nBoard):
@@ -121,7 +121,7 @@ class Desert(Environment):
                         for j in range(h):
                             self._CellLayer[j  + y][i + x].set_img(self._image['Prepare'])
                 elif turn%6 == 2:
-                    self.__env_ef.set_volume(init.SETTINGS['Sound Volumn']/100)
+                    self.__env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
                     self.__env_ef.play(-1)
 
                 if turn%6 < 5 and turn%6 >= 2:
@@ -162,9 +162,9 @@ class Frozen_river(Environment):
         """
         self.__EffectedCells = {}
         self.__sfx = [
-            pygame.mixer.Sound('assets\\music\\ice_creak.wav'),
-            pygame.mixer.Sound('assets\\music\\ice_creak_break.wav'),
-            pygame.mixer.Sound('assets\\music\\ice_freeze.wav'),
+            pygame.mixer.Sound('assets/music/ice_creak.wav'),
+            pygame.mixer.Sound('assets/music/ice_creak_break.wav'),
+            pygame.mixer.Sound('assets/music/ice_freeze.wav'),
         ]
         super().__int__('frozen_river', image, width)
 
@@ -244,7 +244,7 @@ class Foggy_forest(Environment):
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
-        self.__env_ef = pygame.mixer.Sound('assets\\music\\foggy_forest.wav')
+        self.__env_ef = pygame.mixer.Sound('assets/music/foggy_forest.wav')
         super().__int__('foggy_forest', image, width)
 
     def create_map(self, nBoard):
@@ -302,7 +302,7 @@ class Swamp(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
         self.__EffectedCells = {}
-        self.__sfx = pygame.mixer.Sound('assets\\music\\step_into_mud.wav')
+        self.__sfx = pygame.mixer.Sound('assets/music/step_into_mud.wav')
         super().__int__('swamp', image, width)
 
     def create_map(self, nBoard):
