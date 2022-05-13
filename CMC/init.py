@@ -8,6 +8,8 @@ import random
 pygame.mixer.pre_init()
 pygame.mixer.init()
 
+HistoryLog = ' '
+
 SETTINGS = {
     'Music Volumn': 10,
     'Sound Volumn': 10,
@@ -85,7 +87,9 @@ listImage = {
         '04':pygame.image.load('assets/img/Card/04.png'),
         '05':pygame.image.load('assets/img/Card/05.png'),
         '06':pygame.image.load('assets/img/Card/06.png'),
-        '07':pygame.image.load('assets/img/Card/07.png')
+        '07':pygame.image.load('assets/img/Card/07.png'),
+        '08': pygame.image.load('assets/img/Card/08.png'),
+        '09': pygame.image.load('assets/img/Card/09.png'),
     },
     'Desert': {
         'Normal':pygame.image.load('assets/img/Environment/desert_normal.png'),
@@ -147,14 +151,24 @@ EFFECT = {
 }
 
 DECK = [
-    Card('Tiến Công', 2, listImage['Cards']['01'], 'Tiến thẳng về phía trước 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
-    Card('Rút Lui', 2, listImage['Cards']['02'], 'Lùi về phía sau 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
-    Card('Tấn Công Mạn Sườn', 2, listImage['Cards']['03'], 'Đi ngang sang trái hoặc phải 1 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False),
-    Card('Đánh Phủ Đầu', 3, listImage['Cards']['04'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 2)], directions = ['Ahead'], killable = True),
-    Card('Đánh Phủ Đầu', 3, listImage['Cards']['05'], 'Tấn công về phía trước 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),
-    Card('Linh Động Chiến Trường', 3, listImage['Cards']['06'], 'Di chuyển về 1 hướng bất kỳ 2 ô', 'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Ahead Left', 'Ahead', 'Ahead Right', 'Back Left', 'Back', 'Back Right', 'Left', 'Right'], killable=False),
-    Card('Tấm Khiên Cứng Cáp', 3, listImage['Cards']['07'], 'Không thể bị chọn trong 3 lượt', 'GrantEffects', 1, [ef.Effect('Unselectable', turns = 3, phase=[2, 3])]),
-
+    Card('Tiến Công', 2, listImage['Cards']['01'], 'Tiến thẳng về phía trước 1 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Ahead Left', 'Ahead', 'Ahead Right'], killable = False),
+    Card('Rút Lui', 2, listImage['Cards']['02'], 'Lùi về phía sau 1 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Back Left', 'Back', 'Back Right'], killable = False),
+    Card('Tấn Công Mạn Sườn', 2, listImage['Cards']['03'], 'Đi ngang sang trái hoặc phải 1 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions = ['Left', 'Right'], killable = False),
+    Card('Đánh Phủ Đầu', 3, listImage['Cards']['04'], 'Tấn công về phía trước 2 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 2)], directions = ['Ahead'], killable = True),
+    Card('Đánh Phủ Đầu', 3, listImage['Cards']['05'], 'Tấn công về phía trước 2 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),
+    Card('Linh Động Chiến Trường', 3, listImage['Cards']['06'], 'Di chuyển về 1 hướng bất kỳ 2 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Around'], killable=False),
+    Card('Tấm Khiên Cứng Cáp', 3, listImage['Cards']['07'], 'Không thể bị chọn trong 3 lượt',
+         'GrantEffects', 1, [ef.Effect('Unselectable', turns = 3, phase=[2, 3])]),
+    Card('Phối Hợp Ăn Ý', 4, listImage['Cards']['08'], 'Đổi vị trí của 2 quân cờ đồng minh đứng cạnh nhau',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Around'], killable=False, swap=True, enemy=False),
+    Card('Hoán Đổi Không Gian', 5, listImage['Cards']['09'], 'Đổi vị trí của 2 quân cờ đứng cách nhau 1 ô',
+         'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=2)], directions=['Around'], killable=False, swap=True),
 ]
 
 ENVIRONMENT = {

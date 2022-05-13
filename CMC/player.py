@@ -6,7 +6,6 @@ import time
 import CMC.chess as chess
 import CMC.init as init
 
-
 class Player:
     """
     Lớp "Người Chơi"

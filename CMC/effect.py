@@ -123,6 +123,8 @@ class Effect:
                 return STATUS[0]
 
         # Card Effect
+
+
         def PushChess(nBoard, indexs, phase, value, options):
             """
             Tăng thêm khả năng di chuyển cho quân cờ được chọn
@@ -139,42 +141,76 @@ class Effect:
             rBoard = nBoard.getrBoard()
             try:
                 index = indexs[0]
-                if not nBoard.select_Chess(index, phase, options['playTeam'], False):
+                result = nBoard.select_Chess(index, phase, options['playTeam'], False)
+                if not result[0]:
                     return STATUS[1]
                 moveRange = []
                 directions = options['directions']
-                for i in range(1, value + 1):
-                    if 'Ahead Left' in directions:
-                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i, index[1] - i])
-                    if 'Ahead' in directions:
-                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i, index[1]])
-                    if 'Ahead Right' in directions:
-                        moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction() * i, index[1] + i])
-                    if 'Right' in directions:
-                        moveRange.append([index[0], index[1] + i])
-                    if 'Back Right' in directions:
-                        moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1] + i])
-                    if 'Back' in directions:
-                        moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1]])
-                    if 'Back Left' in directions:
-                        moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1] - i])
-                    if 'Left' in directions:
-                        moveRange.append([index[0], index[1] - i])
+
+                if 'Around' in directions:
+                    for i in range(-value, value + 1):
+                        for j in range(-value, value + 1):
+                            if i == 0 and j == 0:
+                                continue
+                            moveRange.append([index[0] + i, index[1] + j])
+                else:
+                    for i in range(1, value + 1):
+                        if 'Ahead Left' in directions:
+                            moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i, index[1] - i])
+                        if 'Ahead' in directions:
+                            moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction()*i, index[1]])
+                        if 'Ahead Right' in directions:
+                            moveRange.append([index[0] + oBoard[(index[1], index[0])].get_direction() * i, index[1] + i])
+                        if 'Right' in directions:
+                            moveRange.append([index[0], index[1] + i])
+                        if 'Back Right' in directions:
+                            moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1] + i])
+                        if 'Back' in directions:
+                            moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1]])
+                        if 'Back Left' in directions:
+                            moveRange.append([index[0] - oBoard[(index[1], index[0])].get_direction() * i, index[1] - i])
+                        if 'Left' in directions:
+                            moveRange.append([index[0], index[1] - i])
+
+                if options['playTeam'] == 'b':
+                    target = ['w']
+                else:
+                    target = ['b']
+
+                try:
+                    if not options['enemy']:
+                        target = [options['playTeam']]
+                except:
+                    target = ['b', 'w']
+
+                try:
+                    swap = options['swap']
+                except:
+                    swap = False
 
                 for positions in moveRange:
-                    if chess.on_board(positions) and oBoard[(positions[1], positions[0])] == None and '!' not in rBoard[positions[0]][positions[1]]:
-                        rBoard[positions[0]][positions[1]] = 'x'
+                    if chess.on_board(positions) and oBoard[(positions[1], positions[0])] == None and '!' not in rBoard[positions[0]][positions[1]] and not swap:
+                        rBoard[positions[0]][positions[1]] += 'x'
                     else:
                         try:
                             oBoard[(positions[1], positions[0])].set_killable(nBoard, positions, phase, options['killable'])
-                            if oBoard[(positions[1], positions[0])].get_killable() and oBoard[(positions[1], positions[0])].get_team() != oBoard[(index[1], index[0])].get_team():
+                            MagicResist = oBoard[(positions[1], positions[0])].active_effects(nBoard, positions, phase)
+                            print(MagicResist)
+                            if swap:
+                                try:
+                                    if oBoard[(positions[1], positions[0])].get_team() in target and 'Fail' not in MagicResist:
+                                        rBoard[positions[0]][positions[1]] += 'x'
+                                except:
+                                    pass
+                            if oBoard[(positions[1], positions[0])].get_killable() and options['playTeam'] != oBoard[(positions[1], positions[0])].get_team() and 'Fail' not in MagicResist:
                                 rBoard[positions[0]][positions[1]] += 'x'
                                 break
                         except:
                             pass
+
                 if len(indexs) == 2:
                     new_index = indexs[1]
-                    if nBoard.select_Move(index, new_index, triggeredEffect = False):
+                    if nBoard.select_Move(index, new_index, triggeredEffect = False, swap = swap):
                         self.unactive_effect()
                         return STATUS[3]
                     else:

@@ -39,6 +39,7 @@ class Chess:
         self._startSpeed = speed
         self._speed = self._startSpeed
         self._killable = False
+        self._MoveableCell = []
 
     def chess_dup(self):
         """
@@ -265,7 +266,7 @@ class Pawn(Chess):
         :param mark: Kí hiệu dùng để đánh dấu (str)
         :param phase: Giai đoạn của lượt hiện tại (int)
         :param killable: Giá trị được gán cho thuộc tính killable của quân cờ (bool)
-        :return None
+        :return Các vị trí mà quân cờ có thể đi (list(tuple(int, int)))
         """
         speed = self._speed
         oBoard = nBoard.getoBoard()
@@ -273,19 +274,22 @@ class Pawn(Chess):
 
         direction = self.get_direction()
 
+        self._MoveableCell = []
+
         controlledMark = 'x'
         if mark == '#':
-            controlledMark = '2'
-        for i in range(1, speed + 1):
-            if mark == '#':
-                break
-            elif ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]]:
-                rBoard[index[0] + i * direction][index[1]] = controlledMark
-            elif '-' in rBoard[index[0] + i * direction][index[1]]:
-                rBoard[index[0] + i * direction][index[1]] += controlledMark
-                break
-            else:
-                break
+            controlledMark = ' '
+        else:
+            for i in range(1, speed + 1):
+                if ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]] and oBoard[(index[1], index[0] + i * direction)] == None:
+                    rBoard[index[0] + i * direction][index[1]] += controlledMark
+                    self._MoveableCell.append((index[0] + i * direction, index[1]))
+                elif '-' in rBoard[index[0] + i * direction][index[1]]:
+                    rBoard[index[0] + i * direction][index[1]] += controlledMark
+                    self._MoveableCell.append((index[0] + i * direction, index[1]))
+                    break
+                else:
+                    break
 
         top3 = [[index[0] + direction * (speed > 0), index[1] + i * (speed > 0)] for i in range(-1, 2)]
         for positions in top3:
@@ -297,6 +301,7 @@ class Pawn(Chess):
                                 oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(positions[1], positions[0])].get_killable():
                                     rBoard[positions[0]][positions[1]] += mark
+                                    self._MoveableCell.append((positions[0], positions[1]))
                         except:
                             if mark == '#':
                                 rBoard[positions[0]][positions[1]] += mark
@@ -308,6 +313,7 @@ class Pawn(Chess):
                     rBoard[positions[0]][positions[1]] += mark
             except:
                 pass
+        return self._MoveableCell
 
 class King(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -332,6 +338,9 @@ class King(Chess):
         speed = self._speed
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
+
+        self._MoveableCell = []
+
         for y in range(-speed, speed + 1):
             for x in range(-speed, speed + 1):
                 if on_board((index[0] + y, index[1] + x)) and '!' not in rBoard[index[0] + y][index[1] + x]:
@@ -339,12 +348,14 @@ class King(Chess):
                         pass
                     elif ' ' in rBoard[index[0] + y][index[1] + x]:
                         rBoard[index[0] + y][index[1] + x] = mark
+                        self._MoveableCell.append((index[0] + y, index[1] + x))
                     else:
                         try:
                             if oBoard[(index[1] + x, index[0] + y)].get_team() != self.get_team():
                                 oBoard[(index[1] + x, index[0] + y)].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(index[1] + x, index[0] + y)].get_killable():
                                     rBoard[index[0] + y][index[1] + x] += mark
+                                    self._MoveableCell.append((index[0] + y, index[1] + x))
                         except:
                             break
 
@@ -355,6 +366,7 @@ class King(Chess):
                     break
                 if mark != '#' and i == 1:
                     rBoard[index[0]][0] += 'x'
+                    self._MoveableCell.append((0, 0))
 
             result1 = oBoard[index[0], 7].get_effects()[0].active_effect(nBoard, [index], phase)
             for j in range(index[1] + 1, 7):
@@ -362,6 +374,8 @@ class King(Chess):
                     break
                 if mark != '#' and j == 6:
                     rBoard[index[0]][7] += 'x'
+                    self._MoveableCell.append((0, 7))
+        return self._MoveableCell
 
 class Rook(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -386,6 +400,9 @@ class Rook(Chess):
         speed = self._speed
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
+
+        self._MoveableCell = []
+
         cross = [[[index[0] + i, index[1]] for i in range(1, speed)],
                  [[index[0] - i, index[1]] for i in range(1, speed)],
                  [[index[0], index[1] + i] for i in range(1, speed)],
@@ -400,14 +417,17 @@ class Rook(Chess):
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                                    self._MoveableCell.append((pos))
                             elif mark == '#':
                                 rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
-                            break
+                            rBoard[pos[0]][pos[1]] += mark
+                            self._MoveableCell.append((pos))
                     else:
                         rBoard[pos[0]][pos[1]] += mark
-
+                        self._MoveableCell.append((pos))
+        return self._MoveableCell
 
 class Bishop(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -432,6 +452,9 @@ class Bishop(Chess):
         speed = self._speed
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
+
+        self._MoveableCell = []
+
         diagonals = [[[index[0] + i, index[1] + i] for i in range(1, speed)],
                      [[index[0] + i, index[1] - i] for i in range(1, speed)],
                      [[index[0] - i, index[1] + i] for i in range(1, speed)],
@@ -446,13 +469,17 @@ class Bishop(Chess):
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                                    self._MoveableCell.append((pos))
                             elif mark == '#':
                                 rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
-                            break
+                            rBoard[pos[0]][pos[1]] += mark
+                            self._MoveableCell.append((pos))
                     else:
                         rBoard[pos[0]][pos[1]] += mark
+                        self._MoveableCell.append((pos))
+        return self._MoveableCell
 
 class Knight(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -479,23 +506,28 @@ class Knight(Chess):
         rBoard = nBoard.getrBoard()
         x = (speed - 1) * (-1)
         y = speed
+
+        self._MoveableCell = []
+
         for i in range(x, y):
             for j in range(x, y):
                 if abs(i) + abs(j) == y:
                     if on_board((index[0] + i, index[1] + j)) and '!' not in rBoard[index[0] + i][index[1] + j]:
-                        if ' ' in rBoard[index[0] + i][index[1] + j] or '#' in rBoard[index[0] + i][index[1] + j]:
-                            if rBoard[index[0] + i][index[1] + j][0] != self.get_team():
-                                rBoard[index[0] + i][index[1] + j] += mark
-                            else:
-                                break
-                        else:
+                        if ' ' not in rBoard[index[0] + i][index[1] + j] or '#' in rBoard[index[0] + i][index[1] + j]:
                             try:
                                 if oBoard[(index[1] + j, index[0] + i)].get_team() != self.get_team():
                                     oBoard[(index[1] + j, index[0] + i)].set_killable(nBoard, index, phase, killable)
                                     if oBoard[(index[1] + j, index[0] + i)].get_killable():
                                         rBoard[index[0] + i][index[1] + j] += mark
+                                        self._MoveableCell.append((index[0] + i, index[1] + j))
                             except:
-                                pass
+                                rBoard[index[0] + i][index[1] + j] += mark
+                                self._MoveableCell.append((index[0] + i, index[1] + j))
+                        else:
+                            rBoard[index[0] + i][index[1] + j] += mark
+                            self._MoveableCell.append((index[0] + i, index[1] + j))
+
+        return self._MoveableCell
 
 class Queen(Chess):
     def __init__(self, team, direction, img, effects = []):
@@ -525,6 +557,8 @@ class Queen(Chess):
                  [[index[0], index[1] + i] for i in range(1, speed)],
                  [[index[0], index[1] - i] for i in range(1, speed)]]
 
+        self._MoveableCell = []
+
         for dir in cross:
             for pos in dir:
                 if on_board(pos) and '!' not in rBoard[pos[0]][pos[1]]:
@@ -534,13 +568,16 @@ class Queen(Chess):
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                                    self._MoveableCell.append((pos))
                             elif mark == '#':
                                 rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
-                            break
+                            rBoard[pos[0]][pos[1]] += mark
+                            self._MoveableCell.append((pos))
                     else:
                         rBoard[pos[0]][pos[1]] += mark
+                        self._MoveableCell.append((pos))
 
         diagonals = [[[index[0] + j, index[1] + j] for j in range(1, speed)],
                      [[index[0] + j, index[1] - j] for j in range(1, speed)],
@@ -556,10 +593,14 @@ class Queen(Chess):
                                 oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
+                                    self._MoveableCell.append((pos))
                             elif mark == '#':
                                 rBoard[pos[0]][pos[1]] += mark
                             break
                         except:
-                            break
+                            rBoard[pos[0]][pos[1]] += mark
+                            self._MoveableCell.append((pos))
                     else:
                         rBoard[pos[0]][pos[1]] += mark
+                        self._MoveableCell.append((pos))
+        return self._MoveableCell

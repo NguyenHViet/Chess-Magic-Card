@@ -119,7 +119,7 @@ class Board:
                 #              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
                     self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
-                self.__CellLayer[row][col].draw(win)
+                # self.__CellLayer[row][col].draw(win)
 
     def printMap(self):
         """
@@ -179,6 +179,7 @@ class Board:
         :return: Kết quả (bool)
         """
         y, x = index
+        moves = []
         if self.check_Team((x, y), playingTeam):
             print("Team turn:", playingTeam)
             result = self.__OjectLayer[(x, y)].active_effects(self, index, phase)
@@ -187,12 +188,12 @@ class Board:
                 return False
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
-                self.__OjectLayer[(x, y)].get_moves(self, index, phase)
+                moves = self.__OjectLayer[(x, y)].get_moves(self, index, phase)
             print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
-            return True
+            return True, moves
         else:
             print("Không thể chọn")
-            return False
+            return False, moves
 
     def deselect(self):
         """
@@ -248,7 +249,7 @@ class Board:
         if index0 == index1:
             return  moved
         try:
-            if 'x' in self.__readableMap[index1[0]][index1[1]] or self.__OjectLayer[(index1[1], index1[0])].get_killable():
+            if 'x' in self.__readableMap[index1[0]][index1[1]]:
                 try:
                     if self.__OjectLayer[(index1[1], index1[0])].get_killable():
                         sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
@@ -258,6 +259,8 @@ class Board:
                         self.__enviroment.play_sfx()
                 except:
                     pass
+                init.HistoryLog.pop(0)
+                init.HistoryLog.append('{}: {} -> {}'.format(self.__OjectLayer[(index0[1], index0[0])].get_type(), index0, index1))
                 print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:

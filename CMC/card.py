@@ -145,6 +145,10 @@ class Card:
             if ef.STATUS[3] in result:
                 result[result.index(ef.STATUS[3])] = 'Casted'
             return result
+
+        def MultiEffects():
+            pass
+
         try:
             result = locals()[self.__skillCard](self.__effects, nBoard, indexs)
         except:

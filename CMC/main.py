@@ -31,9 +31,10 @@ BLACK = (0, 0, 0)
 # Khởi tạo các giá trị global
 startTurnTime = math.floor(time.time())
 timing = 0
-usedCard = False
+click = 0
 env = 'Grassland'
 MUSIC_END = pygame.USEREVENT + 1
+
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -66,6 +67,8 @@ def new_game():
     :return: None
     """
     global turns, phase, nboard, ncard, Players, startTurnTime, env
+    init.HistoryLog = [' ' for i in range (6)]
+    init.HistoryLog.append('New Round!')
     random.shuffle(init.listMusic)
     pygame.mixer.music.load(init.listMusic[0])
     init.listMusic.append(init.listMusic.pop(0))
@@ -134,11 +137,11 @@ def setting_game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button(timeLeft, init.listImage['GUI']['White Timer'], '', (WinWidth / 2) - 225, 400 - x, 300, 100, font=init.font50)
+        drawTextImg(timeLeft, init.listImage['GUI']['White Timer'], (WinWidth / 2) - 225, 400 - x, 300, 100, font=init.font50)
         WIN.blit(init.font15.render('THỜI GIAN TỔNG', True, 'black'), ((WinWidth / 2) - 140, 402 - x))
         WIN.blit(init.font15.render('PHÚT', True, 'black'), ((WinWidth / 2) - 170, 477 - x))
         WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) - 20, 477 - x))
-        button(str(init.SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], '', (WinWidth / 2) + 125, 400 - x, 100, 100, font=init.font50)
+        drawTextImg(str(init.SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], (WinWidth / 2) + 125, 400 - x, 100, 100, font=init.font50)
         WIN.blit(init.font15.render('THƯỞNG', True, 'black'), ((WinWidth / 2) + 140, 402 - x))
         WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) + 155, 477 - x))
         button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 180, 330 - x, 60, 50, add_min, value = 60)
@@ -186,18 +189,18 @@ def updateGUI():
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
     timeLeft = '{:02}'.format((Players[1].get_time() - (turns%2)*timing)//60) + ':' + '{:02}'.format((Players[1].get_time() - (turns%2)*timing)%60)
-    button(timeLeft, init.listImage['GUI']['Black Timer'], '', 125, offsetHeight, 230, 60, color ='white')
-    button(str(Players[1].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 5, 50, 50, color='white')
-    button(str(Players[1].get_totalAction()), init.listImage['GUI']['Actions'], '', 330, offsetHeight + 35, 30, 30, font=init.font20)
+    drawTextImg(timeLeft, init.listImage['GUI']['Black Timer'], 125, offsetHeight, 230, 60, color ='white')
+    drawTextImg(str(Players[1].get_action()), init.listImage['GUI']['Actions'], 300, offsetHeight + 5, 50, 50, color='white')
+    drawTextImg(str(Players[1].get_totalAction()), init.listImage['GUI']['Actions'], 330, offsetHeight + 35, 30, 30, font=init.font20)
 
     timeLeft = '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)//60) + ':' + '{:02}'.format((Players[0].get_time() - ((turns+1)%2)*timing)%60)
-    button(timeLeft, init.listImage['GUI']['White Timer'], '', 125, offsetHeight + 100, 230, 60)
-    button(str(Players[0].get_action()), init.listImage['GUI']['Actions'], '', 300, offsetHeight + 105, 50, 50, color='white')
-    button(str(Players[0].get_totalAction()), init.listImage['GUI']['Actions'], '', 330, offsetHeight + 135, 30, 30, font=init.font20)
+    drawTextImg(timeLeft, init.listImage['GUI']['White Timer'], 125, offsetHeight + 100, 230, 60)
+    drawTextImg(str(Players[0].get_action()), init.listImage['GUI']['Actions'], 300, offsetHeight + 105, 50, 50, color='white')
+    drawTextImg(str(Players[0].get_totalAction()), init.listImage['GUI']['Actions'], 330, offsetHeight + 135, 30, 30, font=init.font20)
 
-    button('', init.listImage['GUI']['Lock'], '', 125, offsetHeight + (turns % 2) * 100, 230, 60)
+    WIN.blit(init.listImage['GUI']['Lock'], (125, offsetHeight + (turns % 2) * 100))
 
-    button("", init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
+    button('', init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
 
     if Players[turns%2].get_time() - timing < 0:
         turns += 1
@@ -211,14 +214,17 @@ def updateGUI():
     else:
         button("", init.listImage['GUI']['Unmute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_on_music)
 
-    button('{}'.format(env), init.listImage['GUI']['Env Timer'], '', 45, offsetHeight + 200, 320, 100, font=init.font30)
+    drawTextImg('{}'.format(env), init.listImage['GUI']['Env Timer'], 45, offsetHeight + 200, 320, 100, font=init.font30)
     WIN.blit(init.listImage['GUI']['Env Timer Ef'], (48, offsetHeight + 200))
-    button('Turn: {:<12}'.format(turns+1), init.listImage['GUI']['Turn Phase'], '', 45, offsetHeight + 300, 320, 100, font=init.font30)
+    drawTextImg('Turn: {:<12}'.format(turns+1), init.listImage['GUI']['Turn Phase'], 45, offsetHeight + 300, 320, 100, font=init.font30)
     WIN.blit(init.listImage['GUI']['Turn Phase Ef'], (45, offsetHeight + 300))
     try:
         WIN.blit(init.listImage['GEI']['Phase ' + str(phase)], (275, offsetHeight + 325))
     except:
         pass
+
+    for i in range(len(init.HistoryLog)):
+        card.drawText(WIN, init.HistoryLog[i], 'black', ((100, offsetHeight + 450 + i*40), (300, 100)), init.font20)
 
 def update_display(win, nboard, pos, turns, phase):
     """
@@ -245,7 +251,7 @@ def main():
     :return: None
     """
     turn_on_music()
-    global pause, phase, turns, startTurnTime, timing, playingTeam
+    global pause, phase, turns, startTurnTime, timing, playingTeam, click
     redraw = False
     pause = False
     selected = False
@@ -254,7 +260,6 @@ def main():
     playingTeam = 'w'
     while True:
         if phase == chess.PHASE['Start']:
-            usedCard = False
             selected = False
             required = 0
             selectedPos = []
@@ -262,6 +267,8 @@ def main():
             playingTeam = 'w'
         else:
             playingTeam = 'b'
+
+        pygame.time.delay(50)
 
         for event in pygame.event.get():
             if event.type == MUSIC_END:
@@ -276,7 +283,7 @@ def main():
                 index = nboard.find_Cell(pos)
                 if mouse_on_board(pos) and phase == chess.PHASE['Picking']:
                     phase = chess.PHASE['Move']
-                elif mouse_on_cards(pos) and phase == chess.PHASE['Picking'] and not usedCard:
+                elif mouse_on_cards(pos) and phase == chess.PHASE['Picking']:
                     phase = chess.PHASE['Cast']
 
                 if event.button == 3:
@@ -293,8 +300,9 @@ def main():
                     if selected == False:
                         try:
                             nboard.deselect()
-                            selected = nboard.select_Chess(index, phase, playingTeam)
                             nboard.controlledCells(phase, playingTeam)
+                            selected, moves = nboard.select_Chess(index, phase, playingTeam)
+                            print(moves)
                             selectedPos = index
                         except:
                             selectedPos = []
@@ -347,20 +355,40 @@ def main():
                         phase = Players[turns % 2].update((chess.PHASE['End']), init.DECK, False, startTurnTime)
                         selected = False
                         selectedPos = []
-                        usedCard = True
                         #-----------------------------------------------------------------------------------------------
-                print(" Phase:", phase)
+                print("Phase:", phase)
                 print("Turn:", turns)
                 nboard.printMap()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
-        check_evolutions()
+            check_evolutions()
         phase = Players[turns % 2].update(phase, init.DECK, init.SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns, playingTeam)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
+
+def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.font40, **param):
+    """
+    In các hình ảnh có chữ phía trên
+    :param text: Văn bản hiển thị trên nút (str)
+    :param img: Hình ảnh của nút (pygame.image)
+    :param x: Tọa độ x của nút (int)
+    :param y: Tọa độ y của nút (int)
+    :param width: Chiều rộng của nút (int)
+    :param height: Chiều cao của nút (int)
+    :param color: Màu sắc của chữ được hiển thị (str|(int, int, int))
+    :param font: Font chữ của chữ được hiển thị (font.Font)
+    :param param: Các giá trị tùy chọn
+    :return: None
+    """
+    img = pygame.transform.scale(img, (width, height))
+    WIN.blit(img, (x, y))
+    textSurface = font.render(text, True, color)
+    textRect = textSurface.get_rect()
+    textRect.center = ((x + (width / 2)), (y + (height / 2)))
+    WIN.blit(textSurface, textRect)
 
 def button(text, img, img_h, x, y, width, height, action = None, color = 'black', font = init.font40, **param):
     """
@@ -378,6 +406,7 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
     :param param: Các giá trị tùy chọn
     :return: None
     """
+
     img = pygame.transform.scale(img, (width, height))
     WIN.blit(img, (x, y))
     mouse = pygame.mouse.get_pos()
@@ -388,15 +417,17 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
             WIN.blit(img_h, (x, y))
         except:
             pass
-        if click[0] == 1:
+        if click[0] == 1 and action != None:
+            print(mouse)
             if param != {}:
                 action(param)
             else:
                 action()
-    textSurface = font.render(text, True, color)
-    textRect = textSurface.get_rect()
-    textRect.center = ((x + (width / 2)), (y + (height / 2)))
-    WIN.blit(textSurface, textRect)
+    if text != '':
+        textSurface = font.render(text, True, color)
+        textRect = textSurface.get_rect()
+        textRect.center = ((x + (width / 2)), (y + (height / 2)))
+        WIN.blit(textSurface, textRect)
 
 def paused():
     """
