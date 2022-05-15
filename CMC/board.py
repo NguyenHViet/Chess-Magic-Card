@@ -1,4 +1,5 @@
 import pygame
+import copy
 import CMC.chess as chess
 import CMC.init as init
 import CMC.cell as cell
@@ -65,6 +66,25 @@ class Board:
         # Tạo phần readable để làm input cho các hàm khác
         self.__readableMap = [[' ' for i in range (8)] for i in range(8)]
         self.__readableMap = self.convert_to_readable()
+
+    def duplication(self):
+        """
+        Tạo bản sao của bàn cờ
+        :return: Bản sao của bàn cờ (board.Board)
+        """
+        dup_board = copy.copy(self)
+        self.__OjectLayer = copy.copy(dup_board.getoBoard())
+        oBoard = dup_board.getoBoard()
+        for chess in oBoard.items():
+            try:
+                oBoard[chess[0]] = chess[1].duplication()
+            except:
+                pass
+        env = self.__enviroment.duplication()
+        dup_board.set_env(env)
+        dup_board.set_cellLayer([])
+        return copy.deepcopy(dup_board)
+
 
     def clear_map(self):
         """
@@ -189,7 +209,7 @@ class Board:
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
                 moves = self.__OjectLayer[(x, y)].get_moves(self, index, phase)
-            print("Chọn thành công quân cờ:", self.__readableMap[y][x], (y, x))
+            print("Chọn thành công quân cờ:", self.__readableMap[y][x])
             return True, moves
         else:
             print("Không thể chọn")
@@ -253,8 +273,9 @@ class Board:
                 try:
                     if self.__OjectLayer[(index1[1], index1[0])].get_killable():
                         sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
-                        sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                        sfx.play()
+                        if '-' in self.__readableMap[index1[0]][index1[1]]:
+                            sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                            sfx.play()
                     elif '-' in self.__readableMap[index1[0]][index1[1]]:
                         self.__enviroment.play_sfx()
                 except:
@@ -328,15 +349,13 @@ class Board:
         :return: Giai đoạn và lượt hiện tại (tuple(int, str))
         """
         Phase = phase
-        updating = True
         self.__enviroment.apply_env_effect(self, turn, phase)
         for i in range(8):
             for j in range(8):
                 try:
-                    self.__OjectLayer[(j, i)].update(self, (j, i), phase)
+                    self.__OjectLayer[(j, i)].update(self, (i, j), phase)
                 except:
                     pass
-            updating = False
         if self.is_finished():
             Phase = chess.PHASE['Finish']
         elif phase == chess.PHASE['Start']:
@@ -348,8 +367,7 @@ class Board:
             print("Kết thúc lượt")
             turn += 1
             Phase = chess.PHASE['Start']
-        if not updating:
-            return Phase, turn
+        return Phase, turn
 
     def getoBoard(self):
         """
@@ -371,3 +389,36 @@ class Board:
         :return: Danh sách các ô trên bàn cờ (list(list)))
         """
         return self.__CellLayer
+
+    def get_Score(self, team):
+        """
+        Lấy tổng điểm theo đội
+        :return:
+        """
+        sum = 0
+        for object in self.__OjectLayer.items():
+            try:
+                if object[1].get_team() == team:
+                    sum += object[1].get_score()
+                else:
+                    sum -= object[1].get_score()
+            except:
+                pass
+        return sum
+
+    def set_env(self, new_env):
+        """
+        Gán môi trường mới
+        :param new_env: Môi trường mới (environment)
+        :return: None
+        """
+        self.__enviroment = new_env
+
+    def set_cellLayer(self, cellLayer):
+        """
+        Gán lớp ô cờ mới
+        :param cellLayer: Lớp ô cờ mới (list(list(cell.Cell)))
+        :return:
+        """
+        self.__GEI = []
+        self.__CellLayer = cellLayer

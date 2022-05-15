@@ -52,8 +52,11 @@ class Cell:
         :param width: Chiều rộng ô cờ (int)
         :return: None
         """
-        self.__image = pygame.transform.scale(self.__image, (width, height))
-        WIN.blit(self.__image, (self.__x, self.__y))
+        try:
+            self.__image = pygame.transform.scale(self.__image, (width, height))
+            WIN.blit(self.__image, (self.__x, self.__y))
+        except:
+            pass
 
     def is_mouse_hovering(self, pos):
         """

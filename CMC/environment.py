@@ -1,4 +1,5 @@
 import pygame
+import copy
 import CMC.cell as cell
 import CMC.effect as ef
 import CMC.init as init
@@ -20,6 +21,33 @@ class Environment:
         self._image = image
         self._width = width
         self._CellLayer = []
+
+    def duplication(self):
+        """
+        Tạo bản sao của môi trường
+        :return: Bản sao môi trường (environment.Enviroment)
+        """
+        dup_env1 = copy.copy(self)
+        dup_env1.set_img('')
+        dup_env1.set_cellLayer([])
+        dup_env2 = copy.deepcopy(dup_env1)
+        return dup_env2
+
+    def set_img(self, new_img):
+        """
+        Gán hình ảnh mới
+        :param new_img: Hình ảnh mới (pygame.image)
+        :return: None
+        """
+        self._image = new_img
+
+    def set_cellLayer(self, cellLayer):
+        """
+        Gán lớp ô cờ mới
+        :param cellLayer: Lớp ô cờ mới (list(list(cell.Cell)))
+        :return:
+        """
+        self._CellLayer = cellLayer
 
     def get_name(self):
         """

@@ -67,6 +67,24 @@ class Card:
         self.__skillCard = skillCard
         self.__options = options
 
+    def duplication(self):
+        """
+        Tạo bản sao của lá bài
+        :return: Bản sao của lá bài (card.Card)
+        """
+        dup_card1 = copy.copy(self)
+        dup_card1.set_img('')
+        dup_card2 = copy.deepcopy(dup_card1)
+        return dup_card2
+
+    def set_img(self, new_img):
+        """
+        Gán hình ảnh mới
+        :param new_img: Hình ảnh mới (pygame.image)
+        :return: None
+        """
+        self.__img = new_img
+
     def get_effects(self):
         """
         Lấy danh sách hiệu ứng của quân cờ.
@@ -192,10 +210,7 @@ class CardArea:
         picking = nPlayer.get_picking()
         interval = self.__Height / 3
         for cell in self.__cellLayers:
-            if cell.is_mouse_hovering(pos):
-                cell.set_img(self.__GEI['Card_Hover'])
-            else:
-                cell.set_img(self.__GEI['Empty'])
+            cell.set_img(self.__GEI['Empty'])
             try:
                 self.__cellLayers[picking].set_img(self.__GEI['Card_Picking'])
             except:

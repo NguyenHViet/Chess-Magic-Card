@@ -1,3 +1,5 @@
+import copy
+
 import pygame
 import CMC.effect as ef
 
@@ -41,12 +43,15 @@ class Chess:
         self._killable = False
         self._MoveableCell = []
 
-    def chess_dup(self):
+    def duplication(self):
         """
-        Tạo bản sao của quân cờ
-        :return: Các thuộc tính cơ bản của quân cờ
+        Tạo bản sao quân cờ
+        :return: bản sao quân cờ (chess.Chess)
         """
-        return self._team, self._type, self._direction, self._score, self._startSpeed, self._speed
+        dup_chess1 = copy.copy(self)
+        dup_chess1.set_img('')
+        dup_chess2 = copy.deepcopy(dup_chess1)
+        return dup_chess2
 
     def get_effects(self):
         """
@@ -134,11 +139,22 @@ class Chess:
         except:
             pass
 
+    def set_img(self, new_img):
+        """
+        Gán hình ảnh mới
+        :param new_img: hình ảnh mới (pygame.image)
+        :return: None
+        """
+        self._image = new_img
+
     def set_killable(self, nBoard, index, phase, able):
         """
-        Gán thuộc tính _killable bằng giá trị able đầu vào nếu không bị ngăn cản bởi hiệu ứng
-        :param able : Giá trị để gán cho thuộc tính _killable (bool)
-        :return None
+        Gán giá trị able cho thuộc tính killable
+        :param nBoard: Bàn cờ (board.Board)
+        :param index: Vị trí quân cờ (tuple(int, int))
+        :param phase: Giai đoạn lượt hiện tại (int)
+        :param able: Giá trị gán (bool)
+        :return: None
         """
         if 'Fail' not in self.active_effects(nBoard, index, phase):
             self._killable = able
@@ -159,7 +175,7 @@ class Chess:
         """
         self._speed += cspeed
 
-    def add_effect(self, effect = [ef.Effect('!')]):
+    def add_effect(self, effect = []):
         """
         Tăng thêm hiệu ứng cho quân cờ
         :param effect: Hiệu ứng mới (effect.Effect)
@@ -190,6 +206,8 @@ class Chess:
                 result.append(effect.active_effect(nBoard, [index], phase))
             except:
                 pass
+        # if ef.STATUS[3] in result:
+        #     print(self.convert_to_readable(), index)
         return result
 
     def unactive_effects(self):
@@ -220,18 +238,19 @@ class Chess:
         :param nBoard: Bàn cờ (board.Board)
         :param index: Vị trí quân cờ (tuple(int, int))
         :param phase: Giai đoạn lượt đấu (int)
-        :return None
+        :return Kết quả kích hoạt hiện ứng (list(str))
         """
         self._speed = self._startSpeed
+        result = []
         for effect in self._effects:
             try:
-                if phase in [PHASE['End'], PHASE['Picking']]:
-                    effect.unactive_effect()
+                effect.unactive_effect()
                 if effect.is_over(phase):
                     self.delete_effect(effect)
-                effect.active_effect(nBoard, index, phase)
+                result.append(effect.active_effect(nBoard, index, phase))
             except:
                 pass
+        return result
 
 def on_board(index):
     """
@@ -256,7 +275,7 @@ class Pawn(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list(effect.Effect)
         """
-        super().__init__(team, "Pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)]  + effects, 1)
+        super().__init__(team, "Pawn", direction, img, 10, [ef.Effect('IncreaseSpeed', turns = -1, phase = 2)] + effects, 1)
 
     def get_moves(self, nBoard, index, phase, mark='x', killable = True):
         """
@@ -281,7 +300,7 @@ class Pawn(Chess):
             controlledMark = ' '
         else:
             for i in range(1, speed + 1):
-                if ' ' in rBoard[index[0] + i * direction][index[1]] and '!' not in rBoard[index[0] + i * direction][index[1]] and oBoard[(index[1], index[0] + i * direction)] == None:
+                if '!' not in rBoard[index[0] + i * direction][index[1]] and oBoard[(index[1], index[0] + i * direction)] == None:
                     rBoard[index[0] + i * direction][index[1]] += controlledMark
                     self._MoveableCell.append((index[0] + i * direction, index[1]))
                 elif '-' in rBoard[index[0] + i * direction][index[1]]:
@@ -298,7 +317,7 @@ class Pawn(Chess):
                     if top3.index(positions) % 2 == 0:
                         try:
                             if oBoard[(positions[1], positions[0])].get_team() != self.get_team():
-                                oBoard[(positions[1], positions[0])].set_killable(nBoard, index, phase, killable)
+                                oBoard[(positions[1], positions[0])].set_killable(nBoard, positions, phase, killable)
                                 if oBoard[(positions[1], positions[0])].get_killable():
                                     rBoard[positions[0]][positions[1]] += mark
                                     self._MoveableCell.append((positions[0], positions[1]))
@@ -352,7 +371,7 @@ class King(Chess):
                     else:
                         try:
                             if oBoard[(index[1] + x, index[0] + y)].get_team() != self.get_team():
-                                oBoard[(index[1] + x, index[0] + y)].set_killable(nBoard, index, phase, killable)
+                                oBoard[(index[1] + x, index[0] + y)].set_killable(nBoard, (index[0] + y, index[1] + x), phase, killable)
                                 if oBoard[(index[1] + x, index[0] + y)].get_killable():
                                     rBoard[index[0] + y][index[1] + x] += mark
                                     self._MoveableCell.append((index[0] + y, index[1] + x))
@@ -414,7 +433,7 @@ class Rook(Chess):
                     if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, pos, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                                     self._MoveableCell.append((pos))
@@ -466,7 +485,7 @@ class Bishop(Chess):
                     if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, pos, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                                     self._MoveableCell.append((pos))
@@ -516,7 +535,7 @@ class Knight(Chess):
                         if ' ' not in rBoard[index[0] + i][index[1] + j] or '#' in rBoard[index[0] + i][index[1] + j]:
                             try:
                                 if oBoard[(index[1] + j, index[0] + i)].get_team() != self.get_team():
-                                    oBoard[(index[1] + j, index[0] + i)].set_killable(nBoard, index, phase, killable)
+                                    oBoard[(index[1] + j, index[0] + i)].set_killable(nBoard, (index[0] + i, index[1] + j), phase, killable)
                                     if oBoard[(index[1] + j, index[0] + i)].get_killable():
                                         rBoard[index[0] + i][index[1] + j] += mark
                                         self._MoveableCell.append((index[0] + i, index[1] + j))
@@ -565,7 +584,7 @@ class Queen(Chess):
                     if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, pos, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                                     self._MoveableCell.append((pos))
@@ -590,7 +609,7 @@ class Queen(Chess):
                     if ' ' not in rBoard[pos[0]][pos[1]] or '#' in rBoard[pos[0]][pos[1]]:
                         try:
                             if oBoard[(pos[1], pos[0])].get_team() != self.get_team():
-                                oBoard[(pos[1], pos[0])].set_killable(nBoard, index, phase, killable)
+                                oBoard[(pos[1], pos[0])].set_killable(nBoard, pos, phase, killable)
                                 if oBoard[(pos[1], pos[0])].get_killable():
                                     rBoard[pos[0]][pos[1]] += mark
                                     self._MoveableCell.append((pos))

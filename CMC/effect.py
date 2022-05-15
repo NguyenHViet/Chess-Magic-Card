@@ -40,7 +40,6 @@ class Effect:
         :param phase: Giai đoạn của lượt hiện tại
         :return: Kết quả (bool)
         """
-        self.unactive_effect()
         if phase == chess.PHASE['End']:
             self.__turns -= 1
         if (self.__stack == 0 or self.__turns == 0) and '!' not in self.__name:
@@ -90,7 +89,7 @@ class Effect:
                 oBoard[(index[1], index[0])].change_speed(value)
                 return STATUS[3]
             except:
-                return STATUS[1]
+                return STATUS[0]
 
         def Unselectable(nBoard, indexs, phase, value, options):
             """

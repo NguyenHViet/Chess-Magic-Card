@@ -30,6 +30,17 @@ class Player:
         self.__timeBonus = timeBonus
         self.__reRoll = False
 
+    def duplication(self):
+        """
+        Tạo bản sao của các thành phần cơ bản
+        :return:
+        """
+        dup_player = copy.copy(self)
+        self.__cards = copy.copy(dup_player.get_cards())
+        for card in dup_player.get_cards():
+            card = card.duplication()
+        return dup_player
+
     def set_time(self, new_time):
         """
         Gán thời gian mới
@@ -144,6 +155,20 @@ class Player:
         :return: Tổng số năng lượng có thể nhận (int)
         """
         return self.__totalActions
+
+    def get_name(self):
+        """
+        Lấy tên người chơi
+        :return: Tên người chơi (str)
+        """
+        return self.__name
+
+    def get_team(self):
+        """
+        Lấy tên đội người chơi
+        :return: Tên đội người chơi (str)
+        """
+        return self.__team
 
     def update(self, phase, deck, addableTime, startTurnTime):
         """

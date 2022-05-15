@@ -1,5 +1,5 @@
 import random
-
+import copy
 import pygame
 import time
 
@@ -9,6 +9,7 @@ import CMC.cell as cell
 import CMC.board as board
 import CMC.card as card
 import CMC.player as player
+import CMC.gameAI as gameAI
 import math
 
 pygame.init()
@@ -31,10 +32,9 @@ BLACK = (0, 0, 0)
 # Khởi tạo các giá trị global
 startTurnTime = math.floor(time.time())
 timing = 0
-click = 0
 env = 'Grassland'
 MUSIC_END = pygame.USEREVENT + 1
-
+clicked = False
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -84,7 +84,7 @@ def new_game():
     if env == 'Random':
         env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('Player 1', 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player('Player 2', 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
+    Players = [player.Player('Player 1', 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player('BOT', 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
     turn_off_music()
     main()
 
@@ -183,7 +183,6 @@ def updateGUI():
     :return: None
     """
     global phase, turns, timing
-
     button("", init.listImage['GUI']['Pause'], init.listImage['GUI']['Choice'], 25, 25, 50, 50, paused)
 
     nowTime = math.floor(time.time())
@@ -200,15 +199,18 @@ def updateGUI():
 
     WIN.blit(init.listImage['GUI']['Lock'], (125, offsetHeight + (turns % 2) * 100))
 
-    button('', init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
+    if Players[turns%2].get_name() != 'BOT':
+        button('', init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
+        for i in range(len(Players[turns % 2].get_cards())):
+            button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10,
+                   offsetHeight + (HEIGHT / 3) * i + (HEIGHT) / 8, 50, 50, Players[turns % 2].redraw_card, param=i)
+
+    else:
+        drawTextImg('', init.listImage['GUI']['EnemyTurn'], 35, offsetHeight, 160, 160)
 
     if Players[turns%2].get_time() - timing < 0:
         turns += 1
         endGame()
-
-    for i in range(len(Players[turns%2].get_cards())):
-        button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10, offsetHeight + (HEIGHT / 3) * i + (HEIGHT) / 8, 50, 50, Players[turns % 2].redraw_card, param = i)
-
     if pygame.mixer.music.get_busy():
         button("", init.listImage['GUI']['Mute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_off_music)
     else:
@@ -251,7 +253,7 @@ def main():
     :return: None
     """
     turn_on_music()
-    global pause, phase, turns, startTurnTime, timing, playingTeam, click
+    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked
     redraw = False
     pause = False
     selected = False
@@ -270,6 +272,9 @@ def main():
 
         pygame.time.delay(50)
 
+        if Players[turns%2].get_name() == 'BOT':
+            turns = gameAI.pre_bot_turn(nboard, Players, turns)
+
         for event in pygame.event.get():
             if event.type == MUSIC_END:
                 pygame.mixer.music.queue(init.listMusic[0])
@@ -279,86 +284,88 @@ def main():
                 end_game()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                index = nboard.find_Cell(pos)
-                if mouse_on_board(pos) and phase == chess.PHASE['Picking']:
-                    phase = chess.PHASE['Move']
-                elif mouse_on_cards(pos) and phase == chess.PHASE['Picking']:
-                    phase = chess.PHASE['Cast']
+                clicked = True
+                if Players[turns%2].get_name() != 'BOT':
+                    pos = pygame.mouse.get_pos()
+                    index = nboard.find_Cell(pos)
+                    if mouse_on_board(pos) and phase == chess.PHASE['Picking']:
+                        phase = chess.PHASE['Move']
+                    elif mouse_on_cards(pos) and phase == chess.PHASE['Picking']:
+                        phase = chess.PHASE['Cast']
 
-                if event.button == 3:
-                    nboard.deselect()
-                    nboard.controlledCells(phase, playingTeam)
-                    Players[turns%2].decelect()
-                    phase = chess.PHASE['Picking']
-                    selected = False
-                    selectedPos = []
-                elif event.button in [2, 4, 5]:
-                    break
-
-                if phase == chess.PHASE['Move']:
-                    if selected == False:
-                        try:
-                            nboard.deselect()
-                            nboard.controlledCells(phase, playingTeam)
-                            selected, moves = nboard.select_Chess(index, phase, playingTeam)
-                            print(moves)
-                            selectedPos = index
-                        except:
-                            selectedPos = []
-                            phase = chess.PHASE['Picking']
-                    else:
-                        try:
-                            if nboard.select_Move(selectedPos, index):
-                                phase = chess.PHASE['End']
-                            else:
-                                phase = chess.PHASE['Picking']
-                            selected = False
-                            selectedPos = []
-                            nboard.deselect()
-                            nboard.controlledCells(phase, playingTeam)
-                        except:
-                            phase = chess.PHASE['Picking']
-                        #-----------------------------------------------------------------------------------------------
-                elif phase == chess.PHASE['Cast']:
-                    if selected == False:
-                        try:
-                            index = ncard.pick_card(pos)
-                            if index != None:
-                                required = Players[turns % 2].pick_card(index)
-                                if required != -1:
-                                    selected = True
-                                else:
-                                    phase = chess.PHASE['Picking']
-                            else:
-                                selected = False
-                        except:
-                            selectedPos = []
-                            phase = chess.PHASE['Picking']
-                    elif len(selectedPos) <= required and selected and mouse_on_board(pos):
+                    if event.button == 3:
                         nboard.deselect()
                         nboard.controlledCells(phase, playingTeam)
-                        index = nboard.find_Cell(pos)
-                        result = Players[turns%2].play_card(nboard, selectedPos + [index])
-                        if 'Fail' not in result:
-                            selectedPos.append(index)
-                    else:
                         Players[turns%2].decelect()
-                        selectedPos = []
                         phase = chess.PHASE['Picking']
                         selected = False
-                    # Nếu đã đủ số lượng đối tượng
-                    if len(selectedPos) == required:
-                        nboard.deselect()
-                        nboard.controlledCells(phase, playingTeam)
-                        Players[turns % 2].decelect()
-                        phase = Players[turns % 2].update((chess.PHASE['End']), init.DECK, False, startTurnTime)
-                        selected = False
                         selectedPos = []
-                        #-----------------------------------------------------------------------------------------------
-                print("Phase:", phase)
-                print("Turn:", turns)
-                nboard.printMap()
+                    elif event.button in [2, 4, 5]:
+                        break
+
+                    if phase == chess.PHASE['Move']:
+                        if selected == False:
+                            try:
+                                nboard.deselect()
+                                nboard.controlledCells(phase, playingTeam)
+                                selected, moves = nboard.select_Chess(index, phase, playingTeam)
+                                print(moves)
+                                selectedPos = index
+                            except:
+                                selectedPos = []
+                                phase = chess.PHASE['Picking']
+                        else:
+                            try:
+                                if nboard.select_Move(selectedPos, index):
+                                    phase = chess.PHASE['End']
+                                else:
+                                    phase = chess.PHASE['Picking']
+                                selected = False
+                                selectedPos = []
+                                nboard.deselect()
+                                nboard.controlledCells(phase, playingTeam)
+                            except:
+                                phase = chess.PHASE['Picking']
+                            #-----------------------------------------------------------------------------------------------
+                    elif phase == chess.PHASE['Cast']:
+                        if selected == False:
+                            try:
+                                index = ncard.pick_card(pos)
+                                if index != None:
+                                    required = Players[turns % 2].pick_card(index)
+                                    if required != -1:
+                                        selected = True
+                                    else:
+                                        phase = chess.PHASE['Picking']
+                                else:
+                                    selected = False
+                            except:
+                                selectedPos = []
+                                phase = chess.PHASE['Picking']
+                        elif len(selectedPos) <= required and selected and mouse_on_board(pos):
+                            nboard.deselect()
+                            nboard.controlledCells(phase, playingTeam)
+                            index = nboard.find_Cell(pos)
+                            result = Players[turns%2].play_card(nboard, selectedPos + [index])
+                            if 'Fail' not in result:
+                                selectedPos.append(index)
+                        else:
+                            Players[turns%2].decelect()
+                            selectedPos = []
+                            phase = chess.PHASE['Picking']
+                            selected = False
+                        # Nếu đã đủ số lượng đối tượng
+                        if len(selectedPos) == required:
+                            nboard.deselect()
+                            nboard.controlledCells(phase, playingTeam)
+                            Players[turns % 2].decelect()
+                            phase = Players[turns % 2].update((chess.PHASE['End']), init.DECK, False, startTurnTime)
+                            selected = False
+                            selectedPos = []
+                            #-----------------------------------------------------------------------------------------------
+                    print("Turn:", turns, "Phase:", phase)
+                    nboard.printMap()
+                    print(playingTeam," score:", nboard.get_Score(playingTeam))
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
@@ -368,6 +375,7 @@ def main():
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns, playingTeam)
         update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
+        clicked = False
 
 def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.font40, **param):
     """
@@ -403,10 +411,11 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
     :param action: Hàm được gọi khi nút được nhấn (str)
     :param color: Màu sắc của chữ được hiển thị (str|(int, int, int))
     :param font: Font chữ của chữ được hiển thị (font.Font)
+    :param pos: Vị trí con trỏ chuột
     :param param: Các giá trị tùy chọn
     :return: None
     """
-
+    global clicked
     img = pygame.transform.scale(img, (width, height))
     WIN.blit(img, (x, y))
     mouse = pygame.mouse.get_pos()
@@ -417,8 +426,8 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
             WIN.blit(img_h, (x, y))
         except:
             pass
-        if click[0] == 1 and action != None:
-            print(mouse)
+        if (click[0] == 1 or clicked) and action != None:
+            clicked = False
             if param != {}:
                 action(param)
             else:
