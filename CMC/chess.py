@@ -342,7 +342,7 @@ class King(Chess):
         :param img: Hình ảnh quân cờ (pygame.image)
         :param effects: Danh sách hiệu ứng (list of str)
         """
-        super().__init__(team, "King", direction, img, 1000, [ef.Effect('Unselectable', turns = -1, phase=[3]), ef.Effect('Unmove', turns = -1, phase=2)]  + effects, 1)
+        super().__init__(team, "King", direction, img, 10000, [ef.Effect('Unselectable', turns = -1, phase=[3]), ef.Effect('Unmove', turns = -1, phase=2)]  + effects, 1)
 
     def get_moves(self, nBoard, index, phase, mark='x', killable=True):
         """

@@ -30,8 +30,18 @@ class Environment:
         dup_env1 = copy.copy(self)
         dup_env1.set_img('')
         dup_env1.set_cellLayer([])
+        dup_env1.set_env_sound('', '')
         dup_env2 = copy.deepcopy(dup_env1)
         return dup_env2
+
+    def set_env_sound(self, new_sound = '', new_sfx = ''):
+        """
+        Gán nhạc nền, âm thanh mới cho môi thường
+        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
+        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
+        :return: None
+        """
+        pass
 
     def set_img(self, new_img):
         """
@@ -117,6 +127,18 @@ class Desert(Environment):
         self.__env_ef = pygame.mixer.Sound('assets/music/sand_storm.wav')
         super().__int__('desert', image, width)
 
+    def set_env_sound(self, new_sound = '', new_sfx = ''):
+        """
+        Gán nhạc nền, âm thanh mới cho môi thường
+        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
+        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
+        :return: None
+        """
+        try:
+            self.__env_ef = new_sound
+        except:
+            pass
+
     def create_map(self, nBoard):
         """
         Khởi tạo bàn cờ theo môi trường
@@ -153,6 +175,7 @@ class Desert(Environment):
                     self.__env_ef.play(-1)
 
                 if turn%6 < 5 and turn%6 >= 2:
+                    print(cBoard)
                     for i in range(w):
                         for j in range(h):
                             cBoard[j  + y][i + x].set_img(self._image['Special'])
@@ -195,6 +218,18 @@ class Frozen_river(Environment):
             pygame.mixer.Sound('assets/music/ice_freeze.wav'),
         ]
         super().__int__('frozen_river', image, width)
+
+    def set_env_sound(self, new_sound = '', new_sfx = ''):
+        """
+        Gán nhạc nền, âm thanh mới cho môi thường
+        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
+        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
+        :return: None
+        """
+        try:
+            self.__sfx = ''
+        except:
+            pass
 
     def create_map(self, nBoard):
         """
@@ -275,6 +310,18 @@ class Foggy_forest(Environment):
         self.__env_ef = pygame.mixer.Sound('assets/music/foggy_forest.wav')
         super().__int__('foggy_forest', image, width)
 
+    def set_env_sound(self, new_sound = '', new_sfx = ''):
+        """
+        Gán nhạc nền, âm thanh mới cho môi thường
+        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
+        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
+        :return: None
+        """
+        try:
+            self.__env_ef = new_sound
+        except:
+            pass
+
     def create_map(self, nBoard):
 
         super().create_map(nBoard)
@@ -332,6 +379,18 @@ class Swamp(Environment):
         self.__EffectedCells = {}
         self.__sfx = pygame.mixer.Sound('assets/music/step_into_mud.wav')
         super().__int__('swamp', image, width)
+
+    def set_env_sound(self, new_sound = '', new_sfx = ''):
+        """
+        Gán nhạc nền, âm thanh mới cho môi thường
+        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
+        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
+        :return: None
+        """
+        try:
+            self.__sfx = ''
+        except:
+            pass
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
@@ -397,6 +456,5 @@ class Grassland(Environment):
         :return None
         """
         pass
-
 
 #--------------------------

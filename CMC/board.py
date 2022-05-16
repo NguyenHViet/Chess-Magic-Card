@@ -5,6 +5,83 @@ import CMC.init as init
 import CMC.cell as cell
 import CMC.effect as ef
 
+wPawn = [
+    [ 0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0],
+    [ 5.0,   5.0,   5.0,   5.0,   5.0,   5.0,   5.0,   5.0],
+    [ 1.0,   1.0,   2.0,   3.0,   3.0,   2.0,   1.0,   1.0],
+    [ 0.5,   0.5,   1.0,   2.5,   2.5,   1.0,   0.5,   0.5],
+    [ 0.0,   0.0,   0.0,   2.0,   2.0,   0.0,   0.0,   0.0],
+    [ 0.5,  -0.5,  -1.0,   0.0,   0.0,  -1.0,  -0.5,   0.5],
+    [ 0.5,   1.0,   1.0,  -2.0,  -2.0,   1.0,   1.0,   0.5],
+    [10.0,  10.0,  10.0,  10.0,  10.0,  10.0,  10.0,  10.0]
+]
+
+bPawn = copy.copy(wPawn)
+bPawn.reverse()
+
+wKnight = bKnight = [
+    [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
+    [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
+    [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
+    [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+    [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
+    [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
+    [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
+    [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0]
+]
+
+wBishop = [
+    [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+    [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [-1.0,  0.0,  0.5,  1.0,  1.0,  0.5,  0.0, -1.0],
+    [-1.0,  0.5,  0.5,  1.0,  1.0,  0.5,  0.5, -1.0],
+    [-1.0,  0.0,  1.0,  1.0,  1.0,  1.0,  0.0, -1.0],
+    [-1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0],
+    [-1.0,  0.5,  0.0,  0.0,  0.0,  0.0,  0.5, -1.0],
+    [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+]
+
+bBishop = copy.copy(wBishop)
+bBishop.reverse()
+
+wRook = [
+    [ 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+    [ 0.5,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  0.5],
+    [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [-0.5,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -0.5],
+    [ 0.0,  0.0,  0.0,  0.5,  0.5,  0.0,  0.0,  0.0]
+]
+
+bRook = copy.copy(wRook)
+bRook.reverse()
+
+wQueen = bQueen = [
+    [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
+    [-1.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [-1.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [-0.5,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [ 0.0,  0.0,  0.5,  0.5,  0.5,  0.5,  0.0, -0.5],
+    [-1.0,  0.5,  0.5,  0.5,  0.5,  0.5,  0.0, -1.0],
+    [-1.0,  0.0,  0.5,  0.0,  0.0,  0.0,  0.0, -1.0],
+    [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0]
+]
+
+wKing = [
+    [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
+    [-2.0, -3.0, -3.0, -4.0, -4.0, -3.0, -3.0, -2.0],
+    [-1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0],
+    [ 2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  2.0,  2.0],
+    [ 2.0,  3.0,  1.0,  0.0,  0.0,  1.0,  3.0,  2.0]
+]
+
+bKing = copy.copy(wKing)
+bKing.reverse()
 
 class Board:
     """
@@ -139,7 +216,7 @@ class Board:
                 #              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
                     self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
-                # self.__CellLayer[row][col].draw(win)
+                self.__CellLayer[row][col].draw(win)
 
     def printMap(self):
         """
@@ -201,7 +278,7 @@ class Board:
         y, x = index
         moves = []
         if self.check_Team((x, y), playingTeam):
-            print("Team turn:", playingTeam)
+            # print("Team turn:", playingTeam)
             result = self.__OjectLayer[(x, y)].active_effects(self, index, phase)
             if ef.STATUS[1] in result:
                 print("Không thể chọn")
@@ -209,7 +286,7 @@ class Board:
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
                 moves = self.__OjectLayer[(x, y)].get_moves(self, index, phase)
-            print("Chọn thành công quân cờ:", self.__readableMap[y][x])
+            # print("Chọn thành công quân cờ:", self.__readableMap[y][x])
             return True, moves
         else:
             print("Không thể chọn")
@@ -282,7 +359,7 @@ class Board:
                     pass
                 init.HistoryLog.pop(0)
                 init.HistoryLog.append('{}: {} -> {}'.format(self.__OjectLayer[(index0[1], index0[0])].get_type(), index0, index1))
-                print('Từ ô',index0,'đến ô', index1)
+                # print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:
                     try:
@@ -399,9 +476,9 @@ class Board:
         for object in self.__OjectLayer.items():
             try:
                 if object[1].get_team() == team:
-                    sum += object[1].get_score()
+                    sum += (object[1].get_score() + globals()[object[1].convert_to_readable()][object[0][1]][object[0][0]])
                 else:
-                    sum -= object[1].get_score()
+                    sum -= (object[1].get_score() + globals()[object[1].convert_to_readable()][object[0][1]][object[0][0]])
             except:
                 pass
         return sum

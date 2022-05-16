@@ -36,7 +36,8 @@ class Player:
         :return:
         """
         dup_player = copy.copy(self)
-        self.__cards = copy.copy(dup_player.get_cards())
+        for i in range(len(self.__cards)):
+            self.__cards[i] = copy.copy(dup_player.get_cards()[i])
         for card in dup_player.get_cards():
             card = card.duplication()
         return dup_player

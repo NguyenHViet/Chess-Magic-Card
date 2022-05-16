@@ -2,6 +2,8 @@ import random
 import copy
 import pygame
 import time
+from threading import Thread
+import multiprocessing
 
 import CMC.chess as chess
 import CMC.init as init
@@ -9,7 +11,6 @@ import CMC.cell as cell
 import CMC.board as board
 import CMC.card as card
 import CMC.player as player
-import CMC.gameAI as gameAI
 import math
 
 pygame.init()
@@ -35,17 +36,23 @@ timing = 0
 env = 'Grassland'
 MUSIC_END = pygame.USEREVENT + 1
 clicked = False
+BOT_Thingking = False
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
 nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
 Players = [player.Player('Player 1', 'w'), player.Player('Player 2', 'b')]
 clock = pygame.time.Clock()
-playingTeam = 'w'
 
 pause = True
 turns = 0
 phase = chess.PHASE['Start']
+
+redraw = False
+selected = False
+required = 0
+selectedPos = []
+playingTeam = 'w'
 
 def turn_off_music(id = 0):
     """
@@ -84,7 +91,7 @@ def new_game():
     if env == 'Random':
         env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('Player 1', 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player('BOT', 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
+    Players = [player.Player('BO', 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player('BOT', 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
     turn_off_music()
     main()
 
@@ -228,7 +235,7 @@ def updateGUI():
     for i in range(len(init.HistoryLog)):
         card.drawText(WIN, init.HistoryLog[i], 'black', ((100, offsetHeight + 450 + i*40), (300, 100)), init.font20)
 
-def update_display(win, nboard, pos, turns, phase):
+def update_display(nboard, pos, turns, phase):
     """
     Cập nhập cửa sổ hiển thị
     :param win: Cửa sổ hiển thị (pygame.image)
@@ -238,28 +245,20 @@ def update_display(win, nboard, pos, turns, phase):
     :param phase: Giai đoạn của lượt hiện tại (int)
     :return: None
     """
+    global WIN
     WIN.fill('white')
-    nboard.draw(win)
-    ncard.draw(win, init.font40, pos, Players[turns % 2])
-    if phase == chess.PHASE['Finish']:
-        print('WIN')
-        endGame()
+    nboard.draw(WIN)
+    ncard.draw(WIN, init.font40, pos, Players[turns % 2])
     updateGUI()
     pygame.display.update()
-
 def main():
     """
     Chạy game
     :return: None
     """
     turn_on_music()
-    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked
-    redraw = False
+    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected, gui_thread
     pause = False
-    selected = False
-    required = 0
-    selectedPos = []
-    playingTeam = 'w'
     while True:
         if phase == chess.PHASE['Start']:
             selected = False
@@ -272,8 +271,9 @@ def main():
 
         pygame.time.delay(50)
 
-        if Players[turns%2].get_name() == 'BOT':
-            turns = gameAI.pre_bot_turn(nboard, Players, turns)
+        if Players[turns%2].get_name() == 'BOT' and phase == chess.PHASE['Picking']:
+            set_limit(turns + 1)
+            phase = Simulator_Turn(nboard, Players, turns)[0]
 
         for event in pygame.event.get():
             if event.type == MUSIC_END:
@@ -309,7 +309,6 @@ def main():
                                 nboard.deselect()
                                 nboard.controlledCells(phase, playingTeam)
                                 selected, moves = nboard.select_Chess(index, phase, playingTeam)
-                                print(moves)
                                 selectedPos = index
                             except:
                                 selectedPos = []
@@ -363,18 +362,19 @@ def main():
                             selected = False
                             selectedPos = []
                             #-----------------------------------------------------------------------------------------------
-                    print("Turn:", turns, "Phase:", phase)
-                    nboard.printMap()
-                    print(playingTeam," score:", nboard.get_Score(playingTeam))
+                    # print("Turn:", turns, "Phase:", phase)
+                    # nboard.printMap()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused()
             check_evolutions()
         phase = Players[turns % 2].update(phase, init.DECK, init.SETTINGS['AddTimeable'], startTurnTime)
-        if phase == chess.PHASE['End']:
+        if phase == chess.PHASE['Finish']:
+            endGame()
+        elif phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns, playingTeam)
-        update_display(WIN, nboard, pygame.mouse.get_pos(), turns, phase)
+        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
         clicked = False
 
 def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.font40, **param):
@@ -444,6 +444,7 @@ def paused():
     :return: None
     """
     global timing, startTurnTime
+
     nowTime = math.floor(time.time())
     timing = nowTime - startTurnTime
     pygame.mixer.music.pause()
@@ -566,3 +567,72 @@ def game_intro():
         button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, end_game)
         pygame.display.update()
+
+Sim_Turn = 0
+
+def set_limit(turn):
+    """
+    Thiết lập giới hạn lượt mô phỏng
+    :param turn: Giới hạn lượt mô phỏng
+    :return: None
+    """
+    global Sim_Turn
+    Sim_Turn = turn
+
+def convert_data(nBoard, nPlayer):
+    """
+    Chuyển đổi dữ liệu cho AI
+    :param nBoard: Bàn cờ (board.Board)
+    :param nPlayer: Danh sách người chơi (list(player.Player))
+    :return: Dữ liệu đã chuyển đổi (tuple(board.Board, list(player.Player)))
+    """
+    Sim_Players = []
+    Sim_Board = nBoard.duplication()
+    for player in nPlayer:
+        Sim_Players.append(player.duplication())
+    return Sim_Board, Sim_Players
+
+def Simulator_Turn(nBoard, nPlayer, nTurn):
+    if nTurn > Sim_Turn:
+        return 0
+    Sim_Board, Sim_Players = convert_data(nBoard, nPlayer)
+    oBoard = Sim_Board.getoBoard()
+    nCard = Sim_Players[nTurn%2].get_cards()
+
+    maxPoint = -999
+    index0 = 0
+    index1 = 0
+    playingTeam = Sim_Players[nTurn%2].get_team()
+
+    for object in oBoard.items():
+        try:
+            if object[1].get_team() == playingTeam:
+                tindex = (object[0][1], object[0][0])
+                selected, moves = Sim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
+                if not selected:
+                    continue
+                tPoint = -888
+                tIndex = 0
+                for move in moves:
+                    sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
+                    sSim_Board.select_Move(tindex, move)
+                    result = Simulator_Turn(sSim_Board, sSim_Player, nTurn + 1)
+                    point = sSim_Board.get_Score(playingTeam) - result[3]
+                    if point > tPoint:
+                        tPoint = point
+                        tIndex = move
+                if tPoint > maxPoint:
+                    maxPoint = tPoint
+                    index1 = tIndex
+                    index0 = tindex
+                Sim_Board.deselect()
+        except:
+            pass
+    if index0 == 0:
+        return chess.PHASE['Finish']
+    nBoard.select_Chess(index0, 2, playingTeam)
+    update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+    nBoard.select_Move(index0, index1)
+    return chess.PHASE['End'], index0, index1, maxPoint
+
+gui_thread = Thread(target=update_display, args=(nboard, pygame.mouse.get_pos(), turns, phase))
