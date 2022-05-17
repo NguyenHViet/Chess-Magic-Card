@@ -69,6 +69,15 @@ def turn_on_music():
     """
     pygame.mixer.music.unpause()
 
+def set_level(nlevel):
+    """
+    Cài độ khó khi đấu với máy
+    :param level: Độ khó (int)
+    :return: None
+    """
+    global level
+    level = nlevel
+
 def new_game():
     """
     Khởi tạo các giá trị và tạo ván đấu mới
@@ -247,6 +256,23 @@ def update_display(nboard, pos, turns, phase):
     :return: None
     """
     global WIN
+
+    # TODO: Tạo update event bên trong đây thay vì main
+    for event in pygame.event.get():
+        if event.type == MUSIC_END:
+            pygame.mixer.music.queue(init.listMusic[0])
+            init.listMusic.append(init.listMusic.pop(0))
+
+        if event.type == pygame.QUIT:
+            end_game()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            clicked = True
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                paused()
+
     WIN.fill('white')
     nboard.draw(WIN)
     ncard.draw(WIN, init.font40, pos, Players[turns % 2])
@@ -284,6 +310,13 @@ def main():
 
             if event.type == pygame.QUIT:
                 end_game()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                clicked = True
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 clicked = True
@@ -366,9 +399,6 @@ def main():
                             #-----------------------------------------------------------------------------------------------
                     # print("Turn:", turns, "Phase:", phase)
                     # nboard.printMap()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    paused()
             check_evolutions()
         phase = Players[turns % 2].update(phase, init.DECK, init.SETTINGS['AddTimeable'], startTurnTime)
         if phase == chess.PHASE['Finish']:
@@ -616,31 +646,33 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
             if object[1].get_team() == playingTeam:
                 tindex = (object[0][1], object[0][0])
 
-                try:
-                    for i in range(len(nCard)):
-                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
-                        required = cSim_Player[nTurn%2].pick_card(i)
-                        if 'Fail' not in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])]) and required != -1:
-                            tPoint = -999
-                            tIndex = 0
-                            for x in range(8):
-                                for y in range(8):
-                                    if 'x' in cSim_Board.getrBoard()[x][y]:
-                                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
-                                        cSim_Player[nTurn % 2].pick_card(i)
-                                        if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
-                                            result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
-                                            point = cSim_Board.get_Score(playingTeam) - result[-1]
-                                            if point > tPoint:
-                                                tPoint = point
-                                                tIndex = (x, y)
-                            if tPoint > maxPoint:
-                                pick = i
-                                maxPoint = tPoint
-                                index1 = tIndex
-                                index0 = tindex
-                except:
-                    print(len(nCard))
+                # TODO: Làm code AI chơi bài
+                # try:
+                #     for i in range(len(nCard)):
+                #         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                #         rBoard = cSim_Board.getrBoard()
+                #         required = cSim_Player[nTurn%2].pick_card(i)
+                #         if 'Fail' not in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])]) and required != -1:
+                #             tPoint = -999
+                #             tIndex = 0
+                #             for x in range(8):
+                #                 for y in range(8):
+                #                     if 'x' in rBoard[x][y]:
+                #                         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                #                         cSim_Player[nTurn % 2].pick_card(i)
+                #                         if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
+                #                             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
+                #                             point = cSim_Board.get_Score(playingTeam) - result[-1]
+                #                             if point > tPoint:
+                #                                 tPoint = point
+                #                                 tIndex = (x, y)
+                #             if tPoint > maxPoint:
+                #                 pick = i
+                #                 maxPoint = tPoint
+                #                 index1 = tIndex
+                #                 index0 = tindex
+                # except:
+                #     print(len(nCard))
 
                 sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
                 selected, moves = sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
