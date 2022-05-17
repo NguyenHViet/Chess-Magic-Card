@@ -6,14 +6,14 @@ import CMC.cell as cell
 import CMC.effect as ef
 
 wPawn = [
-    [ 0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0],
+    [10.0,  10.0,  10.0,  10.0,  10.0,  10.0,  10.0,  10.0],
     [ 5.0,   5.0,   5.0,   5.0,   5.0,   5.0,   5.0,   5.0],
     [ 1.0,   1.0,   2.0,   3.0,   3.0,   2.0,   1.0,   1.0],
     [ 0.5,   0.5,   1.0,   2.5,   2.5,   1.0,   0.5,   0.5],
     [ 0.0,   0.0,   0.0,   2.0,   2.0,   0.0,   0.0,   0.0],
     [ 0.5,  -0.5,  -1.0,   0.0,   0.0,  -1.0,  -0.5,   0.5],
     [ 0.5,   1.0,   1.0,  -2.0,  -2.0,   1.0,   1.0,   0.5],
-    [10.0,  10.0,  10.0,  10.0,  10.0,  10.0,  10.0,  10.0]
+    [ 0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0]
 ]
 
 bPawn = copy.copy(wPawn)
@@ -22,8 +22,8 @@ bPawn.reverse()
 wKnight = bKnight = [
     [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
     [-4.0, -2.0,  0.0,  0.0,  0.0,  0.0, -2.0, -4.0],
-    [-3.0,  0.0,  1.0,  1.5,  1.5,  1.0,  0.0, -3.0],
-    [-3.0,  0.5,  1.5,  2.0,  2.0,  1.5,  0.5, -3.0],
+    [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
+    [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
     [-3.0,  0.0,  1.5,  2.0,  2.0,  1.5,  0.0, -3.0],
     [-3.0,  0.5,  1.0,  1.5,  1.5,  1.0,  0.5, -3.0],
     [-4.0, -2.0,  0.0,  0.5,  0.5,  0.0, -2.0, -4.0],
@@ -320,13 +320,14 @@ class Board:
                     new_map[i][j] = ' '
         return new_map
 
-    def select_Move(self, index0, index1, triggeredEffect = True, swap = False):
+    def select_Move(self, index0, index1, triggeredEffect = True, swap = False, histLog = True):
         """
         Di chuyển quân cờ
         :param index0: Vị trí ban đầu
         :param index1: Vị trí mới
         :param triggeredEffect: Giảm cộng dồn hiệu ứng (bool)
         :param swap: Hoán đổi vị trí (bool)
+        :param histLog: Thêm vào lịch sử (bool)
         :return: Kết quả (bool)
         """
         moved = False
@@ -357,8 +358,9 @@ class Board:
                         self.__enviroment.play_sfx()
                 except:
                     pass
-                init.HistoryLog.pop(0)
-                init.HistoryLog.append('{}: {} -> {}'.format(self.__OjectLayer[(index0[1], index0[0])].get_type(), index0, index1))
+                if histLog:
+                    init.HistoryLog.pop(0)
+                    init.HistoryLog.append('{}: {} -> {}'.format(self.__OjectLayer[(index0[1], index0[0])].get_type(), index0, index1))
                 # print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:

@@ -37,6 +37,7 @@ env = 'Grassland'
 MUSIC_END = pygame.USEREVENT + 1
 clicked = False
 BOT_Thingking = False
+level = 0
 
 pygame.display.set_caption("Chess: Magic Card")
 ncard = card.CardArea(HEIGHT, WIDTH, offsetHeight, offsetWidth, init.listImage)
@@ -260,6 +261,7 @@ def main():
     global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected, gui_thread
     pause = False
     while True:
+        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
         if phase == chess.PHASE['Start']:
             selected = False
             required = 0
@@ -272,7 +274,7 @@ def main():
         pygame.time.delay(50)
 
         if Players[turns%2].get_name() == 'BOT' and phase == chess.PHASE['Picking']:
-            set_limit(turns + 1)
+            set_limit(turns, level)
             phase = Simulator_Turn(nboard, Players, turns)[0]
 
         for event in pygame.event.get():
@@ -374,7 +376,6 @@ def main():
         elif phase == chess.PHASE['End']:
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns, playingTeam)
-        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
         clicked = False
 
 def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.font40, **param):
@@ -568,16 +569,18 @@ def game_intro():
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, end_game)
         pygame.display.update()
 
-Sim_Turn = 0
+Limit_Turn = 0
+Start_Turn = 0
 
-def set_limit(turn):
+def set_limit(start, turn):
     """
     Thiết lập giới hạn lượt mô phỏng
     :param turn: Giới hạn lượt mô phỏng
     :return: None
     """
-    global Sim_Turn
-    Sim_Turn = turn
+    global Limit_Turn, Start_Turn
+    Start_Turn = start
+    Limit_Turn = start + turn
 
 def convert_data(nBoard, nPlayer):
     """
@@ -593,46 +596,92 @@ def convert_data(nBoard, nPlayer):
     return Sim_Board, Sim_Players
 
 def Simulator_Turn(nBoard, nPlayer, nTurn):
-    if nTurn > Sim_Turn:
-        return 0
+    if nTurn > Limit_Turn:
+        return chess.PHASE['End'], 0
     Sim_Board, Sim_Players = convert_data(nBoard, nPlayer)
+    playingTeam = Sim_Players[nTurn%2].get_team()
+    Sim_Board.update(1, nTurn, playingTeam)
     oBoard = Sim_Board.getoBoard()
     nCard = Sim_Players[nTurn%2].get_cards()
+
+    play = 'Card'
 
     maxPoint = -999
     index0 = 0
     index1 = 0
-    playingTeam = Sim_Players[nTurn%2].get_team()
+    pick = -1
 
     for object in oBoard.items():
         try:
             if object[1].get_team() == playingTeam:
                 tindex = (object[0][1], object[0][0])
-                selected, moves = Sim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
+
+                try:
+                    for i in range(len(nCard)):
+                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                        required = cSim_Player[nTurn%2].pick_card(i)
+                        if 'Fail' not in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])]) and required != -1:
+                            tPoint = -999
+                            tIndex = 0
+                            for x in range(8):
+                                for y in range(8):
+                                    if 'x' in cSim_Board.getrBoard()[x][y]:
+                                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                                        cSim_Player[nTurn % 2].pick_card(i)
+                                        if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
+                                            result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
+                                            point = cSim_Board.get_Score(playingTeam) - result[-1]
+                                            if point > tPoint:
+                                                tPoint = point
+                                                tIndex = (x, y)
+                            if tPoint > maxPoint:
+                                pick = i
+                                maxPoint = tPoint
+                                index1 = tIndex
+                                index0 = tindex
+                except:
+                    print(len(nCard))
+
+                sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
+                selected, moves = sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
                 if not selected:
                     continue
                 tPoint = -888
                 tIndex = 0
                 for move in moves:
                     sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
-                    sSim_Board.select_Move(tindex, move)
+                    sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
+                    sSim_Board.select_Move(tindex, move, histLog=False)
                     result = Simulator_Turn(sSim_Board, sSim_Player, nTurn + 1)
-                    point = sSim_Board.get_Score(playingTeam) - result[3]
+                    point = sSim_Board.get_Score(playingTeam) - result[-1]
+                    # print(object[1].convert_to_readable(), nTurn, tindex, move, point)
                     if point > tPoint:
                         tPoint = point
                         tIndex = move
+                    sSim_Board.deselect()
                 if tPoint > maxPoint:
+                    play = 'Chess'
                     maxPoint = tPoint
                     index1 = tIndex
                     index0 = tindex
-                Sim_Board.deselect()
         except:
             pass
-    if index0 == 0:
-        return chess.PHASE['Finish']
-    nBoard.select_Chess(index0, 2, playingTeam)
-    update_display(nboard, pygame.mouse.get_pos(), turns, phase)
-    nBoard.select_Move(index0, index1)
-    return chess.PHASE['End'], index0, index1, maxPoint
+
+    # print(playingTeam, oBoard[(index0[1], index0[0])].convert_to_readable(), index0, index1, maxPoint)
+    if index1 == 0:
+        return chess.PHASE['End'], 1000
+    if play == 'Chess':
+        nBoard.select_Chess(index0, 2, playingTeam)
+        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+        if nTurn == Start_Turn:
+            nBoard.select_Move(index0, index1)
+        else:
+            nBoard.select_Move(index0, index1, histLog=False)
+        return chess.PHASE['End'], maxPoint
+    elif play == 'Card':
+        nPlayer[nTurn%2].pick_card(pick)
+        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+        nPlayer[nTurn%2].play_card(nBoard, [index0, index1])
+        return chess.PHASE['End'], maxPoint
 
 gui_thread = Thread(target=update_display, args=(nboard, pygame.mouse.get_pos(), turns, phase))

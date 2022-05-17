@@ -194,7 +194,6 @@ class Effect:
                         try:
                             oBoard[(positions[1], positions[0])].set_killable(nBoard, positions, phase, options['killable'])
                             MagicResist = oBoard[(positions[1], positions[0])].active_effects(nBoard, positions, phase)
-                            print(MagicResist)
                             if swap:
                                 try:
                                     if oBoard[(positions[1], positions[0])].get_team() in target and 'Fail' not in MagicResist:
