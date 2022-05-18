@@ -196,6 +196,7 @@ class Player:
         if self.__actions <= 0:
             nPhase = chess.PHASE['End']
         if phase == chess.PHASE['End']:
+            self.decelect()
             if addableTime or self.__time - timing <= self.__totalTime:
                 self.__totalTime = self.__time - timing
                 self.__time = self.__totalTime

@@ -250,24 +250,24 @@ def updateGUI():
     for i in range(len(init.HistoryLog)):
         card.drawText(WIN, init.HistoryLog[i], 'black', ((100, offsetHeight + 450 + i*40), (300, 100)), init.font20)
 
-def update_display(nboard, pos, turns, phase):
+def update_display():
     """
     Cập nhập cửa sổ hiển thị
-    :param win: Cửa sổ hiển thị (pygame.image)
-    :param nboard: Bàn cờ (board.Board)
-    :param pos: Vị trí con trỏ chuột (tuple(int, int))
-    :param turns: Lượt hiện tại (int)
-    :param phase: Giai đoạn của lượt hiện tại (int)
     :return: None
     """
-    global WIN
+    pygame.time.delay(10)
+    WIN.unlock()
     WIN.fill('white')
     nboard.draw(WIN)
-    ncard.draw(WIN, init.font40, pos, Players[turns % 2])
+    ncard.draw(WIN, init.font40, Players[turns % 2])
     updateGUI()
     pygame.display.update()
 
 def BOT_Turn():
+    """
+    Dùng để chạy mô phỏng lượt đi của máy
+    :return: None
+    """
     global nboard, Players, turns, phase, BOT_Thingking
     set_limit(turns, int(level))
     result = Simulator_Turn(nboard, Players, turns)
@@ -281,10 +281,10 @@ def main():
     """
     pygame.time.delay(50)
     turn_on_music()
-    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected, gui_thread
+    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected
     pause = False
     while True:
-        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+        update_display()
         if phase == chess.PHASE['Start']:
             selected = False
             required = 0
@@ -743,7 +743,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
     nPlayer[nTurn%2].redraw_card({'param':redraw})
     if choice[0] == 'Chess':
         nBoard.select_Chess(choice[1], 2, playingTeam)
-        # update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+        pygame.time.delay(500)
         if nTurn == Start_Turn:
             nBoard.select_Move(choice[1], choice[2])
         else:
@@ -751,7 +751,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
         return chess.PHASE['End'], maxPoint
     elif choice[0] == 'Card':
         nPlayer[nTurn%2].pick_card(choice[3])
-        # update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+        pygame.time.delay(500)
         nPlayer[nTurn%2].play_card(nBoard, choice[1] + choice[2])
         return chess.PHASE['End'], maxPoint
 

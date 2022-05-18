@@ -204,12 +204,11 @@ class CardArea:
         for i in range(3):
             self.__cellLayers.append(cell.Cell(self.__y + 55, self.__x + interval * i, self.__GEI['Darken']))
 
-    def draw(self, win, font, pos, nPlayer):
+    def draw(self, win, font, nPlayer):
         """
         Hàm in các lá bài lên cửa sổ hiển thị
         :param win: Cửa sổ hiển thị (pygame.display)
         :param font: Font chữ (font.Font)
-        :param pos: Vị trí lá bài được hiển thị (tuple(int, int))
         :param nPlayer: Danh sách người chơi (list(player.Player))
         :return: None
         """
