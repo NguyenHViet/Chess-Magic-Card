@@ -281,7 +281,7 @@ class Board:
             # print("Team turn:", playingTeam)
             result = self.__OjectLayer[(x, y)].active_effects(self, index, phase)
             if ef.STATUS[1] in result:
-                print("Không thể chọn")
+                # print("Không thể chọn")
                 return False
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
@@ -289,7 +289,7 @@ class Board:
             # print("Chọn thành công quân cờ:", self.__readableMap[y][x])
             return True, moves
         else:
-            print("Không thể chọn")
+            # print("Không thể chọn")
             return False, moves
 
     def deselect(self):
@@ -438,12 +438,10 @@ class Board:
         if self.is_finished():
             Phase = chess.PHASE['Finish']
         elif phase == chess.PHASE['Start']:
-            print("Bắt đầu lượt mới")
             Phase = chess.PHASE['Picking']
             self.deselect()
             self.controlledCells(phase, playingTeam)
         elif phase == chess.PHASE['End']:
-            print("Kết thúc lượt")
             turn += 1
             Phase = chess.PHASE['Start']
         return Phase, turn

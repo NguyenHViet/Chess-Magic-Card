@@ -55,7 +55,24 @@ required = 0
 selectedPos = []
 playingTeam = 'w'
 
-def turn_off_music(id = 0):
+def update_event():
+    global clicked
+    for event in pygame.event.get():
+        if event.type == MUSIC_END:
+            pygame.mixer.music.queue(init.listMusic[0])
+            init.listMusic.append(init.listMusic.pop(0))
+
+        if event.type == pygame.QUIT:
+            end_game()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            clicked = True
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                paused()
+
+def turn_off_music():
     """
     Tạm dừng nhạc nền
     :return: None
@@ -78,12 +95,13 @@ def set_level(nlevel):
     global level
     level = nlevel
 
-def new_game():
+def new_game(playername):
     """
     Khởi tạo các giá trị và tạo ván đấu mới
     :return: None
     """
     global turns, phase, nboard, ncard, Players, startTurnTime, env
+    Names = playername['names']
     init.HistoryLog = [' ' for i in range (6)]
     init.HistoryLog.append('New Round!')
     random.shuffle(init.listMusic)
@@ -101,11 +119,11 @@ def new_game():
     if env == 'Random':
         env = random.choice(['Desert', 'Frozen River', 'Foggy Forest', 'Swamp', 'Grassland'])
     nboard = board.Board(offsetHeight, offsetWidth, WIDTH, 'w', init.ENVIRONMENT[env], init.listImage)
-    Players = [player.Player('BO', 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player('BOT', 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
+    Players = [player.Player(Names['player1'], 'w', init.SETTINGS['Time'], init.SETTINGS['Time Bonus']), player.Player(Names['player2'], 'b', init.SETTINGS['Time'], init.SETTINGS['Time Bonus'])]
     turn_off_music()
     main()
 
-def setting_game():
+def setting_game(names):
     """
     Cài dặt các thông số trong trận đấu
     :return: None
@@ -172,7 +190,7 @@ def setting_game():
         button('', init.listImage['GUI']['Arrow_Left'], '', (WinWidth / 2) - 295, 720 - x, 50, 60, next_env, value = -1)
         button(env, init.listImage[env]['Background'], init.listImage['GEI']['Darken'], (WinWidth / 2) - 200, 620 - x, 400, 250, new_game, color='white')
 
-        button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 800, 363, 100, new_game)
+        button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 800, 363, 100, new_game, names=names)
         pygame.display.update()
 
 def mouse_on_board(pos):
@@ -221,7 +239,6 @@ def updateGUI():
         for i in range(len(Players[turns % 2].get_cards())):
             button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10,
                    offsetHeight + (HEIGHT / 3) * i + (HEIGHT) / 8, 50, 50, Players[turns % 2].redraw_card, param=i)
-
     else:
         drawTextImg('', init.listImage['GUI']['EnemyTurn'], 35, offsetHeight, 160, 160)
 
@@ -257,27 +274,19 @@ def update_display(nboard, pos, turns, phase):
     """
     global WIN
 
-    # TODO: Tạo update event bên trong đây thay vì main
-    for event in pygame.event.get():
-        if event.type == MUSIC_END:
-            pygame.mixer.music.queue(init.listMusic[0])
-            init.listMusic.append(init.listMusic.pop(0))
-
-        if event.type == pygame.QUIT:
-            end_game()
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            clicked = True
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                paused()
-
     WIN.fill('white')
     nboard.draw(WIN)
     ncard.draw(WIN, init.font40, pos, Players[turns % 2])
     updateGUI()
     pygame.display.update()
+
+def BOT_Turn():
+    global nboard, Players, turns, phase, BOT_Thingking
+    set_limit(turns, int(level))
+    result = Simulator_Turn(nboard, Players, turns)
+    phase = result[0]
+    BOT_Thingking = False
+
 def main():
     """
     Chạy game
@@ -299,9 +308,11 @@ def main():
 
         pygame.time.delay(50)
 
-        if Players[turns%2].get_name() == 'BOT' and phase == chess.PHASE['Picking']:
-            set_limit(turns, level)
-            phase = Simulator_Turn(nboard, Players, turns)[0]
+        if Players[turns%2].get_name() == 'BOT' and phase == chess.PHASE['Picking'] and not BOT_Thingking:
+            thread = Thread(target=BOT_Turn)
+            thread.setDaemon(True)
+            thread.start()
+            BOT_Thingking = True
 
         for event in pygame.event.get():
             if event.type == MUSIC_END:
@@ -404,6 +415,7 @@ def main():
         if phase == chess.PHASE['Finish']:
             endGame()
         elif phase == chess.PHASE['End']:
+            set_level(level + (0.1 - 0.095*(level>1)))
             startTurnTime = math.floor(time.time())
         phase, turns = nboard.update(phase, turns, playingTeam)
         clicked = False
@@ -595,8 +607,9 @@ def game_intro():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('BẮT ĐẦU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game)
-        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, end_game)
+        button('CHƠI VỚI MÁY', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game, player1='Player 1', player2='BOT')
+        button('CHƠI 2 NGƯỜI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, setting_game, player1='Player 1', player2='Player 2')
+        button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4.5 * interval, 363, 100, end_game)
         pygame.display.update()
 
 Limit_Turn = 0
@@ -626,6 +639,12 @@ def convert_data(nBoard, nPlayer):
     return Sim_Board, Sim_Players
 
 def Simulator_Turn(nBoard, nPlayer, nTurn):
+    global pause
+    while pause:
+        pass
+
+    BestMove = []
+
     if nTurn > Limit_Turn:
         return chess.PHASE['End'], 0
     Sim_Board, Sim_Players = convert_data(nBoard, nPlayer)
@@ -640,39 +659,13 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
     index0 = 0
     index1 = 0
     pick = -1
+    minCard = 999
+    redraw = 0
 
     for object in oBoard.items():
         try:
             if object[1].get_team() == playingTeam:
                 tindex = (object[0][1], object[0][0])
-
-                # TODO: Làm code AI chơi bài
-                # try:
-                #     for i in range(len(nCard)):
-                #         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
-                #         rBoard = cSim_Board.getrBoard()
-                #         required = cSim_Player[nTurn%2].pick_card(i)
-                #         if 'Fail' not in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])]) and required != -1:
-                #             tPoint = -999
-                #             tIndex = 0
-                #             for x in range(8):
-                #                 for y in range(8):
-                #                     if 'x' in rBoard[x][y]:
-                #                         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
-                #                         cSim_Player[nTurn % 2].pick_card(i)
-                #                         if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
-                #                             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
-                #                             point = cSim_Board.get_Score(playingTeam) - result[-1]
-                #                             if point > tPoint:
-                #                                 tPoint = point
-                #                                 tIndex = (x, y)
-                #             if tPoint > maxPoint:
-                #                 pick = i
-                #                 maxPoint = tPoint
-                #                 index1 = tIndex
-                #                 index0 = tindex
-                # except:
-                #     print(len(nCard))
 
                 sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
                 selected, moves = sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
@@ -680,6 +673,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                     continue
                 tPoint = -888
                 tIndex = 0
+                recommentMoves = []
                 for move in moves:
                     sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
                     sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
@@ -690,30 +684,81 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                     if point > tPoint:
                         tPoint = point
                         tIndex = move
+                        recommentMoves = [('Chess', tindex, tIndex)]
+                    elif point == tPoint:
+                        tPoint = point
+                        tIndex = move
+                        recommentMoves.append(('Chess', tindex, tIndex))
                     sSim_Board.deselect()
                 if tPoint > maxPoint:
-                    play = 'Chess'
+                    # play = 'Chess'
                     maxPoint = tPoint
-                    index1 = tIndex
-                    index0 = tindex
+                    # index1 = tIndex
+                    # index0 = tindex
+                    BestMove = recommentMoves
+                elif tPoint == maxPoint:
+                    BestMove += recommentMoves
+
+                try:
+                    for i in range(len(nCard)):
+                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                        rBoard = cSim_Board.getrBoard()
+                        required = cSim_Player[nTurn%2].pick_card(i)
+                        if 'Fail' not in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])], histLog=False) and required != -1 and Sim_Players[nTurn%2].get_name() == 'BOT':
+                            tPoint = -999
+                            tIndex = 0
+                            for x in range(8):
+                                for y in range(8):
+                                    if 'x' in rBoard[x][y]:
+                                        # print(rBoard[x][y], (x, y))
+                                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                                        cSim_Player[nTurn % 2].pick_card(i)
+                                        if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)], histLog=False):
+                                            result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
+                                            point = cSim_Board.get_Score(playingTeam) - result[-1]
+                                            # print(nCard[i].get_name(), tindex, object[1].convert_to_readable(), point)
+                                            if point > tPoint:
+                                                tPoint = point
+                                                tIndex = (x, y)
+                                                recommentMoves = ('Card', tindex, tIndex, i)
+                                            elif point == tPoint:
+                                                tPoint = point
+                                                tIndex = (x, y)
+                                                recommentMoves.append(('Card', tindex, tIndex, i))
+                                            elif point < minCard:
+                                                minCard  = point
+                                                redraw = i
+                            if tPoint > maxPoint:
+                                # play = 'Card'
+                                # pick = i
+                                maxPoint = tPoint
+                                # index1 = tIndex
+                                # index0 = tindex
+                                BestMove = recommentMoves
+                                # print(index0, index1, maxPoint, nCard[i].get_name())
+                            elif tPoint == maxPoint:
+                                BestMove += recommentMoves
+                except:
+                    print('Error')
         except:
             pass
 
+    choice = random.choice(BestMove)
+    # print(BestMove)
     # print(playingTeam, oBoard[(index0[1], index0[0])].convert_to_readable(), index0, index1, maxPoint)
-    if index1 == 0:
-        return chess.PHASE['End'], 1000
-    if play == 'Chess':
-        nBoard.select_Chess(index0, 2, playingTeam)
-        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+    nPlayer[nTurn%2].redraw_card({'param':redraw})
+    if choice[0] == 'Chess':
+        nBoard.select_Chess(choice[1], 2, playingTeam)
+        # update_display(nboard, pygame.mouse.get_pos(), turns, phase)
         if nTurn == Start_Turn:
-            nBoard.select_Move(index0, index1)
+            nBoard.select_Move(choice[1], choice[2])
         else:
-            nBoard.select_Move(index0, index1, histLog=False)
+            nBoard.select_Move(choice[1], choice[2], histLog=False)
         return chess.PHASE['End'], maxPoint
-    elif play == 'Card':
-        nPlayer[nTurn%2].pick_card(pick)
-        update_display(nboard, pygame.mouse.get_pos(), turns, phase)
-        nPlayer[nTurn%2].play_card(nBoard, [index0, index1])
+    elif choice[0] == 'Card':
+        nPlayer[nTurn%2].pick_card(choice[3])
+        # update_display(nboard, pygame.mouse.get_pos(), turns, phase)
+        nPlayer[nTurn%2].play_card(nBoard, [choice[1], choice[2]])
         return chess.PHASE['End'], maxPoint
 
 gui_thread = Thread(target=update_display, args=(nboard, pygame.mouse.get_pos(), turns, phase))

@@ -13,7 +13,7 @@ HistoryLog = ' '
 SETTINGS = {
     'Music Volumn': 10,
     'Sound Volumn': 10,
-    'Time': 180,
+    'Time': 1200,
     'Time Bonus': 10,
     'AddTimeable': True,
     'TotalActions': 15,

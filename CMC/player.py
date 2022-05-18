@@ -36,11 +36,11 @@ class Player:
         :return:
         """
         dup_player = copy.copy(self)
+        self.__cards = copy.copy(self.get_cards())
         for i in range(len(self.__cards)):
-            self.__cards[i] = copy.copy(dup_player.get_cards()[i])
-        for card in dup_player.get_cards():
-            card = card.duplication()
-        return dup_player
+            dup_player.get_cards()[i] = dup_player.get_cards()[i].duplication()
+        dup_player2 = copy.deepcopy(dup_player)
+        return dup_player2
 
     def set_time(self, new_time):
         """
@@ -106,7 +106,7 @@ class Player:
         """
         self.__picking = None
 
-    def play_card(self, nBoard, indexs):
+    def play_card(self, nBoard, indexs, histLog=True):
         """
         Sử dụng bài phép
         :param nBoard: Bàn cờ (board.Board)
@@ -117,7 +117,10 @@ class Player:
             result = self.__cards[self.__picking].play_card(nBoard, indexs, self.__team)
             if 'Casted' in result:
                 self.__actions -= self.__cards[self.__picking].get_cost()
-                self.__cards.pop(self.__picking)
+                card = self.__cards.pop(self.__picking)
+                if histLog:
+                    init.HistoryLog.pop(0)
+                    init.HistoryLog.append('{}: {} -> {}'.format(card.get_name(), indexs[0], indexs[1]))
             return result
         except:
             return 'Fail'

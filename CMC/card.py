@@ -92,6 +92,13 @@ class Card:
         """
         return self.effects
 
+    def get_name(self):
+        """
+        Lấy tên lá bài
+        :return: Tên lá bài (str)
+        """
+        return self.__name
+
     def draw(self, win, font, pos, height = 100, width = 100):
         """
         Vẽ hình ảnh lá bài trên cửa sổ hiển thị
@@ -132,7 +139,7 @@ class Card:
         """
         return self.__selected_require
 
-    def play_card(self, nBoard, indexs, playTeam):
+    def play_card(self, nBoard, indexs, playTeam, histLog=False):
         """
         Sử dụng bài phép và kích hoạt kĩ năng bài tương ứng
         :param nBoard: Bàn cờ (board.Board)
@@ -156,7 +163,7 @@ class Card:
             result = []
             for effect in effects:
                 try:
-                    result.append(copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam))
+                    result.append(copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam, histLog = histLog))
                     effect.unactive_effect()
                 except:
                     result.append(ef.STATUS[1])
