@@ -180,7 +180,6 @@ class Desert(Environment):
                     self.__env_ef.play(-1)
 
                 if turn%6 < 5 and turn%6 >= 2:
-                    print(cBoard)
                     for i in range(w):
                         for j in range(h):
                             cBoard[j  + y][i + x].set_img(self._image['Special'])
