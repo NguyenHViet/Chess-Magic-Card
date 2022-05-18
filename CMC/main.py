@@ -84,6 +84,7 @@ def new_game(playername):
     :return: None
     """
     global turns, phase, nboard, ncard, Players, startTurnTime, env
+    pygame.time.delay(50)
     Names = playername['names']
     init.HistoryLog = [' ' for i in range (6)]
     init.HistoryLog.append('New Round!')
@@ -143,6 +144,7 @@ def setting_game(names):
         pygame.time.delay(50)
 
     x = 100
+    pygame.time.delay(50)
     while pause:
         textSurface = init.font60.render('TÙY CHỈNH', True, 'white')
         textRect = textSurface.get_rect()
@@ -171,7 +173,7 @@ def setting_game(names):
 
         button('', init.listImage['GUI']['Arrow_Right'], '', (WinWidth / 2) + 245, 720 - x, 50, 60, next_env, value = 1)
         button('', init.listImage['GUI']['Arrow_Left'], '', (WinWidth / 2) - 295, 720 - x, 50, 60, next_env, value = -1)
-        button(env, init.listImage[env]['Background'], init.listImage['GEI']['Darken'], (WinWidth / 2) - 200, 620 - x, 400, 250, new_game, color='white')
+        button(env, init.listImage[env]['Background'], init.listImage['GEI']['Darken'], (WinWidth / 2) - 200, 620 - x, 400, 250, new_game, color='white', names=names)
 
         button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 800, 363, 100, new_game, names=names)
         pygame.display.update()
@@ -256,7 +258,6 @@ def update_display(nboard, pos, turns, phase):
     :return: None
     """
     global WIN
-
     WIN.fill('white')
     nboard.draw(WIN)
     ncard.draw(WIN, init.font40, pos, Players[turns % 2])
@@ -275,6 +276,7 @@ def main():
     Chạy game
     :return: None
     """
+    pygame.time.delay(50)
     turn_on_music()
     global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected, gui_thread
     pause = False
@@ -516,7 +518,7 @@ def endGame():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, new_game)
+        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, new_game, names=names)
         button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3 * interval, 363, 100, game_intro)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4 * interval, 363, 100, end_game)
         pygame.display.update()
