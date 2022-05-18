@@ -228,6 +228,7 @@ def updateGUI():
         color = 'white'
     else:
         color = 'black'
+
     drawTextImg(Players[turns%2].get_name(), init.listImage['GUI'][Players[turns%2].get_team()+'Turn'], 35, offsetHeight, 160, 160, font=init.font25, color = color)
 
     if Players[turns%2].get_time() - timing < 0:
@@ -247,8 +248,9 @@ def updateGUI():
     except:
         pass
 
+    drawTextImg('', init.listImage['GUI']['History Log'], 35, offsetHeight + 420, 350, 350, font=init.font25, color = color)
     for i in range(len(init.HistoryLog)):
-        card.drawText(WIN, init.HistoryLog[i], 'black', ((100, offsetHeight + 450 + i*40), (300, 100)), init.font20)
+        card.drawText(WIN, init.HistoryLog[i], 'white', ((100, offsetHeight + 450 + i*40), (300, 100)), init.font20)
 
 def update_display():
     """

@@ -80,6 +80,7 @@ listImage = {
         'Unmute': pygame.image.load('assets/img/GUI/unmute_button.png'),
         'Env Timer':pygame.image.load('assets/img/GUI/evironment_timer.png'),
         'Env Timer Ef': pygame.image.load('assets/img/GUI/evironment_timer_ef.png'),
+        'History Log': pygame.image.load('assets/img/GUI/Hist_Log.png')
     },
     'Cards': {
         '01':pygame.image.load('assets/img/Card/01.png'),
