@@ -10,7 +10,7 @@ class Environment:
     """
     Lớp 'Môi trường'
     """
-    def __int__(self, name, image, width):
+    def __int__(self, name, image, width, sfx = '', env_ef = ''):
         """
         Hàm khởi tạo
         :param name: Tên môi trường (str)
@@ -21,6 +21,8 @@ class Environment:
         self._image = image
         self._width = width
         self._CellLayer = []
+        self._sfx = sfx
+        self._env_ef = env_ef
 
     def duplication(self):
         """
@@ -41,7 +43,22 @@ class Environment:
         :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
         :return: None
         """
-        pass
+        """
+        Gán nhạc nền, âm thanh mới cho môi thường
+        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
+        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
+        :return: None
+        """
+        try:
+            self._env_ef = new_sound
+        except:
+            pass
+
+        try:
+            self.__sfx = new_sfx
+        except:
+            pass
+
 
     def set_img(self, new_img):
         """
@@ -124,20 +141,8 @@ class Desert(Environment):
         """
         self.__epos = (0, 0)
         self.__ewh = (0, 0)
-        self.__env_ef = pygame.mixer.Sound('assets/music/sand_storm.wav')
-        super().__int__('desert', image, width)
-
-    def set_env_sound(self, new_sound = '', new_sfx = ''):
-        """
-        Gán nhạc nền, âm thanh mới cho môi thường
-        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
-        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
-        :return: None
-        """
-        try:
-            self.__env_ef = new_sound
-        except:
-            pass
+        env_ef = pygame.mixer.Sound('assets/music/sand_storm.wav')
+        super().__int__('desert', image, width, env_ef = env_ef)
 
     def create_map(self, nBoard):
         """
@@ -212,24 +217,12 @@ class Frozen_river(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
         self.__EffectedCells = {}
-        self.__sfx = [
+        sfx = [
             pygame.mixer.Sound('assets/music/ice_creak.wav'),
             pygame.mixer.Sound('assets/music/ice_creak_break.wav'),
             pygame.mixer.Sound('assets/music/ice_freeze.wav'),
         ]
-        super().__int__('frozen_river', image, width)
-
-    def set_env_sound(self, new_sound = '', new_sfx = ''):
-        """
-        Gán nhạc nền, âm thanh mới cho môi thường
-        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
-        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
-        :return: None
-        """
-        try:
-            self.__sfx = ''
-        except:
-            pass
+        super().__int__('frozen_river', image, width, sfx = sfx)
 
     def create_map(self, nBoard):
         """
@@ -272,22 +265,22 @@ class Frozen_river(Environment):
                         if oBoard[(y, x)] != None:
                             self.__EffectedCells[(y, x)] -= 1
                             if self.__EffectedCells[(y, x)] <= 2:
-                                self.__sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                                self.__sfx[0].play()
+                                self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                                self._sfx[0].play()
                                 self._CellLayer[y][x].set_img(self._image['Special 2'])
                         elif self.__EffectedCells[(y, x)] < 4:
                             self.__EffectedCells[(y, x)] = 4
                             self._CellLayer[y][x].set_img(self._image['Special'])
                         if self.__EffectedCells[(y, x)] <= 0:
-                            self.__sfx[1].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                            self.__sfx[1].play()
+                            self._sfx[1].set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                            self._sfx[1].play()
                             self._CellLayer[y][x].set_img(self._image['Triggered_effect'])
                             oBoard[(y, x)] = chess.Chess('', '!', '', '', effects=[ef.Effect('Unselectable', turns = 3)])
                             rBoard[x][y] = '!'
                             self.__EffectedCells[(y, x)] -= 1
                         if self.__EffectedCells[(y, x)] <= -4:
-                            self.__sfx[2].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                            self.__sfx[2].play()
+                            self._sfx[2].set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                            self._sfx[2].play()
                             self._CellLayer[y][x].set_img(self._image['Special'])
                             self.__EffectedCells[(y,x)] = 4
                             oBoard[(y, x)] = None
@@ -307,20 +300,8 @@ class Foggy_forest(Environment):
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
-        self.__env_ef = pygame.mixer.Sound('assets/music/foggy_forest.wav')
-        super().__int__('foggy_forest', image, width)
-
-    def set_env_sound(self, new_sound = '', new_sfx = ''):
-        """
-        Gán nhạc nền, âm thanh mới cho môi thường
-        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
-        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
-        :return: None
-        """
-        try:
-            self.__env_ef = new_sound
-        except:
-            pass
+        env_ef = pygame.mixer.Sound('assets/music/foggy_forest.wav')
+        super().__int__('foggy_forest', image, width, env_ef = env_ef)
 
     def create_map(self, nBoard):
 
@@ -377,20 +358,8 @@ class Swamp(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
         self.__EffectedCells = {}
-        self.__sfx = pygame.mixer.Sound('assets/music/step_into_mud.wav')
-        super().__int__('swamp', image, width)
-
-    def set_env_sound(self, new_sound = '', new_sfx = ''):
-        """
-        Gán nhạc nền, âm thanh mới cho môi thường
-        :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
-        :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
-        :return: None
-        """
-        try:
-            self.__sfx = ''
-        except:
-            pass
+        sfx = pygame.mixer.Sound('assets/music/step_into_mud.wav')
+        super().__int__('swamp', image, width, sfx = sfx)
 
     def create_map(self, nBoard):
         super().create_map(nBoard)
