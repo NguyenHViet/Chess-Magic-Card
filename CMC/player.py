@@ -111,6 +111,7 @@ class Player:
         Sử dụng bài phép
         :param nBoard: Bàn cờ (board.Board)
         :param indexs: Danh sách vị trí các đối tượng được chọn (tuple(int, int))
+        :param histLog: Lưu lại lịch sử dùng bài
         :return: Kết quả dùng bài phép (str)
         """
         try:
