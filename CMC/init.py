@@ -59,8 +59,8 @@ listImage = {
         'Phase 3': pygame.image.load('assets/img/GEI/card_phase.png')
     },
     'GUI': {
-        'EndTurn': pygame.image.load('assets/img/GUI/end_turn_button.png'),
-        'EnemyTurn': pygame.image.load('assets/img/GUI/enemy_turn_button.png'),
+        'wTurn': pygame.image.load('assets/img/GUI/white_turn.png'),
+        'bTurn': pygame.image.load('assets/img/GUI/black_turn.png'),
         'Choice':pygame.image.load('assets/img/GUI/choice_white.png'),
         'Pause':pygame.image.load('assets/img/GUI/pause_button.png'),
         'Button':pygame.image.load('assets/img/GUI/button.png'),

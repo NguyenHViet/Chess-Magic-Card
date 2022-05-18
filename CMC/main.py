@@ -220,12 +220,15 @@ def updateGUI():
     WIN.blit(init.listImage['GUI']['Lock'], (125, offsetHeight + (turns % 2) * 100))
 
     if Players[turns%2].get_name() != 'BOT':
-        button('', init.listImage['GUI']['EndTurn'], init.listImage['GUI']['Choice'], 35, offsetHeight, 160, 160, end_turn)
         for i in range(len(Players[turns % 2].get_cards())):
             button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10,
                    offsetHeight + (HEIGHT / 3) * i + (HEIGHT) / 8, 50, 50, Players[turns % 2].redraw_card, param=i)
+
+    if Players[turns%2].get_team() == 'b':
+        color = 'white'
     else:
-        drawTextImg('', init.listImage['GUI']['EnemyTurn'], 35, offsetHeight, 160, 160)
+        color = 'black'
+    drawTextImg(Players[turns%2].get_name(), init.listImage['GUI'][Players[turns%2].get_team()+'Turn'], 35, offsetHeight, 160, 160, font=init.font25, color = color)
 
     if Players[turns%2].get_time() - timing < 0:
         turns += 1
@@ -592,7 +595,7 @@ def game_intro():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('CHƠI VỚI MÁY', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game, player1='Player 1', player2='BOT')
+        button('CHƠI VỚI MÁY', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2.5 * interval, 363, 100, setting_game, player1='Player', player2='BOT')
         button('CHƠI 2 NGƯỜI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3.5 * interval, 363, 100, setting_game, player1='Player 1', player2='Player 2')
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4.5 * interval, 363, 100, end_game)
         pygame.display.update()
