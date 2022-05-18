@@ -143,13 +143,13 @@ def setting_game(names):
             env = temp[0]
         pygame.time.delay(50)
 
-    x = 100
+    x = 175
     pygame.time.delay(50)
     while pause:
         textSurface = init.font60.render('TÙY CHỈNH', True, 'white')
         textRect = textSurface.get_rect()
         interval = (WinHeight - offsetHeight) / 6
-        textRect.center = ((WinWidth / 2), offsetHeight * 2 - 50)
+        textRect.center = ((WinWidth / 2), offsetHeight * 2 - 100)
         cell.Cell(0, 0, init.listImage[env]['Background']).draw(WIN, WinHeight, WinWidth)
         WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WIDTH, WinHeight)), (offsetWidth, 0))
         WIN.blit(textSurface, textRect)
@@ -157,25 +157,26 @@ def setting_game(names):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        drawTextImg(timeLeft, init.listImage['GUI']['White Timer'], (WinWidth / 2) - 225, 400 - x, 300, 100, font=init.font50)
-        WIN.blit(init.font15.render('THỜI GIAN TỔNG', True, 'black'), ((WinWidth / 2) - 140, 402 - x))
-        WIN.blit(init.font15.render('PHÚT', True, 'black'), ((WinWidth / 2) - 170, 477 - x))
-        WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) - 20, 477 - x))
-        drawTextImg(str(init.SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], (WinWidth / 2) + 125, 400 - x, 100, 100, font=init.font50)
-        WIN.blit(init.font15.render('THƯỞNG', True, 'black'), ((WinWidth / 2) + 140, 402 - x))
-        WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) + 155, 477 - x))
-        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 180, 330 - x, 60, 50, add_min, value = 60)
-        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 30, 330 - x, 60, 50, add_second, value = 1)
-        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) + 145, 330 - x, 60, 50, add_time_bonus, value = 1)
-        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 180, 520 - x, 60, 50, add_min, value = -60)
-        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 30, 520 - x, 60, 50, add_second, value = -1)
-        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) + 145, 520 - x, 60, 50, add_time_bonus, value = -1)
+        drawTextImg(timeLeft, init.listImage['GUI']['White Timer'], (WinWidth / 2) - 225, 425 - x, 300, 100, font=init.font50)
+        WIN.blit(init.font15.render('THỜI GIAN TỔNG', True, 'black'), ((WinWidth / 2) - 140, 427 - x))
+        WIN.blit(init.font15.render('PHÚT', True, 'black'), ((WinWidth / 2) - 170, 502 - x))
+        WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) - 20, 502 - x))
+        drawTextImg(str(init.SETTINGS['Time Bonus']), init.listImage['GUI']['White Timer'], (WinWidth / 2) + 125, 425 - x, 100, 100, font=init.font50)
+        WIN.blit(init.font15.render('THƯỞNG', True, 'black'), ((WinWidth / 2) + 140, 422 - x))
+        WIN.blit(init.font15.render('GIÂY', True, 'black'), ((WinWidth / 2) + 155, 497 - x))
+        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 180, 360 - x, 60, 50, add_min, value = 60)
+        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) - 30, 360 - x, 60, 50, add_second, value = 1)
+        button('', init.listImage['GUI']['Arrow_Up'], '', (WinWidth / 2) + 145, 360 - x, 60, 50, add_time_bonus, value = 1)
+        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 180, 540 - x, 60, 50, add_min, value = -60)
+        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) - 30, 540 - x, 60, 50, add_second, value = -1)
+        button('', init.listImage['GUI']['Arrow_Down'], '', (WinWidth / 2) + 145, 540 - x, 60, 50, add_time_bonus, value = -1)
 
         button('', init.listImage['GUI']['Arrow_Right'], '', (WinWidth / 2) + 245, 720 - x, 50, 60, next_env, value = 1)
         button('', init.listImage['GUI']['Arrow_Left'], '', (WinWidth / 2) - 295, 720 - x, 50, 60, next_env, value = -1)
         button(env, init.listImage[env]['Background'], init.listImage['GEI']['Darken'], (WinWidth / 2) - 200, 620 - x, 400, 250, new_game, color='white', names=names)
 
-        button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 800, 363, 100, new_game, names=names)
+        button('BẮT ĐẦU!', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 720, 363, 100, new_game, names=names)
+        button('QUAY LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 850, 363, 100, game_intro)
         pygame.display.update()
 
 def mouse_on_board(pos):
@@ -257,8 +258,8 @@ def update_display():
     Cập nhập cửa sổ hiển thị
     :return: None
     """
-    pygame.time.delay(10)
-    WIN.unlock()
+    # pygame.time.delay(10)
+    # WIN.unlock()
     WIN.fill('white')
     nboard.draw(WIN)
     ncard.draw(WIN, init.font40, Players[turns % 2])
@@ -283,6 +284,10 @@ def main():
     """
     pygame.time.delay(50)
     turn_on_music()
+    try:
+        thread.join()
+    except:
+        pass
     global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected
     pause = False
     while True:
@@ -449,6 +454,7 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
     :return: None
     """
     global clicked
+    pygame.time.delay(5)
     img = pygame.transform.scale(img, (width, height))
     WIN.blit(img, (x, y))
     mouse = pygame.mouse.get_pos()
@@ -499,7 +505,7 @@ def paused():
                 if event.key == pygame.K_ESCAPE:
                     main()
         button('CHƠI TIẾP', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, main)
-        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3 * interval, 363, 100, setting_game)
+        button('CHƠI MỚI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3 * interval, 363, 100, setting_game, player1 = Players[0].get_name(), player2 = Players[1].get_name())
         button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4 * interval, 363, 100, game_intro)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 5 * interval, 363, 100, end_game)
         pygame.display.update()
@@ -512,7 +518,7 @@ def endGame():
     pygame.mixer.music.pause()
     global pause
     pause = True
-    textSurface = init.font60.render('Player ' + str(turns % 2 + 1) + ' WIN', True, 'white')
+    textSurface = init.font60.render(Players[turns%2].get_name() + ' WIN', True, 'white')
     textRect = textSurface.get_rect()
     interval = (WinHeight - offsetHeight) / 6
     textRect.center = ((WinWidth / 2), offsetHeight*2)
@@ -523,7 +529,7 @@ def endGame():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end_game()
-        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, new_game, names=names)
+        button('CHƠI LẠI', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 2 * interval, 363, 100, new_game, names={'player1':Players[0].get_name(), 'player2':Players[1].get_name()})
         button('MENU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 3 * interval, 363, 100, game_intro)
         button('THOÁT', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) - 363 / 2, 4 * interval, 363, 100, end_game)
         pygame.display.update()
@@ -635,6 +641,9 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
 
     BestMove = []
 
+    if nBoard.is_finished():
+        return chess.PHASE['End'], -10000
+
     if nTurn > Limit_Turn:
         return chess.PHASE['End'], 0
     Sim_Board, Sim_Players = convert_data(nBoard, nPlayer)
@@ -667,7 +676,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                     sSim_Board.select_Move(tindex, move, histLog=False)
                     result = Simulator_Turn(sSim_Board, sSim_Player, nTurn + 1)
                     point = sSim_Board.get_Score(playingTeam) - result[-1]
-                    # print(object[1].convert_to_readable(), nTurn, tindex, move, point)
+                    print(object[1].convert_to_readable(), nTurn, tindex, move, point)
                     if point > tPoint:
                         tPoint = point
                         tIndex = move
@@ -683,69 +692,66 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                 elif tPoint == maxPoint:
                     BestMove += recommentMoves
 
-                try:
-                    for i in range(len(nCard)):
-                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
-                        rBoard = cSim_Board.getrBoard()
-                        required = cSim_Player[nTurn%2].pick_card(i)
-                        CastMagic = cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])])
-                        if 'Fail' not in CastMagic and required == 2 and Sim_Players[nTurn%2].get_name() == 'BOT':
-                            tPoint = -999
-                            tIndex = 0
-                            for x in range(8):
-                                for y in range(8):
-                                    if 'x' in rBoard[x][y]:
-                                        # print(rBoard[x][y], (x, y))
-                                        cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
-                                        cSim_Player[nTurn % 2].pick_card(i)
-                                        if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
-                                            result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
-                                            point = cSim_Board.get_Score(playingTeam) - result[-1]
-                                            # print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
-                                            if point > tPoint:
-                                                tPoint = point
-                                                tIndex = (x, y)
-                                                recommentMoves = [('Card', tindex, tIndex, i)]
-                                            elif point == tPoint:
-                                                tPoint = point
-                                                tIndex = (x, y)
-                                                recommentMoves.append(('Card', tindex, tIndex, i))
-                                            elif point < minCard:
-                                                minCard  = point
-                                                redraw = i
-                            if tPoint > maxPoint:
-                                maxPoint = tPoint
-                                BestMove = recommentMoves
-                            elif tPoint == maxPoint:
-                                BestMove += recommentMoves
-                        elif 'Casted' in CastMagic and required == 2 and Sim_Players[nTurn%2].get_name() == 'BOT':
-                            result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
-                            point = cSim_Board.get_Score(playingTeam) - result[-1]
-                            # print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
-                            if point > maxPoint:
-                                maxPoint = point
-                                tIndex = []
-                                BestMove = [('Card', tindex, tIndex, i)]
-                            elif point == maxPoint:
-                                tPoint = point
-                                tIndex = []
-                                recommentMoves.append(('Card', tindex, tIndex, i))
-                            elif point < minCard:
-                                minCard = point
-                                redraw = i
-
-                except:
-                    print('Error')
+                # try:
+                #     for i in range(len(nCard)):
+                #         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                #         rBoard = cSim_Board.getrBoard()
+                #         required = cSim_Player[nTurn%2].pick_card(i)
+                #         CastMagic = cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])])
+                #         if 'Fail' not in CastMagic and required == 2 and Sim_Players[nTurn%2].get_name() == 'BOT':
+                #             tPoint = -999
+                #             tIndex = 0
+                #             for x in range(8):
+                #                 for y in range(8):
+                #                     if 'x' in rBoard[x][y]:
+                #                         # print(rBoard[x][y], (x, y))
+                #                         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
+                #                         cSim_Player[nTurn % 2].pick_card(i)
+                #                         if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
+                #                             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
+                #                             point = cSim_Board.get_Score(playingTeam) - result[-1]
+                #                             print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
+                #                             if point > tPoint:
+                #                                 tPoint = point
+                #                                 tIndex = (x, y)
+                #                                 recommentMoves = [('Card', tindex, tIndex, i)]
+                #                             elif point == tPoint:
+                #                                 tPoint = point
+                #                                 tIndex = (x, y)
+                #                                 recommentMoves.append(('Card', tindex, tIndex, i))
+                #                             elif point < minCard:
+                #                                 minCard  = point
+                #                                 redraw = i
+                #             if tPoint > maxPoint:
+                #                 maxPoint = tPoint
+                #                 BestMove = recommentMoves
+                #             elif tPoint == maxPoint:
+                #                 BestMove += recommentMoves
+                #         elif 'Casted' in CastMagic and required == 2 and Sim_Players[nTurn%2].get_name() == 'BOT':
+                #             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
+                #             point = cSim_Board.get_Score(playingTeam) - result[-1]
+                #             # print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
+                #             if point > maxPoint:
+                #                 maxPoint = point
+                #                 tIndex = []
+                #                 BestMove = [('Card', tindex, tIndex, i)]
+                #             elif point == maxPoint:
+                #                 tPoint = point
+                #                 tIndex = []
+                #                 recommentMoves.append(('Card', tindex, tIndex, i))
+                #             elif point < minCard:
+                #                 minCard = point
+                #                 redraw = i
+                # except:
+                #     print('Error')
         except:
             pass
 
     choice = random.choice(BestMove)
-    # print(BestMove)
-    # print(playingTeam, oBoard[(index0[1], index0[0])].convert_to_readable(), index0, index1, maxPoint)
+    print(BestMove, maxPoint)
     nPlayer[nTurn%2].redraw_card({'param':redraw})
     if choice[0] == 'Chess':
         nBoard.select_Chess(choice[1], 2, playingTeam)
-        pygame.time.delay(500)
         if nTurn == Start_Turn:
             nBoard.select_Move(choice[1], choice[2])
         else:
@@ -753,8 +759,8 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
         return chess.PHASE['End'], maxPoint
     elif choice[0] == 'Card':
         nPlayer[nTurn%2].pick_card(choice[3])
-        pygame.time.delay(500)
-        nPlayer[nTurn%2].play_card(nBoard, choice[1] + choice[2])
+        if nTurn == Start_Turn:
+            nPlayer[nTurn%2].play_card(nBoard, choice[1:3], histLog=True)
+        else:
+            nPlayer[nTurn%2].play_card(nBoard, choice[1:3])
         return chess.PHASE['End'], maxPoint
-
-gui_thread = Thread(target=update_display, args=(nboard, pygame.mouse.get_pos(), turns, phase))

@@ -163,7 +163,7 @@ class Card:
             result = []
             for effect in effects:
                 try:
-                    result.append(copy.copy(effect).active_effect(nBoard, indexs, 3, options = self.__options, playTeam = playTeam, histLog = histLog))
+                    result.append(copy.copy(effect).active_effect(nBoard, indexs, phase, options = self.__options, playTeam = playTeam, histLog = histLog))
                     effect.unactive_effect()
                 except:
                     result.append(ef.STATUS[1])
@@ -171,8 +171,23 @@ class Card:
                 result[result.index(ef.STATUS[3])] = 'Casted'
             return result
 
-        def MultiEffects():
-            pass
+        def CastMagic(effects, nBoard, indexs):
+            phase = 3
+            result = []
+            AOE = False
+            friendlyfire = True
+            allMap = False
+            if not allMap:
+                result.append(ef.Effect('PushChess', turns = 1, phase = 3, value = 1).active_effect(nBoard, [indexs[0]], phase, options = self.__options, playTeam = playTeam, histLog = histLog, enemy=friendlyfire))
+            try:
+                if not AOE:
+                    result.append(GrantEffects(self.__effects, nBoard, [indexs[1]]))
+            except:
+                pass
+            if ef.STATUS[3] in result:
+                result[result.index(ef.STATUS[3])] = 'Casted'
+            return result
+
 
         try:
             result = locals()[self.__skillCard](self.__effects, nBoard, indexs)
