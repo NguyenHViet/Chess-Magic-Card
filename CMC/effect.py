@@ -208,7 +208,7 @@ class Effect:
 
                 if len(indexs) == 2:
                     new_index = indexs[1]
-                    if nBoard.select_Move(index, new_index, triggeredEffect = False, swap = swap, HistLog=options['HistLog']):
+                    if nBoard.select_Move(index, new_index, triggeredEffect = False, swap = swap, histLog=options['histLog']):
                         self.unactive_effect()
                         return STATUS[3]
                     else:

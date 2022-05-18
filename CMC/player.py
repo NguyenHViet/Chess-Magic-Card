@@ -106,7 +106,7 @@ class Player:
         """
         self.__picking = None
 
-    def play_card(self, nBoard, indexs, histLog=True):
+    def play_card(self, nBoard, indexs, histLog = False):
         """
         Sử dụng bài phép
         :param nBoard: Bàn cờ (board.Board)
