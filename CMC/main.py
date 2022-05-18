@@ -55,23 +55,6 @@ required = 0
 selectedPos = []
 playingTeam = 'w'
 
-def update_event():
-    global clicked
-    for event in pygame.event.get():
-        if event.type == MUSIC_END:
-            pygame.mixer.music.queue(init.listMusic[0])
-            init.listMusic.append(init.listMusic.pop(0))
-
-        if event.type == pygame.QUIT:
-            end_game()
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            clicked = True
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                paused()
-
 def turn_off_music():
     """
     Tạm dừng nhạc nền
