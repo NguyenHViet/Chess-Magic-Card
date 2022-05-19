@@ -676,7 +676,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                     sSim_Board.select_Move(tindex, move, histLog=False)
                     result = Simulator_Turn(sSim_Board, sSim_Player, nTurn + 1)
                     point = sSim_Board.get_Score(playingTeam) - result[-1]
-                    print(object[1].convert_to_readable(), nTurn, tindex, move, point)
+                    # print(object[1].convert_to_readable(), nTurn, tindex, move, point)
                     if point > tPoint:
                         tPoint = point
                         tIndex = move
@@ -710,7 +710,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                                         if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
                                             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
                                             point = cSim_Board.get_Score(playingTeam) - result[-1]
-                                            print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
+                                            # print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
                                             if point > tPoint:
                                                 tPoint = point
                                                 tIndex = (x, y)
@@ -748,7 +748,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
             pass
 
     choice = random.choice(BestMove)
-    print(BestMove, maxPoint)
+    # print(BestMove, maxPoint)
     nPlayer[nTurn%2].redraw_card({'param':redraw})
     if choice[0] == 'Chess':
         nBoard.select_Chess(choice[1], 2, playingTeam)
