@@ -351,11 +351,12 @@ class Board:
                 try:
                     if self.__OjectLayer[(index1[1], index1[0])].get_killable():
                         sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
-                        if '-' in self.__readableMap[index1[0]][index1[1]]:
+                        if 'x' in self.__readableMap[index1[0]][index1[1]]:
                             sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
                             sfx.play()
                     elif '-' in self.__readableMap[index1[0]][index1[1]]:
-                        self.__enviroment.play_sfx()
+                        if histLog:
+                            self.__enviroment.play_sfx(0)
                 except:
                     pass
                 if histLog:

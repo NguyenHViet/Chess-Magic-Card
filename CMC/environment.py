@@ -32,11 +32,11 @@ class Environment:
         dup_env1 = copy.copy(self)
         dup_env1.set_img('')
         dup_env1.set_cellLayer([])
-        dup_env1.set_env_sound('', '')
+        dup_env1.set_env_sound('', [])
         dup_env2 = copy.deepcopy(dup_env1)
         return dup_env2
 
-    def set_env_sound(self, new_sound = '', new_sfx = ''):
+    def set_env_sound(self, new_sound = '', new_sfx = []):
         """
         Gán nhạc nền, âm thanh mới cho môi thường
         :param new_sound: Nhạc nền mới (pygame.mixer.Sound)
@@ -49,16 +49,8 @@ class Environment:
         :param new_sfx: Âm thanh mới (pygame.mixer.Sound)
         :return: None
         """
-        try:
-            self._env_ef = new_sound
-        except:
-            pass
-
-        try:
-            self.__sfx = new_sfx
-        except:
-            pass
-
+        self._env_ef = new_sound
+        self._sfx = new_sfx
 
     def set_img(self, new_img):
         """
@@ -166,20 +158,20 @@ class Desert(Environment):
         cBoard = nBoard.getcBoard()
         if phase == chess.PHASE['Start']:
             try:
-                if turn%6 == 0:
+                if turn%8 == 0:
                     self.__epos = (random.randint(1, 4), random.randint(0, 4))
                     self.__ewh = (random.randint(2, 3), random.randint(3, 4))
                 x, y = self.__epos
                 w, h = self.__ewh
-                if turn%6 < 2:
+                if turn%8 < 2:
                     for i in range(w):
                         for j in range(h):
                             self._CellLayer[j  + y][i + x].set_img(self._image['Prepare'])
-                elif turn%6 == 2:
+                elif turn%8 == 2:
                     self.__env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
                     self.__env_ef.play(-1)
 
-                if turn%6 < 5 and turn%6 >= 2:
+                if turn%8 < 7 and turn%8 >= 2:
                     for i in range(w):
                         for j in range(h):
                             cBoard[j  + y][i + x].set_img(self._image['Special'])
@@ -190,7 +182,7 @@ class Desert(Environment):
                                     oBoard[(j + y, i + x)] = chess.Chess('-', '', '', '')
                             except:
                                 pass
-                elif turn%6 == 5:
+                elif turn%8 == 7:
                     self._CellLayer = self.create_map(nBoard)
                     for i in range(w):
                         for j in range(h):
@@ -264,22 +256,19 @@ class Frozen_river(Environment):
                         if oBoard[(y, x)] != None:
                             self.__EffectedCells[(y, x)] -= 1
                             if self.__EffectedCells[(y, x)] <= 2:
-                                self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                                self._sfx[0].play()
+                                self.play_sfx(0)
                                 self._CellLayer[y][x].set_img(self._image['Special 2'])
                         elif self.__EffectedCells[(y, x)] < 4:
                             self.__EffectedCells[(y, x)] = 4
                             self._CellLayer[y][x].set_img(self._image['Special'])
                         if self.__EffectedCells[(y, x)] <= 0:
-                            self._sfx[1].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                            self._sfx[1].play()
+                            self.play_sfx(1)
                             self._CellLayer[y][x].set_img(self._image['Triggered_effect'])
                             oBoard[(y, x)] = chess.Chess('', '!', '', '', effects=[ef.Effect('Unselectable', turns = 3)])
                             rBoard[x][y] = '!'
                             self.__EffectedCells[(y, x)] -= 1
                         if self.__EffectedCells[(y, x)] <= -4:
-                            self._sfx[2].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                            self._sfx[2].play()
+                            self.play_sfx(2)
                             self._CellLayer[y][x].set_img(self._image['Special'])
                             self.__EffectedCells[(y,x)] = 4
                             oBoard[(y, x)] = None
@@ -287,7 +276,12 @@ class Frozen_river(Environment):
                     except:
                         pass
 
-
+    def play_sfx(self, id):
+        try:
+            self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
+            self._sfx[0].play()
+        except:
+            pass
 
 class Foggy_forest(Environment):
     """
@@ -357,7 +351,7 @@ class Swamp(Environment):
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
         """
         self.__EffectedCells = {}
-        sfx = pygame.mixer.Sound('assets/music/step_into_mud.wav')
+        sfx = [pygame.mixer.Sound('assets/music/step_into_mud.wav')]
         super().__int__('swamp', image, width, sfx = sfx)
 
     def create_map(self, nBoard):
@@ -398,9 +392,12 @@ class Swamp(Environment):
                     except:
                         pass
 
-    def play_sfx(self):
-        self.__sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
-        self.__sfx.play()
+    def play_sfx(self, id):
+        try:
+            self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
+            self._sfx[0].play()
+        except:
+            pass
 
 class Grassland(Environment):
     """

@@ -585,6 +585,9 @@ def check_evolutions():
             except:
                 pass
 
+def tutorial():
+    pass
+
 def game_intro():
     """
     Màn hình chờ của game
@@ -662,7 +665,6 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
         try:
             if object[1].get_team() == playingTeam:
                 tindex = (object[0][1], object[0][0])
-
                 sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
                 selected, moves = sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
                 if not selected:
@@ -671,6 +673,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                 tIndex = 0
                 recommentMoves = []
                 for move in moves:
+                    del sSim_Board, sSim_Player
                     sSim_Board, sSim_Player = convert_data(Sim_Board, Sim_Players)
                     sSim_Board.select_Chess((object[0][1], object[0][0]), 2, playingTeam)
                     sSim_Board.select_Move(tindex, move, histLog=False)
@@ -691,14 +694,15 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                     BestMove = recommentMoves
                 elif tPoint == maxPoint:
                     BestMove += recommentMoves
+                del sSim_Board, sSim_Player
 
-                try:
-                    for i in range(len(nCard)):
+                for i in range(len(nCard)):
+                    try:
                         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
                         rBoard = cSim_Board.getrBoard()
-                        required = cSim_Player[nTurn%2].pick_card(i)
-                        CastMagic = cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0])])
-                        if 'Fail' not in CastMagic and required == 2 and Sim_Players[nTurn%2].get_name() == 'BOT':
+                        required = cSim_Player[nTurn % 2].pick_card(i)
+                        CastMagic = cSim_Player[nTurn % 2].play_card(cSim_Board, [(object[0][1], object[0][0])])
+                        if 'Fail' not in CastMagic and required == 2 and Sim_Players[nTurn % 2].get_name() == 'BOT':
                             tPoint = -999
                             tIndex = 0
                             for x in range(8):
@@ -707,7 +711,9 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                                         # print(rBoard[x][y], (x, y))
                                         cSim_Board, cSim_Player = convert_data(Sim_Board, Sim_Players)
                                         cSim_Player[nTurn % 2].pick_card(i)
-                                        if 'Casted' in cSim_Player[nTurn%2].play_card(cSim_Board, [(object[0][1], object[0][0]), (x, y)]):
+                                        if 'Casted' in cSim_Player[nTurn % 2].play_card(cSim_Board,
+                                                                                        [(object[0][1], object[0][0]),
+                                                                                         (x, y)]):
                                             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
                                             point = cSim_Board.get_Score(playingTeam) - result[-1]
                                             # print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
@@ -720,14 +726,14 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                                                 tIndex = (x, y)
                                                 recommentMoves.append(('Card', tindex, tIndex, i))
                                             elif point < minCard:
-                                                minCard  = point
+                                                minCard = point
                                                 redraw = i
                             if tPoint > maxPoint:
                                 maxPoint = tPoint
                                 BestMove = recommentMoves
                             elif tPoint == maxPoint:
                                 BestMove += recommentMoves
-                        elif 'Casted' in CastMagic and required == 2 and Sim_Players[nTurn%2].get_name() == 'BOT':
+                        elif 'Casted' in CastMagic and required == 2 and Sim_Players[nTurn % 2].get_name() == 'BOT':
                             result = Simulator_Turn(cSim_Board, cSim_Player, nTurn + 1)
                             point = cSim_Board.get_Score(playingTeam) - result[-1]
                             # print(nCard[i].get_name(), object[1].convert_to_readable(), tindex, (x, y), point)
@@ -742,8 +748,10 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
                             elif point < minCard:
                                 minCard = point
                                 redraw = i
-                except:
-                    print('Error')
+                        del cSim_Board, cSim_Player
+                    except:
+                        del cSim_Board, cSim_Player
+                        print('Error')
         except:
             pass
 
