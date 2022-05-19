@@ -87,7 +87,7 @@ def new_game(playername):
     pygame.time.delay(50)
     Names = playername['names']
     init.HistoryLog = [' ' for i in range (6)]
-    init.HistoryLog.append('New Round!')
+    init.HistoryLog.append('Bắt đầu trận đấu')
     random.shuffle(init.listMusic)
     pygame.mixer.music.load(init.listMusic[0])
     init.listMusic.append(init.listMusic.pop(0))
@@ -252,7 +252,8 @@ def updateGUI():
 
     drawTextImg('', init.listImage['GUI']['History Log'], 35, offsetHeight + 420, 350, 350, font=init.font25, color = color)
     for i in range(len(init.HistoryLog)):
-        card.drawText(WIN, init.HistoryLog[i], 'white', ((100, offsetHeight + 450 + i*40), (300, 100)), init.font20)
+        drawTextImg(init.HistoryLog[i], '', 75, offsetHeight + 450 + i*40, 300, 100, font = init.font15, color = 'red', center = False)
+        # card.drawText(WIN, init.HistoryLog[i], 'white', ((90, offsetHeight + 450 + i*40), (300, 100)), init.font15)
 
 def update_display():
     """
@@ -389,7 +390,7 @@ def main():
                             nboard.deselect()
                             nboard.controlledCells(phase, playingTeam)
                             index = nboard.find_Cell(pos)
-                            result = Players[turns%2].play_card(nboard, selectedPos + [index])
+                            result = Players[turns%2].play_card(nboard, selectedPos + [index], histLog = True)
                             if 'Fail' not in result:
                                 selectedPos.append(index)
                         else:
@@ -418,7 +419,7 @@ def main():
         phase, turns = nboard.update(phase, turns, playingTeam)
         clicked = False
 
-def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.font40, **param):
+def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.font40, center = True, **param):
     """
     In các hình ảnh có chữ phía trên
     :param text: Văn bản hiển thị trên nút (str)
@@ -432,11 +433,17 @@ def drawTextImg(text, img, x, y, width, height, color = 'black', font = init.fon
     :param param: Các giá trị tùy chọn
     :return: None
     """
-    img = pygame.transform.scale(img, (width, height))
-    WIN.blit(img, (x, y))
+    try:
+        img = pygame.transform.scale(img, (width, height))
+        WIN.blit(img, (x, y))
+    except:
+        pass
     textSurface = font.render(text, True, color)
-    textRect = textSurface.get_rect()
-    textRect.center = ((x + (width / 2)), (y + (height / 2)))
+    if center:
+        textRect = textSurface.get_rect()
+        textRect.center = ((x + (width / 2)), (y + (height / 2)))
+    else:
+        textRect = ((x, y), (width, height))
     WIN.blit(textSurface, textRect)
 
 def button(text, img, img_h, x, y, width, height, action = None, color = 'black', font = init.font40, **param):

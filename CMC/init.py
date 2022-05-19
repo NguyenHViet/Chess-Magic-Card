@@ -10,6 +10,17 @@ pygame.mixer.init()
 
 HistoryLog = ' '
 
+ENCODE = {
+    'b': 'Đen',
+    'w': 'Trắng',
+    'Pawn':'Chốt',
+    'Rook':'Xa',
+    'Knight':'Mã',
+    'Bishop':'Tượng',
+    'Queen':'Hậu',
+    'King':'Vua'
+}
+
 SETTINGS = {
     'Music Volumn': 10,
     'Sound Volumn': 10,

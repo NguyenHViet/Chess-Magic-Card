@@ -361,7 +361,9 @@ class Board:
                     pass
                 if histLog:
                     init.HistoryLog.pop(0)
-                    init.HistoryLog.append('{}: {} -> {}'.format(self.__OjectLayer[(index0[1], index0[0])].get_type(), index0, index1))
+                    init.HistoryLog.append('{} {}: {}{} -> {}{}'.format(init.ENCODE[self.__OjectLayer[(index0[1], index0[0])].get_type()],
+                                                                    init.ENCODE[self.__OjectLayer[(index0[1], index0[0])].get_team()],
+                                                                    8 - index0[0], chr(65 + index0[1]), 8 - index1[0], chr(65 + index1[1])))
                 # print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:
