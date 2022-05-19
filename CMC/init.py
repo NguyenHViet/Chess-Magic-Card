@@ -17,6 +17,7 @@ SETTINGS = {
     'Time Bonus': 10,
     'AddTimeable': True,
     'TotalActions': 15,
+    'Tutorial Seen': False
 }
 
 listImage = {
@@ -80,7 +81,9 @@ listImage = {
         'Unmute': pygame.image.load('assets/img/GUI/unmute_button.png'),
         'Env Timer':pygame.image.load('assets/img/GUI/evironment_timer.png'),
         'Env Timer Ef': pygame.image.load('assets/img/GUI/evironment_timer_ef.png'),
-        'History Log': pygame.image.load('assets/img/GUI/Hist_Log.png')
+        'History Log': pygame.image.load('assets/img/GUI/Hist_Log.png'),
+        'Help':pygame.image.load('assets/img/GUI/help.png'),
+        'Tutorial':pygame.image.load('assets/img/GUI/tutorial.png')
     },
     'Cards': {
         '01':pygame.image.load('assets/img/Card/01.png'),

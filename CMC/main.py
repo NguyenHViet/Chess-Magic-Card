@@ -236,9 +236,10 @@ def updateGUI():
         turns += 1
         endGame()
     if pygame.mixer.music.get_busy():
-        button("", init.listImage['GUI']['Mute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_off_music)
+        button("", init.listImage['GUI']['Mute'], init.listImage['GUI']['Choice'], 80, 30, 40, 40, turn_off_music)
     else:
-        button("", init.listImage['GUI']['Unmute'], init.listImage['GUI']['Choice'], 90, 40, 30, 30, turn_on_music)
+        button("", init.listImage['GUI']['Unmute'], init.listImage['GUI']['Choice'], 80, 30, 40, 40, turn_on_music)
+    button("", init.listImage['GUI']['Help'], init.listImage['GUI']['Choice'], 130, 30, 40, 40, tutorial)
 
     drawTextImg('{}'.format(env), init.listImage['GUI']['Env Timer'], 45, offsetHeight + 200, 320, 100, font=init.font30)
     WIN.blit(init.listImage['GUI']['Env Timer Ef'], (48, offsetHeight + 200))
@@ -288,6 +289,8 @@ def main():
         thread.join()
     except:
         pass
+    if not init.SETTINGS['Tutorial Seen']:
+        tutorial()
     global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected
     pause = False
     while True:
@@ -586,7 +589,20 @@ def check_evolutions():
                 pass
 
 def tutorial():
-    pass
+    global pause
+    init.SETTINGS['Tutorial Seen'] = True
+    pause = True
+    WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
+    while pause:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end_game()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    main()
+        WIN.blit(init.listImage['GUI']['Tutorial'], (offsetWidth - 68, offsetHeight - 68))
+        button('ĐÃ HIỂU', init.listImage['GUI']['Button'], init.listImage['GUI']['Hover_Button'], (WinWidth / 2) + 175, WinHeight - 125, 250, 75, main, font=init.font30)
+        pygame.display.update()
 
 def game_intro():
     """
