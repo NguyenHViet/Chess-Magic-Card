@@ -60,6 +60,7 @@ listImage = {
         'Darker':pygame.image.load('assets/img/GEI/darker.png'),
         'Move':pygame.image.load('assets/img/GEI/move.png'),
         'Choice':pygame.image.load('assets/img/GEI/choice.png'),
+        'Choice_': pygame.image.load('assets/img/GEI/choice_white.png'),
         'Hover':pygame.image.load('assets/img/GEI/choice_magic.png'),
         'Card_Hover':pygame.image.load('assets/img/GEI/card_hover.png'),
         'Card_Picking':pygame.image.load('assets/img/GEI/picking_card.png'),
@@ -107,6 +108,7 @@ listImage = {
         '08': pygame.image.load('assets/img/Card/08.png'),
         '09': pygame.image.load('assets/img/Card/09.png'),
         '10': pygame.image.load('assets/img/Card/10.png'),
+        '11': pygame.image.load('assets/img/Card/11.png'),
     },
     'Desert': {
         'Normal':pygame.image.load('assets/img/Environment/desert_normal.png'),
@@ -187,7 +189,9 @@ DECK = [
     Card('Hoán Đổi Không Gian', 5, listImage['Cards']['09'], 'Đổi vị trí của 2 quân cờ đứng cách nhau 1 ô',
          'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=2)], directions=['Around'], killable=False, swap=True),
     Card('Sợi Xích Ma Thuật', 4, listImage['Cards']['10'], '1 quân cờ địch đững cạnh đồng minh không thể di chuyển trong lượt tiếp theo',
-         'CastMagic', 2, [ef.Effect('IncreaseSpeed', turns=2, phase=2, value=-10)], directions=['Around'], killable=False, swap=True),
+         'CastMagic', 2, [ef.Effect('IncreaseSpeed', turns=2, phase=2, value=-10)], directions=['Around'], killable=False, swap=True, area = 1),
+    Card('Vụ Nổ Băng Giá', 5, listImage['Cards']['11'], 'Toàn bộ quân cờ nằm trong khu vực 3x3 được chọn không thể di chuyển trong 2 lượt tiếp theo',
+         'CastMagic', 1, [ef.Effect('IncreaseSpeed', turns=3, phase=2, value=-10)], directions=['Around'], killable=False, swap=True, allMap = True, area = 1, AOE=True, friendlyfire = True),
 ]
 
 ENVIRONMENT = {

@@ -179,6 +179,11 @@ class Effect:
                 try:
                     if not options['enemy']:
                         target = [options['playTeam']]
+                    else:
+                        if options['playTeam'] == 'b':
+                            target = ['w']
+                        else:
+                            target = ['b']
                 except:
                     target = ['b', 'w']
 

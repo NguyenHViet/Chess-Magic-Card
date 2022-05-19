@@ -192,7 +192,7 @@ class Board:
         """
         return self.__y
 
-    def draw(self, win):
+    def draw(self, win, phase = 0, area = 1):
         """
         Hàm in các hình ảnh lên cửa sổ hiển thị
         :param win: Cửa sổ hiển thị (pygame.display)
@@ -204,12 +204,13 @@ class Board:
             for col in range(8):
                 if (row+col) % 2 == 1:
                     win.blit(self.__GEI['Darker'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
-                # if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
-                #     win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if 'x' in self.__readableMap[col][row]:
                     win.blit(self.__GEI['Move'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 elif ':' in (self.__readableMap[col][row]):
                     win.blit(self.__GEI['Choice'],
+                             (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
+                elif '@' in (self.__readableMap[col][row]):
+                    win.blit(self.__GEI['Choice_'],
                              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 # elif '#' in (self.__readableMap[col][row]):
                 #     win.blit(self.__GEI['Hover'],
@@ -217,6 +218,11 @@ class Board:
                 if not self.__OjectLayer[(row, col)] == None:
                     self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
                 self.__CellLayer[row][col].draw(win)
+                if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()) and phase == chess.PHASE['Cast']:
+                    img = pygame.transform.scale(self.__GEI['Hover'], ((area*2 + 1)*100, (area*2 + 1)*100))
+                    rect = img.get_rect()
+                    rect.center = (self.__CellLayer[row][col].get_x() + 50, self.__CellLayer[row][col].get_y() + 50)
+                    win.blit(img, rect)
 
     def printMap(self):
         """
@@ -266,7 +272,7 @@ class Board:
         except:
             return False
 
-    def select_Chess(self, index, phase, playingTeam = 'b', set_move = True):
+    def select_Chess(self, index, phase, playingTeam = 'b', set_move = True, allChess = False):
         """
         Chọn quân cờ
         :param index: Tọa độ trên bàn cờ (tuple(int, int)
@@ -277,7 +283,7 @@ class Board:
         """
         y, x = index
         moves = []
-        if self.check_Team((x, y), playingTeam):
+        if self.check_Team((x, y), playingTeam) or allChess:
             # print("Team turn:", playingTeam)
             result = self.__OjectLayer[(x, y)].active_effects(self, index, phase)
             if ef.STATUS[1] in result:

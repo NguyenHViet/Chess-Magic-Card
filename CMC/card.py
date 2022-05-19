@@ -4,6 +4,7 @@ import pygame
 import CMC.effect as ef
 import CMC.cell as cell
 import CMC.init as init
+import CMC.chess as chess
 
 
 def drawText(surface, text, color, rect, font, bkg=None):
@@ -45,7 +46,7 @@ class Card:
     """
     Lớp "Bài phép"
     """
-    def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = [], **options):
+    def __init__(self, name, cost, img, descibe = '', skillCard = '', selectedRequire = 0, effects = [], area=0, **options):
         """
         Hàm khởi tạo bài phép
         :param name: Tên bài phép (str)
@@ -66,6 +67,21 @@ class Card:
         self.__selected_require = selectedRequire
         self.__skillCard = skillCard
         self.__options = options
+        self.__area = area
+
+    def get_area(self):
+        """
+        Lấy tầm ảnh hưởng của phép
+        :return: Tầm ảnh hưởng (int)
+        """
+        return self.__area
+
+    def get_option(self):
+        """
+        Lấy các thông số khác của lá bài
+        :return: Các thông số khác (list(Any))
+        """
+        return self.__options
 
     def duplication(self):
         """
@@ -139,7 +155,7 @@ class Card:
         """
         return self.__selected_require
 
-    def play_card(self, nBoard, indexs, playTeam, histLog=False):
+    def play_card(self, nBoard, indexs=[], playTeam='w', histLog=False):
         """
         Sử dụng bài phép và kích hoạt kĩ năng bài tương ứng
         :param nBoard: Bàn cờ (board.Board)
@@ -147,16 +163,36 @@ class Card:
         :param playTeam: Đội đang trong lượt
         :return: Kết quả (str)
         """
-        def GrantEffects(effects, nBoard, indexs):
+        allMap = False
+        try:
+            allMap = self.__options['allMap']
+        except:
+            pass
+        AOE = False
+        try:
+            AOE = self.__options['AOE']
+        except:
+            pass
+        friendlyfire = False
+        try:
+            friendlyfire = self.__options['friendlyfire']
+        except:
+            pass
+        def GrantEffects(effects, nBoard, indexs, allChess = False):
             try:
                 index = indexs[0]
                 oBoard = nBoard.getoBoard()
-                nBoard.select_Chess(index, 3, playTeam, False)
-                for effect in effects:
-                    oBoard[(index[1], index[0])].add_effect(copy.copy(effect))
-                return 'Casted'
+                print(index)
+                result = nBoard.select_Chess(index, 3, playTeam, False, allChess=allChess)
+                if result[0]:
+                    for effect in effects:
+                        oBoard[(index[1], index[0])].add_effect(copy.copy(effect))
+                        nBoard.deseclect()
+                    return 'Casted'
+                else:
+                    return ef.STATUS[0]
             except:
-                return ef.STATUS[1]
+                return ef.STATUS[0]
 
         def ActiveEffects(effects, nBoard, indexs):
             phase = 3
@@ -174,20 +210,45 @@ class Card:
         def CastMagic(effects, nBoard, indexs):
             phase = 3
             result = []
-            AOE = False
-            friendlyfire = True
-            allMap = False
+            rBoard = nBoard.getrBoard()
+            oBoard = nBoard.getoBoard()
+
             if not allMap:
-                result.append(ef.Effect('PushChess', turns = 1, phase = 3, value = 1).active_effect(nBoard, [indexs[0]], phase, options = self.__options, playTeam = playTeam, histLog = histLog, enemy=friendlyfire))
+                result.append(ef.Effect('PushChess', turns = 1, phase = 3, value = self.__area).active_effect(nBoard, [indexs[0]], phase, options = self.__options, playTeam = playTeam, histLog = histLog, enemy= not friendlyfire))
+
             try:
                 if not AOE:
-                    result.append(GrantEffects(self.__effects, nBoard, [indexs[1]]))
+                    result.append(GrantEffects(self.__effects, nBoard, [indexs[1]], allChess = friendlyfire))
+                else:
+                    if indexs[0][0] < 2 or indexs[0][0] > 5:
+                        return [ef.STATUS[1]]
+                    for y in range(-(self.__area), self.__area + 1):
+                        for x in range(-(self.__area), self.__area + 1):
+                            if chess.on_board((indexs[0][1] + y, indexs[0][0] + x)):
+                                result.append(GrantEffects(self.__effects, nBoard, [(indexs[0][0] + x, indexs[0][1] + y)], allChess = friendlyfire))
+
             except:
                 pass
             if ef.STATUS[3] in result:
                 result[result.index(ef.STATUS[3])] = 'Casted'
             return result
 
+        if indexs == []:
+            rBoard = nBoard.getrBoard()
+            oBoard = nBoard.getoBoard()
+            if not allMap:
+                for i in range(8):
+                    for j in range(8):
+                        try:
+                            if oBoard[(j, i)].get_team() == playTeam:
+                                rBoard[i][j] += '@'
+                        except:
+                            pass
+            else:
+                for i in range(2, 6):
+                    for j in range(8):
+                        rBoard[i][j] += '@'
+            return []
 
         try:
             result = locals()[self.__skillCard](self.__effects, nBoard, indexs)

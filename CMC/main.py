@@ -260,13 +260,26 @@ def update_display():
     Cập nhập cửa sổ hiển thị
     :return: None
     """
-    # pygame.time.delay(10)
-    # WIN.unlock()
-    WIN.fill('white')
-    nboard.draw(WIN)
-    ncard.draw(WIN, init.font40, Players[turns % 2])
-    updateGUI()
-    pygame.display.update()
+    while not pause:
+        pygame.time.delay(10)
+        WIN.unlock()
+        try:
+            try:
+                area = Players[turns % 2].get_cards()[Players[turns % 2].get_picking()].get_area()
+            except:
+                area = 0
+            WIN.fill('white')
+            nboard.draw(WIN, phase, area)
+            ncard.draw(WIN, init.font40, Players[turns % 2])
+            updateGUI()
+            pygame.display.update()
+        except:
+            continue
+    # WIN.fill('white')
+    # nboard.draw(WIN)
+    # ncard.draw(WIN, init.font40, Players[turns % 2])
+    # updateGUI()
+    # pygame.display.update()
 
 def BOT_Turn():
     """
@@ -294,8 +307,11 @@ def main():
         tutorial()
     global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected
     pause = False
+    gui_thread = Thread(target=update_display)
+    gui_thread.setDaemon(True)
+    gui_thread.start()
     while True:
-        update_display()
+        # update_display()
         if phase == chess.PHASE['Start']:
             selected = False
             required = 0
@@ -379,6 +395,7 @@ def main():
                                     required = Players[turns % 2].pick_card(index)
                                     if required != -1:
                                         selected = True
+                                        Players[turns % 2].play_card(nboard)
                                     else:
                                         phase = chess.PHASE['Picking']
                                 else:
@@ -393,6 +410,11 @@ def main():
                             result = Players[turns%2].play_card(nboard, selectedPos + [index], histLog = True)
                             if 'Fail' not in result:
                                 selectedPos.append(index)
+                            else:
+                                Players[turns % 2].decelect()
+                                selectedPos = []
+                                phase = chess.PHASE['Picking']
+                                selected = False
                         else:
                             Players[turns%2].decelect()
                             selectedPos = []
@@ -464,7 +486,7 @@ def button(text, img, img_h, x, y, width, height, action = None, color = 'black'
     :return: None
     """
     global clicked
-    pygame.time.delay(5)
+    pygame.time.delay(10)
     img = pygame.transform.scale(img, (width, height))
     WIN.blit(img, (x, y))
     mouse = pygame.mouse.get_pos()
@@ -563,11 +585,14 @@ def end_game():
     pygame.quit()
     quit()
 
-def check_evolutions():
+def check_evolutions(type = "Queen"):
     """
     Kiểm tra thăng cấp cho quân "Chốt"
+    :param type: Kiểu quân cờ được thăng cấp
     :return: None
     """
+    global clicked
+    clicked = False
     def evolution(param):
         if param['team'] == 'w':
             direction = 'upwward'
@@ -583,6 +608,8 @@ def check_evolutions():
             try:
                 if object[1].get_type() == 'Pawn' and object[0][1] == 7*(object[1].get_direction()>0):
                     WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
+                    if Players[turns%2].get_name() == 'BOT':
+                        evolution({type:'Queen', team:object[1].get_team(), oBoard:oBoard, index:object[0]})
                     while True:
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:

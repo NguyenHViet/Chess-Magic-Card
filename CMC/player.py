@@ -106,7 +106,7 @@ class Player:
         """
         self.__picking = None
 
-    def play_card(self, nBoard, indexs, histLog = False):
+    def play_card(self, nBoard, indexs=[], histLog = False):
         """
         Sử dụng bài phép
         :param nBoard: Bàn cờ (board.Board)
@@ -130,7 +130,7 @@ class Player:
                         init.HistoryLog.append(' => {} {}: {}{} -> {}{}'.format(init.ENCODE[nBoard.getoBoard()[(index1[1], index1[0])].get_type()],
                                                                                 init.ENCODE[nBoard.getoBoard()[(index1[1], index1[0])].get_team()],
                                                                                 8 - index0[0], chr(65 + index0[1]), 8 - index1[0], chr(65 + index1[1])))
-                    else:
+                    elif card:
                         init.HistoryLog.pop(0)
                         init.HistoryLog.append(' => {} {}: {}{}'.format(init.ENCODE[nBoard.getoBoard()[(index0[1], index0[0])].get_type()],
                                                                         init.ENCODE[nBoard.getoBoard()[(index0[1], index0[0])].get_team()],
