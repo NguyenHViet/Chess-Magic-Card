@@ -10,6 +10,17 @@ pygame.mixer.init()
 
 HistoryLog = ' '
 
+ENCODE = {
+    'b': 'Đen',
+    'w': 'Trắng',
+    'Pawn':'Chốt',
+    'Rook':'Xa',
+    'Knight':'Mã',
+    'Bishop':'Tượng',
+    'Queen':'Hậu',
+    'King':'Vua'
+}
+
 SETTINGS = {
     'Music Volumn': 10,
     'Sound Volumn': 10,
@@ -17,6 +28,7 @@ SETTINGS = {
     'Time Bonus': 10,
     'AddTimeable': True,
     'TotalActions': 15,
+    'Tutorial Seen': False
 }
 
 listImage = {
@@ -59,8 +71,8 @@ listImage = {
         'Phase 3': pygame.image.load('assets/img/GEI/card_phase.png')
     },
     'GUI': {
-        'EndTurn': pygame.image.load('assets/img/GUI/end_turn_button.png'),
-        'EnemyTurn': pygame.image.load('assets/img/GUI/enemy_turn_button.png'),
+        'wTurn': pygame.image.load('assets/img/GUI/white_turn.png'),
+        'bTurn': pygame.image.load('assets/img/GUI/black_turn.png'),
         'Choice':pygame.image.load('assets/img/GUI/choice_white.png'),
         'Pause':pygame.image.load('assets/img/GUI/pause_button.png'),
         'Button':pygame.image.load('assets/img/GUI/button.png'),
@@ -80,6 +92,9 @@ listImage = {
         'Unmute': pygame.image.load('assets/img/GUI/unmute_button.png'),
         'Env Timer':pygame.image.load('assets/img/GUI/evironment_timer.png'),
         'Env Timer Ef': pygame.image.load('assets/img/GUI/evironment_timer_ef.png'),
+        'History Log': pygame.image.load('assets/img/GUI/Hist_Log.png'),
+        'Help':pygame.image.load('assets/img/GUI/help.png'),
+        'Tutorial':pygame.image.load('assets/img/GUI/tutorial.png')
     },
     'Cards': {
         '01':pygame.image.load('assets/img/Card/01.png'),
@@ -91,6 +106,7 @@ listImage = {
         '07':pygame.image.load('assets/img/Card/07.png'),
         '08': pygame.image.load('assets/img/Card/08.png'),
         '09': pygame.image.load('assets/img/Card/09.png'),
+        '10': pygame.image.load('assets/img/Card/10.png'),
     },
     'Desert': {
         'Normal':pygame.image.load('assets/img/Environment/desert_normal.png'),
@@ -169,12 +185,14 @@ DECK = [
          'ActiveEffects', 2, [ef.Effect('PushChess', turns = 1, phase = 3, value = 1)], directions=['Back'], killable = True),
     Card('Linh Động Chiến Trường', 3, listImage['Cards']['06'], 'Di chuyển về 1 hướng bất kỳ 2 ô',
          'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Around'], killable=False),
-    Card('Tấm Khiên Cứng Cáp', 3, listImage['Cards']['07'], 'Không thể bị chọn trong 3 lượt',
+    Card('Tấm Khiên Cứng Cáp', 3, listImage['Cards']['07'], 'Không thể bị chọn trong 2 lượt tiếp theo',
          'GrantEffects', 1, [ef.Effect('Unselectable', turns = 3, phase=[2, 3])]),
     Card('Phối Hợp Ăn Ý', 4, listImage['Cards']['08'], 'Đổi vị trí của 2 quân cờ đồng minh đứng cạnh nhau',
          'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=1)], directions=['Around'], killable=False, swap=True, enemy=False),
     Card('Hoán Đổi Không Gian', 5, listImage['Cards']['09'], 'Đổi vị trí của 2 quân cờ đứng cách nhau 1 ô',
          'ActiveEffects', 2, [ef.Effect('PushChess', turns=1, phase=3, value=2)], directions=['Around'], killable=False, swap=True),
+    Card('Sợi Xích Ma Thuật', 4, listImage['Cards']['10'], '1 quân cờ địch đững cạnh đồng minh không thể di chuyển trong lượt tiếp theo',
+         'CastMagic', 2, [ef.Effect('IncreaseSpeed', turns=2, phase=2, value=-10)], directions=['Around'], killable=False, swap=True),
 ]
 
 ENVIRONMENT = {

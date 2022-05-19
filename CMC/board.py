@@ -202,7 +202,7 @@ class Board:
         interval = self.__width / 8
         for row in range(8):
             for col in range(8):
-                if (row+col) % 2 == 0:
+                if (row+col) % 2 == 1:
                     win.blit(self.__GEI['Darker'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 # if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
                 #     win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
@@ -351,16 +351,19 @@ class Board:
                 try:
                     if self.__OjectLayer[(index1[1], index1[0])].get_killable():
                         sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
-                        if '-' in self.__readableMap[index1[0]][index1[1]]:
+                        if 'x' in self.__readableMap[index1[0]][index1[1]]:
                             sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
                             sfx.play()
                     elif '-' in self.__readableMap[index1[0]][index1[1]]:
-                        self.__enviroment.play_sfx()
+                        if histLog:
+                            self.__enviroment.play_sfx(0)
                 except:
                     pass
                 if histLog:
                     init.HistoryLog.pop(0)
-                    init.HistoryLog.append('{}: {} -> {}'.format(self.__OjectLayer[(index0[1], index0[0])].get_type(), index0, index1))
+                    init.HistoryLog.append('{} {}: {}{} -> {}{}'.format(init.ENCODE[self.__OjectLayer[(index0[1], index0[0])].get_type()],
+                                                                    init.ENCODE[self.__OjectLayer[(index0[1], index0[0])].get_team()],
+                                                                    8 - index0[0], chr(65 + index0[1]), 8 - index1[0], chr(65 + index1[1])))
                 # print('Từ ô',index0,'đến ô', index1)
                 moved = True
                 if triggeredEffect:

@@ -111,6 +111,7 @@ class Player:
         Sử dụng bài phép
         :param nBoard: Bàn cờ (board.Board)
         :param indexs: Danh sách vị trí các đối tượng được chọn (tuple(int, int))
+        :param histLog: Lưu lại lịch sử dùng bài
         :return: Kết quả dùng bài phép (str)
         """
         try:
@@ -120,7 +121,20 @@ class Player:
                 card = self.__cards.pop(self.__picking)
                 if histLog:
                     init.HistoryLog.pop(0)
-                    init.HistoryLog.append('{}: {} -> {}'.format(card.get_name(), indexs[0], indexs[1]))
+                    init.HistoryLog.append('{}:'.format(card.get_name()))
+                    index0 = indexs[0]
+                    oBoard = nBoard.getoBoard()
+                    if len(indexs) == 2:
+                        index1 = indexs[1]
+                        init.HistoryLog.pop(0)
+                        init.HistoryLog.append(' => {} {}: {}{} -> {}{}'.format(init.ENCODE[nBoard.getoBoard()[(index1[1], index1[0])].get_type()],
+                                                                                init.ENCODE[nBoard.getoBoard()[(index1[1], index1[0])].get_team()],
+                                                                                8 - index0[0], chr(65 + index0[1]), 8 - index1[0], chr(65 + index1[1])))
+                    else:
+                        init.HistoryLog.pop(0)
+                        init.HistoryLog.append(' => {} {}: {}{}'.format(init.ENCODE[nBoard.getoBoard()[(index0[1], index0[0])].get_type()],
+                                                                        init.ENCODE[nBoard.getoBoard()[(index0[1], index0[0])].get_team()],
+                                                                        8 - index0[0], chr(65 + index0[1])))
             return result
         except:
             return 'Fail'
@@ -187,6 +201,7 @@ class Player:
         timing = nowTime - startTurnTime
         nPhase = phase
         if phase == chess.PHASE['Start']:
+            self.__picking = None
             self.__reRoll = False
             self.__time = self.__totalTime + self.__timeBonus
             if self.__actions < 5 and self.__totalActions > 0:
@@ -196,6 +211,8 @@ class Player:
         if self.__actions <= 0:
             nPhase = chess.PHASE['End']
         if phase == chess.PHASE['End']:
+            self.__picking = None
+            self.decelect()
             if addableTime or self.__time - timing <= self.__totalTime:
                 self.__totalTime = self.__time - timing
                 self.__time = self.__totalTime
