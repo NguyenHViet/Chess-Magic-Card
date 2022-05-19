@@ -134,6 +134,11 @@ listImage = {
         'Special':pygame.image.load('assets/img/Environment/swamp_special.png'),
         'Background': pygame.image.load('assets/img/Environment/swamp_bg.jpg')
     },
+    'Echoes of The Past': {
+        'Normal':pygame.image.load('assets/img/Environment/EOTP_normal.png'),
+        'Special':pygame.image.load('assets/img/Environment/EOTP_special.png'),
+        'Background': pygame.image.load('assets/img/Environment/EOTP_bg.jpg')
+    },
     'Grassland': {
         'Normal':pygame.image.load('assets/img/Environment/grassland.png'),
         'Background': pygame.image.load('assets/img/Environment/grassland_bg.jpg')
@@ -199,6 +204,7 @@ ENVIRONMENT = {
     'Frozen River': env.Frozen_river(listImage['Frozen River'], 800),
     'Foggy Forest': env.Foggy_forest(listImage['Foggy Forest'], 800),
     'Swamp': env.Swamp(listImage['Swamp'], 800),
+    'Echoes of The Past':env.Echoes_Of_The_Past(listImage['Echoes of The Past'], 800),
     'Grassland': env.Grassland(listImage['Grassland'], 800),
     'Random':env.Environment(),
 }

@@ -399,6 +399,86 @@ class Swamp(Environment):
         except:
             pass
 
+class Echoes_Of_The_Past(Environment):
+    """
+    Lớp 'Dư âm của quá khứ'
+    """
+    def __init__(self, image, width):
+        """
+        Hàm tạo môi trường 'Dư âm của quá khứ'
+        :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :param width:
+        """
+        self.__The_past = None
+        super().__int__('echoes_of_the_past', image, width)
+
+    def create_map(self, nBoard):
+
+        super().create_map(nBoard)
+
+        for x in range(8):
+            for y in range(8):
+                self._CellLayer[x][y].set_img(self._image['Normal'])
+        return self._CellLayer
+
+    def apply_env_effect(self, nBoard, turn, phase):
+
+        cBoard = nBoard.getcBoard()
+        oBoard = nBoard.getoBoard()
+        rBoard = nBoard.getrBoard()
+
+        if phase == chess.PHASE['Start']:
+            try:
+                if turn%10 == 6:
+                    if self.__The_past != None:
+                        self.__The_past = None
+                    self.__The_past = nBoard.duplication()
+
+                if (turn%10 == 8) or (turn%10 == 9):
+                    for i in range(8):
+                        for j in range(8):
+                            cBoard[j][i].set_img(self._image['Special'])
+
+                if (turn%10 == 0) and (turn != 0):
+                    self._CellLayer = self.create_map(nBoard)
+                    nBoard.clear_map()
+
+                    for i in range(8):
+                        for j in range(8):
+                            try:
+                                oBoard[(i, j)] = self.__The_past.getoBoard()[(i, j)]
+                                if oBoard[(i, j)].get_team() == 'w':
+                                    if oBoard[(i, j)].get_type() == 'Pawn':
+                                        oBoard[(i, j)].set_img(init.listImage['w']['Pawn'])
+                                    if oBoard[(i, j)].get_type() == 'Rook':
+                                        oBoard[(i, j)].set_img(init.listImage['w']['Rook'])
+                                    if oBoard[(i, j)].get_type() == 'Knight':
+                                        oBoard[(i, j)].set_img(init.listImage['w']['Knight'])
+                                    if oBoard[(i, j)].get_type() == 'Bishop':
+                                        oBoard[(i, j)].set_img(init.listImage['w']['Bishop'])
+                                    if oBoard[(i, j)].get_type() == 'Queen':
+                                        oBoard[(i, j)].set_img(init.listImage['w']['Queen'])
+                                    if oBoard[(i, j)].get_type() == 'King':
+                                        oBoard[(i, j)].set_img(init.listImage['w']['King'])
+                                if oBoard[(i, j)].get_team() == 'b':
+                                    if oBoard[(i, j)].get_type() == 'Pawn':
+                                        oBoard[(i, j)].set_img(init.listImage['b']['Pawn'])
+                                    if oBoard[(i, j)].get_type() == 'Rook':
+                                        oBoard[(i, j)].set_img(init.listImage['b']['Rook'])
+                                    if oBoard[(i, j)].get_type() == 'Knight':
+                                        oBoard[(i, j)].set_img(init.listImage['b']['Knight'])
+                                    if oBoard[(i, j)].get_type() == 'Bishop':
+                                        oBoard[(i, j)].set_img(init.listImage['b']['Bishop'])
+                                    if oBoard[(i, j)].get_type() == 'Queen':
+                                        oBoard[(i, j)].set_img(init.listImage['b']['Queen'])
+                                    if oBoard[(i, j)].get_type() == 'King':
+                                        oBoard[(i, j)].set_img(init.listImage['b']['King'])
+                                rBoard[(i, j)] = The_past.getrBoard()[(i, j)]
+                            except:
+                                pass
+            except:
+                pass
+
 class Grassland(Environment):
     """
     Lớp 'Thảo nguyên'
