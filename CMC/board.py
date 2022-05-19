@@ -356,10 +356,10 @@ class Board:
             if 'x' in self.__readableMap[index1[0]][index1[1]]:
                 try:
                     if self.__OjectLayer[(index1[1], index1[0])].get_killable():
-                        sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
-                        if 'x' in self.__readableMap[index1[0]][index1[1]]:
+                        if 'x' in self.__readableMap[index1[0]][index1[1]] and histLog:
+                            sfx = pygame.mixer.Sound('assets/music/swords_hit.wav')
                             sfx.set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                            sfx.play()
+                            sfx.play(2)
                     elif '-' in self.__readableMap[index1[0]][index1[1]]:
                         if histLog:
                             self.__enviroment.play_sfx(0)

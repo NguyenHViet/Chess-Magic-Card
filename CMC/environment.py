@@ -118,8 +118,17 @@ class Environment:
         self._CellLayer = cBoard
         return cBoard
 
-    def play_sfx(self):
-        pass
+    def play_sfx(self, id):
+        """
+        Chạy các file âm thanh sfx
+        :param id: ID trong list sfx (int)
+        :return: None
+        """
+        try:
+            self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
+            self._sfx[0].play()
+        except:
+            pass
 
 class Desert(Environment):
     """
@@ -168,8 +177,11 @@ class Desert(Environment):
                         for j in range(h):
                             self._CellLayer[j  + y][i + x].set_img(self._image['Prepare'])
                 elif turn%8 == 2:
-                    self.__env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                    self.__env_ef.play(-1)
+                    try:
+                        self._env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                        self._env_ef.play(-1)
+                    except:
+                        pass
 
                 if turn%8 < 7 and turn%8 >= 2:
                     for i in range(w):
@@ -192,7 +204,10 @@ class Desert(Environment):
                             except:
                                 pass
                     nBoard.clear_map()
-                    self.__env_ef.stop()
+                    try:
+                        self._env_ef.stop()
+                    except:
+                        pass
             except:
                 pass
 
@@ -276,13 +291,6 @@ class Frozen_river(Environment):
                     except:
                         pass
 
-    def play_sfx(self, id):
-        try:
-            self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-            self._sfx[0].play()
-        except:
-            pass
-
 class Foggy_forest(Environment):
     """
     Lớp 'Rừng sương mù'
@@ -319,8 +327,11 @@ class Foggy_forest(Environment):
         if phase == chess.PHASE['Start']:
             try:
                 if turn % 6 == 0:
-                    self.__env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
-                    self.__env_ef.play(fade_ms=1000)
+                    try:
+                        self._env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                        self._env_ef.play(-1, fade_ms=1000)
+                    except:
+                        pass
                 if turn % 6 < 4:
                     for i in range(8):
                         for j in range(8):
@@ -334,7 +345,10 @@ class Foggy_forest(Environment):
                 elif turn % 6 == 4:
                     self._CellLayer = self.create_map(nBoard)
                     nBoard.clear_map()
-                    self.__env_ef.stop()
+                    try:
+                        self._env_ef.stop()
+                    except:
+                        pass
             except:
                 pass
 
@@ -392,13 +406,6 @@ class Swamp(Environment):
                     except:
                         pass
 
-    def play_sfx(self, id):
-        try:
-            self._sfx[0].set_volume(init.SETTINGS['Sound Volumn'] / 100)
-            self._sfx[0].play()
-        except:
-            pass
-
 class Echoes_Of_The_Past(Environment):
     """
     Lớp 'Dư âm của quá khứ'
@@ -410,7 +417,8 @@ class Echoes_Of_The_Past(Environment):
         :param width:
         """
         self.__The_past = None
-        super().__int__('echoes_of_the_past', image, width)
+        env = pygame.mixer.Sound('assets/music/Church Bells.wav')
+        super().__int__('echoes_of_the_past', image, width, env_ef = env)
 
     def create_map(self, nBoard):
 
@@ -435,6 +443,13 @@ class Echoes_Of_The_Past(Environment):
                     self.__The_past = nBoard.duplication()
 
                 if (turn%10 == 8) or (turn%10 == 9):
+                    try:
+                        self._env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                        self._env_ef.play(2)
+                    except:
+                        pass
+                    self._env_ef.set_volume(init.SETTINGS['Sound Volumn'] / 100)
+                    self._env_ef.play()
                     for i in range(8):
                         for j in range(8):
                             cBoard[j][i].set_img(self._image['Special'])
@@ -476,6 +491,10 @@ class Echoes_Of_The_Past(Environment):
                                 rBoard[(i, j)] = The_past.getrBoard()[(i, j)]
                             except:
                                 pass
+                    try:
+                        self._env_ef.stop()
+                    except:
+                        pass
             except:
                 pass
 

@@ -182,7 +182,6 @@ class Card:
             try:
                 index = indexs[0]
                 oBoard = nBoard.getoBoard()
-                print(index)
                 result = nBoard.select_Chess(index, 3, playTeam, False, allChess=allChess)
                 if result[0]:
                     for effect in effects:
