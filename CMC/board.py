@@ -202,7 +202,7 @@ class Board:
         interval = self.__width / 8
         for row in range(8):
             for col in range(8):
-                if (row+col) % 2 == 0:
+                if (row+col) % 2 == 1:
                     win.blit(self.__GEI['Darker'] ,(self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 # if self.__CellLayer[row][col].is_mouse_hovering(pygame.mouse.get_pos()):
                 #     win.blit(self.__GEI['Hover'], (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))

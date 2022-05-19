@@ -121,7 +121,7 @@ class Player:
                 card = self.__cards.pop(self.__picking)
                 if histLog:
                     init.HistoryLog.pop(0)
-                    init.HistoryLog.append('{}'.format(card.get_name()))
+                    init.HistoryLog.append('{}:'.format(card.get_name()))
                     index0 = indexs[0]
                     oBoard = nBoard.getoBoard()
                     if len(indexs) == 2:

@@ -252,7 +252,7 @@ def updateGUI():
 
     drawTextImg('', init.listImage['GUI']['History Log'], 35, offsetHeight + 420, 350, 350, font=init.font25, color = color)
     for i in range(len(init.HistoryLog)):
-        drawTextImg(init.HistoryLog[i], '', 75, offsetHeight + 450 + i*40, 300, 100, font = init.font15, color = 'red', center = False)
+        drawTextImg(init.HistoryLog[i], '', 120, offsetHeight + 450 + i*40, 300, 100, font = init.font15, color = 'orange', center = False)
         # card.drawText(WIN, init.HistoryLog[i], 'white', ((90, offsetHeight + 450 + i*40), (300, 100)), init.font15)
 
 def update_display():
