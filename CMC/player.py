@@ -130,7 +130,7 @@ class Player:
                         init.HistoryLog.append(' => {} {}: {}{} -> {}{}'.format(init.ENCODE[nBoard.getoBoard()[(index1[1], index1[0])].get_type()],
                                                                                 init.ENCODE[nBoard.getoBoard()[(index1[1], index1[0])].get_team()],
                                                                                 8 - index0[0], chr(65 + index0[1]), 8 - index1[0], chr(65 + index1[1])))
-                    elif card:
+                    elif card.get_selected_require() == 1:
                         init.HistoryLog.pop(0)
                         init.HistoryLog.append(' => {} {}: {}{}'.format(init.ENCODE[nBoard.getoBoard()[(index0[1], index0[0])].get_type()],
                                                                         init.ENCODE[nBoard.getoBoard()[(index0[1], index0[0])].get_team()],

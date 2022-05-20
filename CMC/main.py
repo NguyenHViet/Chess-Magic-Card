@@ -591,7 +591,8 @@ def check_evolutions(type = "Queen"):
     :param type: Kiểu quân cờ được thăng cấp
     :return: None
     """
-    global clicked
+    global clicked, pause
+    pause = False
     clicked = False
     def evolution(param):
         if param['team'] == 'w':
@@ -806,6 +807,7 @@ def Simulator_Turn(nBoard, nPlayer, nTurn):
             pass
 
     choice = random.choice(BestMove)
+    check_evolutions("Queen")
     # print(BestMove, maxPoint)
     nPlayer[nTurn%2].redraw_card({'param':redraw})
     if choice[0] == 'Chess':
