@@ -795,10 +795,10 @@
   ('stringprep',
    'C:\\Program Files\\Python310\\lib\\stringprep.py',
    'PYMODULE'),
-  ('_py_abc', 'C:\\Program Files\\Python310\\lib\\_py_abc.py', 'PYMODULE'),
   ('tracemalloc',
    'C:\\Program Files\\Python310\\lib\\tracemalloc.py',
    'PYMODULE'),
+  ('_py_abc', 'C:\\Program Files\\Python310\\lib\\_py_abc.py', 'PYMODULE'),
   ('CMC.main',
    'C:\\Users\\win\\Desktop\\Tai Lieu Mon '
    'Hoc\\Game\\Chess-Magic-Card\\CMC\\main.py',

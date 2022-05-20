@@ -457,7 +457,7 @@ class Rook(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
-                            if 'x' in rBoard[pos[0]][pos[1]]:
+                            if 'x' in rBoard[pos[0]][pos[1]] and mark == '#':
                                 break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
@@ -511,7 +511,7 @@ class Bishop(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
-                            if 'x' in rBoard[pos[0]][pos[1]]:
+                            if 'x' in rBoard[pos[0]][pos[1]] and mark == '#':
                                 break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
@@ -612,7 +612,7 @@ class Queen(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
-                            if 'x' in rBoard[pos[0]][pos[1]]:
+                            if 'x' in rBoard[pos[0]][pos[1]] and mark == '#':
                                 break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
@@ -639,7 +639,7 @@ class Queen(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
-                            if 'x' in rBoard[pos[0]][pos[1]]:
+                            if 'x' in rBoard[pos[0]][pos[1]] and mark == '#':
                                 break
                     else:
                         rBoard[pos[0]][pos[1]] += mark

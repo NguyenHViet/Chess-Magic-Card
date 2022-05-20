@@ -220,7 +220,7 @@ def updateGUI():
 
     WIN.blit(init.listImage['GUI']['Lock'], (125, offsetHeight + (turns % 2) * 100))
 
-    if Players[turns%2].get_name() != 'BOT':
+    if Players[turns%2].get_name() != 'BOT' or Players[turns%2].get_reroll():
         for i in range(len(Players[turns % 2].get_cards())):
             button("", init.listImage['GUI']['Random'], init.listImage['GUI']['Choice'], offsetWidth + WIDTH + 10,
                    offsetHeight + (HEIGHT / 3) * i + (HEIGHT) / 8, 50, 50, Players[turns % 2].redraw_card, param=i)
@@ -261,7 +261,7 @@ def update_display():
     :return: None
     """
     while not pause:
-        pygame.time.delay(10)
+        pygame.time.delay(20)
         WIN.unlock()
         try:
             try:
@@ -305,7 +305,7 @@ def main():
         pass
     if not init.SETTINGS['Tutorial Seen']:
         tutorial()
-    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, redraw, required, selectedPos, selected
+    global pause, phase, turns, startTurnTime, timing, playingTeam, clicked, BOT_Thingking, required, selectedPos, selected
     pause = False
     gui_thread = Thread(target=update_display)
     gui_thread.setDaemon(True)
@@ -592,7 +592,6 @@ def check_evolutions(type = "Queen"):
     :return: None
     """
     global clicked, pause
-    pause = False
     clicked = False
     def evolution(param):
         if param['team'] == 'w':
@@ -608,6 +607,13 @@ def check_evolutions(type = "Queen"):
         for object in oBoard.items():
             try:
                 if object[1].get_type() == 'Pawn' and object[0][1] == 7*(object[1].get_direction()>0):
+                    pause = True
+                    pygame.time.delay(15)
+                    WIN.fill('white')
+                    nboard.draw(WIN, phase)
+                    ncard.draw(WIN, init.font40, Players[turns % 2])
+                    updateGUI()
+                    pygame.display.update()
                     WIN.blit(pygame.transform.scale(init.listImage['GEI']['Darker'], (WinWidth, WinHeight)), (0, 0))
                     if Players[turns%2].get_name() == 'BOT':
                         evolution({type:'Queen', team:object[1].get_team(), oBoard:oBoard, index:object[0]})
@@ -616,9 +622,13 @@ def check_evolutions(type = "Queen"):
                             if event.type == pygame.QUIT:
                                 end_game()
                         button('', init.listImage['Chess Art']['Queen'], init.listImage['GEI']['Darken'], WinWidth / 2 - 315, WinHeight / 2 - 200, 150, 322, evolution, type='Queen', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        drawTextImg('Hậu', '', WinWidth / 2 - 315, WinHeight / 2 + 155, 150, 30, color = 'white')
                         button('', init.listImage['Chess Art']['Bishop'], init.listImage['GEI']['Darken'], WinWidth / 2 - 155, WinHeight / 2 - 122, 150, 322, evolution, type='Bishop', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        drawTextImg('Tượng', '', WinWidth / 2 - 155, WinHeight / 2 - 185, 150, 30, color = 'white')
                         button('', init.listImage['Chess Art']['Knight'], init.listImage['GEI']['Darken'], WinWidth / 2 + 5, WinHeight / 2 - 200, 150, 322, evolution, type='Knight', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        drawTextImg('Mã', '', WinWidth / 2 + 5, WinHeight / 2 + 155, 150, 30, color = 'white')
                         button('', init.listImage['Chess Art']['Rook'], init.listImage['GEI']['Darken'], WinWidth / 2 + 165, WinHeight / 2 - 122, 150, 322, evolution, type='Rook', team = object[1].get_team(), oBoard = oBoard, index = object[0])
+                        drawTextImg('Xa', '', WinWidth / 2 + 165, WinHeight / 2 - 185, 150, 30, color = 'white')
                         pygame.display.update()
             except:
                 pass

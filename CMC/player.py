@@ -76,6 +76,13 @@ class Player:
             self.__cards[index['param']] = copy.copy(random.choice(init.DECK))
             self.__reRoll = True
 
+    def get_reroll(self):
+        """
+        Kiểm tra xem đã đổi bài chưa
+        :return: Kết quả (bool)
+        """
+        return self.__reRoll
+
     def draw_cards(self, deck):
         """
         Đổi lại toàn bộ lá bài
