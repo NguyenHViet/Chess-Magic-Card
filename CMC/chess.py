@@ -391,23 +391,31 @@ class King(Chess):
                 result0 = oBoard[index[0], 0].is_effective('Unmove')
             except:
                 result0 = False
-            for i in range(index[1] - 1, 0, -1):
-                if (rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x' or not result0) or rBoard[index[0]][i] == '#':
-                    break
-                if mark != '#' and i == 1:
-                    rBoard[index[0]][0] += 'x'
-                    self._MoveableCell.append((0, 0))
+            if result0:
+                for i in range(index[1] - 1, 0, -1):
+                    if rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x' or rBoard[index[0]][i] == '#':
+                        print(rBoard[index[0]][i])
+                        break
+                    if mark != '#' and i == 1:
+                        rBoard[index[0]][0] += 'x'
+                        self._MoveableCell.append((0, 0))
+            else:
+                pass
 
             try:
                 result1 = oBoard[index[0], 7].is_effective('Unmove')
             except:
                 result1 = False
-            for j in range(index[1] + 1, 7):
-                if (rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x' or not result1) or rBoard[index[0]][i] == '#':
-                    break
-                if mark != '#' and j == 6:
-                    rBoard[index[0]][7] += 'x'
-                    self._MoveableCell.append((0, 7))
+            if result1:
+                for j in range(index[1] + 1, 7):
+                    if (rBoard[index[0]][j] != ' ' and rBoard[index[0]][j] != 'x') or rBoard[index[0]][j] == '#':
+                        print(rBoard[index[0]][j])
+                        break
+                    if mark != '#' and j == 6:
+                        rBoard[index[0]][7] += 'x'
+                        self._MoveableCell.append((0, 7))
+            else:
+                pass
         return self._MoveableCell
 
 class Rook(Chess):
@@ -462,6 +470,8 @@ class Rook(Chess):
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
+                elif on_board(pos) and '!' in rBoard[pos[0]][pos[1]]:
+                    break
         return self._MoveableCell
 
 class Bishop(Chess):
@@ -516,6 +526,8 @@ class Bishop(Chess):
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
+                elif on_board(pos) and '!' in rBoard[pos[0]][pos[1]]:
+                    break
         return self._MoveableCell
 
 class Knight(Chess):
@@ -617,6 +629,8 @@ class Queen(Chess):
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
+                elif on_board(pos) and '!' in rBoard[pos[0]][pos[1]]:
+                    break
 
         diagonals = [[[index[0] + j, index[1] + j] for j in range(1, speed)],
                      [[index[0] + j, index[1] - j] for j in range(1, speed)],
@@ -644,5 +658,7 @@ class Queen(Chess):
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
+                elif on_board(pos) and '!' in rBoard[pos[0]][pos[1]]:
+                    break
 
         return self._MoveableCell

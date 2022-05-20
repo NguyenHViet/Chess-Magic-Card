@@ -139,6 +139,7 @@ class Desert(Environment):
         Hàm tạo môi trường "Sa Mạc"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :param width: Kích thước bàn cờ (int)
         """
         self.__epos = (0, 0)
         self.__ewh = (0, 0)
@@ -221,6 +222,7 @@ class Frozen_river(Environment):
         Hàm khởi tạo môi trường "Sông Băng"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :param width: Kích thước bàn cờ (int)
         """
         self.__EffectedCells = {}
         sfx = [
@@ -300,6 +302,7 @@ class Foggy_forest(Environment):
         Hàm tạo môi trường "Rừng Sương Mù"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :param width: Kích thước bàn cờ (int)
         """
         env_ef = pygame.mixer.Sound('assets/music/foggy_forest.wav')
         super().__int__('foggy_forest', image, width, env_ef = env_ef)
@@ -363,6 +366,7 @@ class Swamp(Environment):
         Hàm tạo môi trường "Đầm Lầy"
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :param width: Kích thước bàn cờ (int)
         """
         self.__EffectedCells = {}
         sfx = [pygame.mixer.Sound('assets/music/step_into_mud.wav')]
@@ -414,7 +418,7 @@ class Echoes_Of_The_Past(Environment):
         """
         Hàm tạo môi trường 'Dư âm của quá khứ'
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
-        :param width:
+        :param width: Kích thước bàn cờ (int)
         """
         self.__The_past = None
         env = pygame.mixer.Sound('assets/music/Church Bells.wav')
@@ -430,7 +434,13 @@ class Echoes_Of_The_Past(Environment):
         return self._CellLayer
 
     def apply_env_effect(self, nBoard, turn, phase):
-
+        """
+        Hàm áp dụng hiệu ứng môi trường
+        :param nBoard: Bàn cờ (board.Board)
+        :param turn: Lượt hiện tại của trận đấu
+        :param phase: Giai đoạn của lượt hiện tại (int)
+        :return None
+        """
         cBoard = nBoard.getcBoard()
         oBoard = nBoard.getoBoard()
         rBoard = nBoard.getrBoard()
@@ -508,6 +518,7 @@ class Grassland(Environment):
         Hàm tạo môi trường 'Thảo Nguyên'
         :param name: Tên môi trường (str)
         :param image: Danh sách hình ảnh môi trường (ditc(pygame.image))
+        :param width: Kích thước bàn cờ (int)
         """
         super().__int__('grassland', image, width)
 
