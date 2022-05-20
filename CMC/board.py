@@ -213,7 +213,7 @@ class Board:
                     win.blit(self.__GEI['Choice_'],
                              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 # elif '#' in (self.__readableMap[col][row]):
-                #     win.blit(self.__GEI['Hover'],
+                #     win.blit(self.__GEI['Choice_'],
                 #              (self.__CellLayer[row][col].get_x(), self.__CellLayer[row][col].get_y()))
                 if not self.__OjectLayer[(row, col)] == None:
                     self.__OjectLayer[(row, col)].draw(win, self.__CellLayer[row][col].get_pos(), interval)
@@ -289,6 +289,9 @@ class Board:
             if ef.STATUS[1] in result:
                 # print("Không thể chọn")
                 return False
+            # guard = self.guard_king(index, phase, playingTeam, set_move, allChess)
+            # if guard[0]:
+            #     return guard
             self.__readableMap[index[0]][index[1]] += ':'
             if set_move:
                 moves = self.__OjectLayer[(x, y)].get_moves(self, index, phase)
@@ -391,6 +394,28 @@ class Board:
             self.deselect()
         return moved
 
+    # def guard_king(self, index, phase, playingTeam = 'b', set_move = True, allChess = False):
+    #     moveableCells = []
+    #     y, x = index
+    #     if not self.is_checkmate(playingTeam):
+    #         return False, moveableCells
+    #     sBoard = self.duplication()
+    #     sBoard.deselect()
+    #     sBoard.getoBoard()[(x, y)].get_moves(sBoard, index, phase)
+    #     sBoard.controlledCells(phase, playingTeam)
+    #     print("!!!!!!!!!!!")
+    #     sBoard.printMap()
+    #     if sBoard.is_checkmate(playingTeam):
+    #         return True, moveableCells
+    #     rBoard = sBoard.getrBoard()
+    #     for i in range(8):
+    #         for j in range(8):
+    #             if '#' in rBoard[i][j] and 'x' in rBoard:
+    #                 moveableCells.append((i, j))
+    #     for pos in moveableCells:
+    #         self.__readableMap[pos[0]][pos[1]] += 'x'
+    #     return True, moveableCells
+
     def controlledCells(self, phase, playingTeam = 'w'):
         """
         Đánh dấu các vị trí của quân đối thủ có thể chiếu vào
@@ -408,12 +433,12 @@ class Board:
             except:
                 pass
 
-    def is_checkmate(self):
+    def is_checkmate(self, team='w'):
         """
         Kiểm tra chiếu tướng
         :return: Kết quả (bool)
         """
-        if self.count_on_rMap('King#') >= 1:
+        if self.count_on_rMap(team+'King#') == 1:
             return True
         else:
             return False

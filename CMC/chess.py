@@ -321,6 +321,10 @@ class Pawn(Chess):
                                 if oBoard[(positions[1], positions[0])].get_killable():
                                     rBoard[positions[0]][positions[1]] += mark
                                     self._MoveableCell.append((positions[0], positions[1]))
+                            elif mark == '#':
+                                rBoard[positions[0]][positions[1]] += mark
+                                self._MoveableCell.append((positions[0], positions[1]))
+
                         except:
                             if mark == '#':
                                 rBoard[positions[0]][positions[1]] += mark
@@ -332,6 +336,7 @@ class Pawn(Chess):
                     rBoard[positions[0]][positions[1]] += mark
             except:
                 pass
+
         return self._MoveableCell
 
 class King(Chess):
@@ -375,21 +380,30 @@ class King(Chess):
                                 if oBoard[(index[1] + x, index[0] + y)].get_killable():
                                     rBoard[index[0] + y][index[1] + x] += mark
                                     self._MoveableCell.append((index[0] + y, index[1] + x))
+                            elif mark == '#':
+                                rBoard[index[0] + y][index[1] + x] += mark
+                                self._MoveableCell.append((index[0] + y, index[1] + x))
                         except:
                             break
 
         if self.is_effective('Unmove') and '#' not in rBoard[index[0]][index[1]]:
-            result0 = oBoard[index[0], 0].get_effects()[0].active_effect(nBoard, [index], phase)
+            try:
+                result0 = oBoard[index[0], 0].is_effective('Unmove')
+            except:
+                result0 = False
             for i in range(index[1] - 1, 0, -1):
-                if (rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x') or result0 != 'Success':
+                if (rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x' or not result0) or rBoard[index[0]][i] == '#':
                     break
                 if mark != '#' and i == 1:
                     rBoard[index[0]][0] += 'x'
                     self._MoveableCell.append((0, 0))
 
-            result1 = oBoard[index[0], 7].get_effects()[0].active_effect(nBoard, [index], phase)
+            try:
+                result1 = oBoard[index[0], 7].is_effective('Unmove')
+            except:
+                result1 = False
             for j in range(index[1] + 1, 7):
-                if (rBoard[index[0]][j] != ' ' and rBoard[index[0]][j] != 'x') or result1 != 'Success':
+                if (rBoard[index[0]][i] != ' ' and rBoard[index[0]][i] != 'x' or not result1) or rBoard[index[0]][i] == '#':
                     break
                 if mark != '#' and j == 6:
                     rBoard[index[0]][7] += 'x'
@@ -443,6 +457,8 @@ class Rook(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
+                            if 'x' in rBoard[pos[0]][pos[1]]:
+                                break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
@@ -495,6 +511,8 @@ class Bishop(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
+                            if 'x' in rBoard[pos[0]][pos[1]]:
+                                break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
@@ -594,6 +612,8 @@ class Queen(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
+                            if 'x' in rBoard[pos[0]][pos[1]]:
+                                break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
@@ -619,7 +639,10 @@ class Queen(Chess):
                         except:
                             rBoard[pos[0]][pos[1]] += mark
                             self._MoveableCell.append((pos))
+                            if 'x' in rBoard[pos[0]][pos[1]]:
+                                break
                     else:
                         rBoard[pos[0]][pos[1]] += mark
                         self._MoveableCell.append((pos))
+
         return self._MoveableCell
